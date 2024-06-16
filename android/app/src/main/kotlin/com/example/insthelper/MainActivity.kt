@@ -1,4 +1,4 @@
-package com.example.insthelper
+package com.quantumweft.insthelper
 
 import io.flutter.embedding.android.FlutterActivity
 
