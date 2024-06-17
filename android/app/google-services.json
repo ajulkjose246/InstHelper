@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583626070952",
+    "project_id": "inst-helper-pro",
+    "storage_bucket": "inst-helper-pro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583626070952:android:373bdfc05e8935eed1db9d",
+        "android_client_info": {
+          "package_name": "com.quantumweft.insthelper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3tR0IOcQT9qBi4jiKu7LU_H_rAefaUN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
