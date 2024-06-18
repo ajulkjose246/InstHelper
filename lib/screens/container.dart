@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:insthelper/screens/user/home_screen.dart';
+import 'package:insthelper/screens/user/insurance_list.dart';
+import 'package:insthelper/screens/user/profile_view.dart';
+import 'package:insthelper/screens/user/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
 
 class ContainerScreen extends StatefulWidget {
@@ -14,15 +17,12 @@ class _ContainerScreenState extends State<ContainerScreen> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
+    VechicleListScreen(),
+    InsuranceList(),
     Text(
-      'Likes',
+      'Service',
     ),
-    Text(
-      'Search',
-    ),
-    Text(
-      'Profile',
-    ),
+    ProfileScreen(),
   ];
 
   @override
@@ -71,6 +71,10 @@ class _ContainerScreenState extends State<ContainerScreen> {
                   icon: LineIcons.tools,
                   text: 'Service',
                 ),
+                GButton(
+                  icon: LineIcons.user,
+                  text: 'Profile',
+                ),
               ],
               selectedIndex: _selectedIndex,
               onTabChange: (index) {
@@ -82,6 +86,14 @@ class _ContainerScreenState extends State<ContainerScreen> {
           ),
         ),
       ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton.small(
+              onPressed: () {
+                Navigator.pushNamed(context, '/add');
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
