@@ -1,13 +1,54 @@
+// ignore_for_file: avoid_print
+
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 
 class AddVehicleScreen extends StatefulWidget {
+  const AddVehicleScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _AddVehicleScreenState createState() => _AddVehicleScreenState();
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
+  final _databaseReference =
+      FirebaseDatabase.instance.ref("Vehicle-Management");
+
+  List<String> vehicleModels = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final snapshot = await _databaseReference.child("Models").get();
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        if (data is List<dynamic>) {
+          setState(() {
+            // Clear existing items and add new ones
+            vehicleModels.clear();
+            for (var model in data) {
+              if (model is String) {
+                vehicleModels.add(model);
+              }
+            }
+          });
+        }
+      } else {
+        print('No data available.');
+      }
+    } catch (error) {
+      print('Error fetching data: $error');
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   // Define controllers for the form fields
@@ -29,6 +70,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final parkingLocationController = TextEditingController();
   bool gpsTrackingEnabled = false;
   final emergencyContactController = TextEditingController();
+
+  String? dropdownValue;
 
   String? uploadedFileName;
 
@@ -66,10 +109,32 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 label: "Year of Manufacture",
                 validator: false,
               ),
-              FormInputField(
-                textcontroller: vehicleTypeController,
-                label: "Vehicle Type",
-                validator: false,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: dropdownValue,
+                      hint: Text('Vehicle Type'),
+                      items: vehicleModels.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ),
               ),
               FormInputField(
                 textcontroller: ownerNameController,
