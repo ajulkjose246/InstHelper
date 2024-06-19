@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class FormInputField extends StatelessWidget {
   final String label;
+  final Icon icon;
   final bool validator;
 
   const FormInputField({
@@ -9,6 +10,7 @@ class FormInputField extends StatelessWidget {
     required this.textcontroller,
     required this.label,
     required this.validator,
+    required this.icon,
   });
 
   final TextEditingController textcontroller;
@@ -24,6 +26,7 @@ class FormInputField extends StatelessWidget {
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
+          prefixIcon: icon, // Add your desired icon here
         ),
         validator: validator
             ? (value) {

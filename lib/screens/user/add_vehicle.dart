@@ -32,7 +32,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         final data = snapshot.value;
         if (data is List<dynamic>) {
           setState(() {
-            // Clear existing items and add new ones
             vehicleModels.clear();
             for (var model in data) {
               if (model is String) {
@@ -51,7 +50,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // Define controllers for the form fields
   final registrationNumberController = TextEditingController();
   final makeAndModelController = TextEditingController();
   final yearOfManufactureController = TextEditingController();
@@ -101,9 +99,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Vehicle")),
+      appBar: AppBar(title: const Text("Add Vehicle")),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -112,16 +110,19 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 textcontroller: registrationNumberController,
                 label: "Registration Number",
                 validator: true,
+                icon: const Icon(Icons.pin),
               ),
               FormInputField(
                 textcontroller: makeAndModelController,
                 label: "Model",
                 validator: false,
+                icon: const Icon(Icons.emoji_transportation),
               ),
               FormInputField(
                 textcontroller: yearOfManufactureController,
                 label: "Year of Manufacture",
                 validator: false,
+                icon: const Icon(Icons.calendar_month),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -131,22 +132,32 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     border: Border.all(color: Colors.grey, width: 1.0),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: dropdownValue,
-                      hint: Text('Vehicle Type'),
-                      items: vehicleModels.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValue = newValue;
-                        });
-                      },
-                    ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.directions_car,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: dropdownValue,
+                            hint: const Text('Vehicle Type'),
+                            items: vehicleModels.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownValue = newValue;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -154,21 +165,19 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 textcontroller: ownerNameController,
                 label: "Owner's Name",
                 validator: false,
+                icon: const Icon(Icons.person),
               ),
               FormInputField(
                 textcontroller: assignedDriverController,
                 label: "Assigned Driver",
                 validator: false,
+                icon: const Icon(Icons.person),
               ),
               FormInputField(
                 textcontroller: purposeOfUseController,
                 label: "Purpose of Use",
                 validator: false,
-              ),
-              FormInputField(
-                textcontroller: insuranceDetailsController,
-                label: "Insurance Details",
-                validator: false,
+                icon: const Icon(Icons.notes_rounded),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -184,13 +193,18 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
+                        const Icon(
+                          Icons.calendar_month,
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
                         Expanded(
                           child: Text(
                             "${selectedDate.toLocal()}".split(' ')[0],
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ),
-                        Icon(Icons.calendar_today, color: Colors.grey),
                       ],
                     ),
                   ),
@@ -200,36 +214,49 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 textcontroller: insuranceExpiryDateController,
                 label: "Insurance Expiry Date",
                 validator: false,
+                icon: const Icon(
+                  Icons.calendar_month,
+                ),
               ),
               FormInputField(
                 textcontroller: nextServiceDueDateController,
                 label: "Next Service Due Date",
                 validator: false,
+                icon: const Icon(
+                  Icons.calendar_month,
+                ),
               ),
               FormInputField(
                 textcontroller: inspectionDatesController,
                 label: "Inspection Dates",
                 validator: false,
+                icon: const Icon(
+                  Icons.calendar_month,
+                ),
               ),
               FormInputField(
                 textcontroller: currentMileageController,
                 label: "Current Mileage",
                 validator: false,
+                icon: const Icon(
+                  Icons.av_timer,
+                ),
               ),
               FormInputField(
                 textcontroller: fuelTypeController,
                 label: "Fuel Type",
                 validator: false,
-              ),
-              FormInputField(
-                textcontroller: fuelConsumptionRateController,
-                label: "Fuel Consumption Rate",
-                validator: false,
+                icon: const Icon(
+                  Icons.local_gas_station_outlined,
+                ),
               ),
               FormInputField(
                 textcontroller: emergencyContactController,
                 label: "Emergency Contact",
                 validator: false,
+                icon: const Icon(
+                  Icons.phone,
+                ),
               ),
               const SizedBox(height: 20),
               Row(
