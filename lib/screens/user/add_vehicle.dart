@@ -84,6 +84,20 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     }
   }
 
+  DateTime selectedDate = DateTime.now();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +169,32 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 textcontroller: insuranceDetailsController,
                 label: "Insurance Details",
                 validator: false,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 16.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            "${selectedDate.toLocal()}".split(' ')[0],
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Icon(Icons.calendar_today, color: Colors.grey),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               FormInputField(
                 textcontroller: insuranceExpiryDateController,
