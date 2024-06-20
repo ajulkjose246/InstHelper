@@ -28,13 +28,13 @@ class _ContainerScreenState extends State<ContainerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
+      backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
       body: SafeArea(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(139, 91, 159, 1),
+          color: Color.fromRGBO(139, 91, 159, 1),
           boxShadow: [
             BoxShadow(
               blurRadius: 20,

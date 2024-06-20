@@ -102,7 +102,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Vehicle")),
+      appBar: AppBar(
+        title: const Text(
+          "Add Vehicle",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+      ),
       body: Padding(
           padding: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
           child: Form(
@@ -226,6 +232,21 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ],
                     )
                   : ListView(children: [
+                      Transform.scale(
+                        scale: 3.0, // Adjust the scale factor as needed
+                        child: DotLottieLoader.fromAsset(
+                          "assets/lottie/add_vehicle.lottie",
+                          frameBuilder:
+                              (BuildContext ctx, DotLottie? dotlottie) {
+                            if (dotlottie != null) {
+                              return Lottie.memory(
+                                  dotlottie.animations.values.single);
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
                       FormInputField(
                         textcontroller: purposeOfUseController,
                         label: "Purpose of Use",
@@ -328,11 +349,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  pageNumber = 0;
-                                });
-                              }
+                              setState(() {
+                                pageNumber = 0;
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
