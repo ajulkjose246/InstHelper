@@ -1,78 +1,46 @@
-// ignore_for_file: avoid_print
-
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
+import 'package:insthelper/functions/add_vehicle_function.dart';
 import 'package:lottie/lottie.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AddVehicleScreenState createState() => _AddVehicleScreenState();
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   int pageNumber = 0;
-  final _databaseReference =
-      FirebaseDatabase.instance.ref("Vehicle-Management");
 
   List<String> vehicleModels = [];
 
   @override
-  void didChangeDependencies() {
+  Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    try {
-      final snapshot = await _databaseReference.child("Models").get();
-      if (snapshot.exists) {
-        final data = snapshot.value;
-        if (data is List<dynamic>) {
-          setState(() {
-            vehicleModels.clear();
-            for (var model in data) {
-              if (model is String) {
-                vehicleModels.add(model);
-              }
-            }
-          });
-        }
-      } else {
-        print('No data available.');
-      }
-    } catch (error) {
-      print('Error fetching data: $error');
-    }
+    List<String> models = await AddVehicleFunction().fetchModels();
+    setState(() {
+      vehicleModels = models;
+    });
   }
 
   final _formKey = GlobalKey<FormState>();
 
   final registrationNumberController = TextEditingController();
-  final makeAndModelController = TextEditingController();
+  final modelController = TextEditingController();
   final yearOfManufactureController = TextEditingController();
-  final vehicleTypeController = TextEditingController();
   final ownerNameController = TextEditingController();
   final assignedDriverController = TextEditingController();
   final purposeOfUseController = TextEditingController();
-  final insuranceDetailsController = TextEditingController();
-  final insuranceExpiryDateController = TextEditingController();
-  final serviceHistoryController = TextEditingController();
   final nextServiceDueDateController = TextEditingController();
   final inspectionDatesController = TextEditingController();
   final currentMileageController = TextEditingController();
   final fuelTypeController = TextEditingController();
-  final fuelConsumptionRateController = TextEditingController();
-  final parkingLocationController = TextEditingController();
-  bool gpsTrackingEnabled = false;
   final emergencyContactController = TextEditingController();
 
-  String? dropdownValue;
+  String? vehicleType;
 
   String? uploadedFileName;
 
@@ -85,16 +53,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     }
   }
 
-  DateTime? selectedDate;
+  DateTime? insuranceExpiryDate;
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        // initialDate: selectedDate,
+        initialDate: DateTime.now(),
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
+    if (picked != null && picked != insuranceExpiryDate) {
       setState(() {
-        selectedDate = picked;
+        insuranceExpiryDate = picked;
       });
     }
   }
@@ -138,7 +106,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           icon: const Icon(Icons.pin),
                         ),
                         FormInputField(
-                          textcontroller: makeAndModelController,
+                          textcontroller: modelController,
                           label: "Model",
                           validator: false,
                           icon: const Icon(Icons.emoji_transportation),
@@ -168,7 +136,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 Expanded(
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
-                                      value: dropdownValue,
+                                      value: vehicleType,
                                       hint: const Text('Vehicle Type'),
                                       items: vehicleModels.map((String value) {
                                         return DropdownMenuItem<String>(
@@ -178,7 +146,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       }).toList(),
                                       onChanged: (String? newValue) {
                                         setState(() {
-                                          dropdownValue = newValue;
+                                          vehicleType = newValue;
                                         });
                                       },
                                     ),
@@ -276,8 +244,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    (selectedDate?.toLocal() != null)
-                                        ? "${selectedDate?.toLocal()}"
+                                    (insuranceExpiryDate != null)
+                                        ? "${insuranceExpiryDate!.toLocal()}"
                                             .split(' ')[0]
                                         : "Insurance Expiry Date",
                                     style: const TextStyle(
@@ -345,6 +313,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
                       Row(
                         children: [
                           ElevatedButton(
@@ -372,7 +341,43 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pop(context);
+                                if (insuranceExpiryDate == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Please select an insurance expiry date'),
+                                    ),
+                                  );
+                                } else if (uploadedFileName == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Please upload a file'),
+                                    ),
+                                  );
+                                } else {
+                                  AddVehicleFunction().addVehicle(
+                                      registrationNumberController,
+                                      modelController,
+                                      yearOfManufactureController,
+                                      vehicleType!,
+                                      ownerNameController,
+                                      assignedDriverController,
+                                      purposeOfUseController,
+                                      insuranceExpiryDate!,
+                                      nextServiceDueDateController,
+                                      inspectionDatesController,
+                                      currentMileageController,
+                                      fuelTypeController,
+                                      emergencyContactController,
+                                      uploadedFileName!);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Vehicle added successfully'),
+                                    ),
+                                  );
+                                  Navigator.pop(context);
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -383,10 +388,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             child: const Row(
                               children: [
                                 Text(
-                                  "Next",
+                                  "Submit",
                                   style: TextStyle(fontSize: 19),
                                 ),
-                                Icon(Icons.arrow_forward),
+                                Icon(Icons.check),
                               ],
                             ),
                           ),
