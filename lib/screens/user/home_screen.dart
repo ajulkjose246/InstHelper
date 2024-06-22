@@ -174,33 +174,38 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/view');
+                    },
+                    child: Container(
+                      height: 170,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "KL 71 F 9894",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 19),
                             ),
-                          ),
-                        ],
+                            const Text(
+                              "Hyundai Exter",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            Expanded(
+                              child: Image.asset(
+                                'assets/img/car.jpg',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

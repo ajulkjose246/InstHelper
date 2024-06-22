@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/screens/container.dart';
 import 'package:insthelper/screens/user/add_vehicle.dart';
+import 'package:insthelper/screens/user/vehicle_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: ({
         '/': (context) => ContainerScreen(),
         '/add': (context) => AddVehicleScreen(),
+        '/view': (context) => VehicleViewScreen(),
       }),
       initialRoute: '/',
     );
