@@ -2,6 +2,9 @@
 
 InstHelper is an advanced Flutter Android app aimed at revolutionizing college campus operations through automation and innovative technology integration. The app empowers users with seamless access to a range of functionalities, including Smart Parking, Smart Inventory, Smart Library, Room Navigation, Guest Room Booking, Stock Information, and College Vehicle Management.
 
+## Figma Design
+[Open Figma](https://www.figma.com/design/QRrrTYT1RR9ELqOkvKgHGf/InstHelper?node-id=0-1&t=Gzmo3HMsOK8WGeNi-1)
+
 ## Features
 
 ### Smart Parking
