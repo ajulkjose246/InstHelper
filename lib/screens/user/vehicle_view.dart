@@ -48,23 +48,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Owner Name",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Owner Name",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": K K Jose",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": K K Jose",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -73,23 +69,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Registered RTO",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Registered RTO",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": Nilambur",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": Nilambur",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -98,23 +90,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Ownership",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Ownership",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": First Owner",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": First Owner",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -149,23 +137,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Vehicle Type",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Vehicle Type",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": Car",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": Car",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -174,23 +158,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Model",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Model",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": MARUTI ALTO 800",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": MARUTI ALTO 800",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -199,23 +179,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Fuel Type",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Fuel Type",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": PETROL",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": PETROL",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -224,23 +200,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Engine No",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Engine No",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": F8DN61XXXXX",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": F8DN61XXXXX",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -249,23 +221,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Chassis No",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Chassis No",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": MA3EUA61S00D84XXX",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": MA3EUA61S00D84XXX",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -300,23 +268,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Registration Date",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Registration Date",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 29-Mar-2019",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 29-Mar-2019",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -325,23 +289,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Fitness Upto",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Fitness Upto",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 28-Mar-2034",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 28-Mar-2034",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -350,23 +310,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Pollution Upto",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Pollution Upto",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 24-Jul-2023",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 24-Jul-2023",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -375,23 +331,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Insurance Upto",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Insurance Upto",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 22-Mar-2024",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 22-Mar-2024",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -426,23 +378,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Registration No",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Registration No",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": KL71F9894",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": KL71F9894",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -451,23 +399,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Purpose of Use",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Purpose of Use",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": Emergency",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": Emergency",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -476,23 +420,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Emergency Contact",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Emergency Contact",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 8078234246",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 8078234246",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -501,23 +441,19 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              "Insurance Upto",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Insurance Upto",
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              ": 22-Mar-2024",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            ": 22-Mar-2024",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -565,11 +501,9 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Expanded(
-                                      child: Image.asset(
-                                        'assets/img/bus.png',
-                                        fit: BoxFit.cover,
-                                      ),
+                                    child: Image.asset(
+                                      'assets/img/bus.png',
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                   Container(
@@ -580,11 +514,9 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Expanded(
-                                      child: Image.asset(
-                                        'assets/img/car.jpg',
-                                        fit: BoxFit.cover,
-                                      ),
+                                    child: Image.asset(
+                                      'assets/img/car.jpg',
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ],

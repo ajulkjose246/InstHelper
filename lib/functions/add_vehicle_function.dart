@@ -46,7 +46,7 @@ class AddVehicleFunction {
     String uploadedFileName,
   ) {
     String formattedRegNumber =
-        registrationNumberController.text.replaceAll(' ', '').toUpperCase();
+        registrationNumberController.text.replaceAll(' ', '_').toUpperCase();
 
     _databaseReference.child("Vehicles").child(formattedRegNumber).set({
       "Registration Number": registrationNumberController.text,
