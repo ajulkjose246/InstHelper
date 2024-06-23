@@ -32,13 +32,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final modelController = TextEditingController();
   final engineNoController = TextEditingController();
   final chassisNoController = TextEditingController();
-  final yearOfManufactureController = TextEditingController();
+  final registrationDateController = TextEditingController();
   final ownerNameController = TextEditingController();
   final ownershipController = TextEditingController();
   final assignedDriverController = TextEditingController();
   final purposeOfUseController = TextEditingController();
-  final nextServiceDueDateController = TextEditingController();
-  final inspectionDatesController = TextEditingController();
+  final pollutionUptoController = TextEditingController();
+  final fitnessUptoController = TextEditingController();
   final currentMileageController = TextEditingController();
   final fuelTypeController = TextEditingController();
   final emergencyContactController = TextEditingController();
@@ -344,7 +344,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ),
                         ),
                         FormInputField(
-                          textcontroller: yearOfManufactureController,
+                          textcontroller: registrationDateController,
                           label: "Registration Date",
                           validator: false,
                           icon: const Icon(Icons.calendar_month),
@@ -388,7 +388,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ),
                         ),
                         FormInputField(
-                          textcontroller: nextServiceDueDateController,
+                          textcontroller: pollutionUptoController,
                           label: "Pollution Upto",
                           validator: false,
                           icon: const Icon(
@@ -396,7 +396,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ),
                         ),
                         FormInputField(
-                          textcontroller: inspectionDatesController,
+                          textcontroller: fitnessUptoController,
                           label: "Fitness Upto",
                           validator: false,
                           icon: const Icon(
@@ -448,15 +448,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     AddVehicleFunction().addVehicle(
                                         registrationNumberController,
                                         modelController,
-                                        yearOfManufactureController,
+                                        registrationDateController,
                                         vehicleType!,
                                         ownerNameController,
                                         ownershipController,
                                         assignedDriverController,
                                         purposeOfUseController,
                                         insuranceExpiryDate!,
-                                        nextServiceDueDateController,
-                                        inspectionDatesController,
+                                        pollutionUptoController,
+                                        fitnessUptoController,
                                         currentMileageController,
                                         fuelTypeController,
                                         emergencyContactController,

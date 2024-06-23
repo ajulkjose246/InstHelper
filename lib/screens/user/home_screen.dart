@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:insthelper/screens/user/vehicle_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -271,13 +272,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             } else {
                               var imageData = snapshot.data as String;
-                              print(
-                                  'Fetched Image URL: $imageData'); // Debugging output
                               return Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(context, '/view');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VehicleViewScreen(
+                                          vehicleRegistrationNo:
+                                              vehicle['Registration Number'],
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: Container(
                                     height: 170,

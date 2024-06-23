@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
       routes: ({
         '/': (context) => ContainerScreen(),
         '/add': (context) => AddVehicleScreen(),
-        '/view': (context) => VehicleViewScreen(),
       }),
       initialRoute: '/',
     );
