@@ -442,14 +442,14 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Insurance Upto",
+                            "Assigned Driver",
                             style: TextStyle(
                               fontSize: 19,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            ": 22-Mar-2024",
+                            ": AKJ",
                             textAlign: TextAlign.right,
                             style: TextStyle(
                               fontSize: 19,

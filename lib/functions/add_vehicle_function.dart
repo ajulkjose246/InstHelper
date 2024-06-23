@@ -35,6 +35,7 @@ class AddVehicleFunction {
     TextEditingController yearOfManufactureController,
     String vehicleType,
     TextEditingController ownerNameController,
+    TextEditingController ownershipController,
     TextEditingController assignedDriverController,
     TextEditingController purposeOfUseController,
     DateTime insuranceExpiryDate,
@@ -43,17 +44,22 @@ class AddVehicleFunction {
     TextEditingController currentMileageController,
     TextEditingController fuelTypeController,
     TextEditingController emergencyContactController,
+    TextEditingController engineNoController,
+    TextEditingController chassisNoController,
     String uploadedFileName,
   ) {
     String formattedRegNumber =
         registrationNumberController.text.replaceAll(' ', '_').toUpperCase();
 
     _databaseReference.child("Vehicles").child(formattedRegNumber).set({
-      "Registration Number": registrationNumberController.text,
+      "Registration Number": formattedRegNumber,
       "Model": modelController.text,
+      "Engine No": engineNoController.text,
+      "Chassis No": chassisNoController.text,
       "Year of Manufacture": yearOfManufactureController.text,
       "Vehicle Type": vehicleType,
       "Owner Name": ownerNameController.text,
+      "Ownership": ownershipController.text,
       "Assigned Driver": assignedDriverController.text,
       "Purpose of Use": purposeOfUseController.text,
       "Insurance Expiry Date": insuranceExpiryDate.toString(),

@@ -1,14 +1,31 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _databaseReference =
+      FirebaseDatabase.instance.ref("Vehicle-Management");
+
+  Future<String> getModelImage(String modelName) async {
+    try {
+      final snapshot = await _databaseReference
+          .child('Models')
+          .child(modelName)
+          .child('image')
+          .get();
+      return snapshot.value.toString();
+    } catch (e) {
+      print('Error fetching model image: $e');
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: StreamBuilder<DatabaseEvent>(
+              child: StreamBuilder(
                 stream: FirebaseDatabase.instance
                     .ref('Vehicle-Management')
                     .child('Vehicles')
@@ -210,47 +227,112 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: (items.length > 5) ? 6 : items.length,
                       itemBuilder: (context, index) {
                         var vehicle = items[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/view');
-                            },
-                            child: Container(
-                              height: 170,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      vehicle['Registration Number']
-                                          .toString()
-                                          .toUpperCase()
-                                          .replaceAll('_', ' '),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 19),
+                        return FutureBuilder(
+                          future: getModelImage(vehicle['Vehicle Type']),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/view');
+                                  },
+                                  child: Container(
+                                    height: 170,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
                                     ),
-                                    Text(
-                                      vehicle['Model'],
-                                      style: const TextStyle(fontSize: 15),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
                                     ),
-                                    Expanded(
-                                      child: Image.asset(
-                                        'assets/img/car.jpg',
-                                        fit: BoxFit.contain,
+                                  ),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/view');
+                                  },
+                                  child: Container(
+                                    height: 170,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(Icons.error),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              var imageData = snapshot.data as String;
+                              print(
+                                  'Fetched Image URL: $imageData'); // Debugging output
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/view');
+                                  },
+                                  child: Container(
+                                    height: 170,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            vehicle['Registration Number']
+                                                .toString()
+                                                .toUpperCase()
+                                                .replaceAll('_', ' '),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 19),
+                                          ),
+                                          Text(
+                                            vehicle['Model'],
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                          Expanded(
+                                            child: imageData.isNotEmpty
+                                                ? Image.network(
+                                                    imageData,
+                                                    fit: BoxFit.contain,
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      print(
+                                                          'Error loading image: $error'); // Debugging output
+                                                      return const Center(
+                                                        child:
+                                                            Icon(Icons.error),
+                                                      );
+                                                    },
+                                                  )
+                                                : Image.asset(
+                                                    'assets/img/car.png',
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
+                              );
+                            }
+                          },
                         );
                       },
                     );
@@ -259,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Center(child: Text('No data available.'));
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
