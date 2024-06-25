@@ -12,14 +12,13 @@ class AddVehicleFunction {
     try {
       final snapshot = await _databaseReference.child("Models").get();
       if (snapshot.exists) {
-        final data = snapshot.value;
-        if (data is List<dynamic>) {
-          for (var model in data) {
-            if (model is String) {
-              vehicleModels.add(model);
-            }
+        final data = snapshot.value as Map<dynamic, dynamic>;
+
+        data.forEach((key, value) {
+          if (value is Map<dynamic, dynamic> && value.containsKey('Name')) {
+            vehicleModels.add(value['Name']);
           }
-        }
+        });
       } else {
         print('No data available.');
       }

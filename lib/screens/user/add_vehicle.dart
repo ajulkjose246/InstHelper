@@ -1,5 +1,10 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
+import 'dart:io';
+
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/functions/add_vehicle_function.dart';
@@ -45,15 +50,38 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   String? vehicleType;
 
+  PlatformFile? uploadedFile;
   String? uploadedFileName;
+  String? uploadedFileUrl;
+  UploadTask? uploadTask;
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       setState(() {
+        uploadedFile = result.files.first;
         uploadedFileName = result.files.single.name;
       });
     }
+  }
+
+  Future<void> uploadFile() async {
+    if (uploadedFile == null) {
+      print("uploadedFile is null");
+      return;
+    }
+
+    final path = 'files/$uploadedFileName';
+    final file = File(uploadedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref('Vehicle_Management').child(path);
+    final uploadTask = ref.putFile(file);
+
+    final snapshot = await uploadTask.whenComplete(() {});
+
+    uploadedFileUrl = await snapshot.ref.getDownloadURL();
+    print(uploadedFileUrl);
+    await Future.delayed(const Duration(seconds: 2));
   }
 
   DateTime? insuranceExpiryDate;
@@ -429,7 +457,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             ),
                             const Spacer(),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   if (insuranceExpiryDate == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -445,31 +473,43 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       ),
                                     );
                                   } else {
-                                    AddVehicleFunction().addVehicle(
-                                        registrationNumberController,
-                                        modelController,
-                                        registrationDateController,
-                                        vehicleType!,
-                                        ownerNameController,
-                                        ownershipController,
-                                        assignedDriverController,
-                                        purposeOfUseController,
-                                        insuranceExpiryDate!,
-                                        pollutionUptoController,
-                                        fitnessUptoController,
-                                        currentMileageController,
-                                        fuelTypeController,
-                                        emergencyContactController,
-                                        engineNoController,
-                                        chassisNoController,
-                                        uploadedFileName!);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text('Vehicle added successfully'),
-                                      ),
-                                    );
-                                    Navigator.pop(context);
+                                    await uploadFile();
+                                    if (uploadedFileUrl != null) {
+                                      AddVehicleFunction().addVehicle(
+                                          registrationNumberController,
+                                          modelController,
+                                          registrationDateController,
+                                          vehicleType!,
+                                          ownerNameController,
+                                          ownershipController,
+                                          assignedDriverController,
+                                          purposeOfUseController,
+                                          insuranceExpiryDate!,
+                                          pollutionUptoController,
+                                          fitnessUptoController,
+                                          currentMileageController,
+                                          fuelTypeController,
+                                          emergencyContactController,
+                                          engineNoController,
+                                          chassisNoController,
+                                          uploadedFileUrl!);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Vehicle added successfully'),
+                                        ),
+                                      );
+                                      Navigator.pop(context);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Failed to upload file, please try again.'),
+                                        ),
+                                      );
+                                    }
                                   }
                                 }
                               },
