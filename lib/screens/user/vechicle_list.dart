@@ -1,4 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:insthelper/functions/home_screen_function.dart';
+import 'package:insthelper/screens/user/vehicle_view.dart';
 
 class VechicleListScreen extends StatefulWidget {
   const VechicleListScreen({super.key});
@@ -63,447 +66,157 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+            padding: const EdgeInsets.all(10),
+            child: StreamBuilder(
+              stream: FirebaseDatabase.instance
+                  .ref('Vehicle-Management')
+                  .child('Vehicles')
+                  .onValue,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+                  Map data = snapshot.data!.snapshot.value as Map;
+                  List items = [];
+
+                  data.forEach((key, value) {
+                    items.add({"key": key, ...value});
+                  });
+
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20, top: 20, left: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/car.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "KL 71 F 9894",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19),
-                          ),
-                          const Text(
-                            "Hyundai Exter",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Image.asset(
-                              'assets/img/bus.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      var vehicle = items[index];
+                      return FutureBuilder(
+                        future: HomeScreenFunction()
+                            .getModelImage(vehicle['Vehicle Type']),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/view');
+                                },
+                                child: Container(
+                                  height: 170,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/view');
+                                },
+                                child: Container(
+                                  height: 170,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.error),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            var imageData = snapshot.data as String;
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => VehicleViewScreen(
+                                        vehicleRegistrationNo:
+                                            vehicle['Registration Number'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 170,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          vehicle['Registration Number']
+                                              .toString()
+                                              .toUpperCase()
+                                              .replaceAll('_', ' '),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 19),
+                                        ),
+                                        Text(
+                                          vehicle['Model'],
+                                          style: const TextStyle(fontSize: 15),
+                                        ),
+                                        Expanded(
+                                          child: imageData.isNotEmpty
+                                              ? Image.network(
+                                                  imageData,
+                                                  fit: BoxFit.contain,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    print(
+                                                        'Error loading image: $error'); // Debugging output
+                                                    return const Center(
+                                                      child: Icon(Icons.error),
+                                                    );
+                                                  },
+                                                )
+                                              : Image.asset(
+                                                  'assets/img/car.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  );
+                }
+
+                return Center(child: Text('No data available.'));
+              },
             ),
           ),
         ],

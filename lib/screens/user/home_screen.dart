@@ -1,32 +1,18 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/screens/user/vehicle_view.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _databaseReference =
-      FirebaseDatabase.instance.ref("Vehicle-Management");
-
-  Future<String> getModelImage(String modelName) async {
-    try {
-      final snapshot = await _databaseReference
-          .child('Models')
-          .child(modelName)
-          .child('image')
-          .get();
-      return snapshot.value.toString();
-    } catch (e) {
-      print('Error fetching model image: $e');
-      return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   Center(
                     child: Container(
-                      width: 300,
+                      width: 250,
                       height: 50,
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -75,6 +61,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Image.asset(
                         'assets/img/demo.jpg',
                         fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/alert');
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                        child: Icon(Icons.notifications),
                       ),
                     ),
                   ),
@@ -229,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         var vehicle = items[index];
                         return FutureBuilder(
-                          future: getModelImage(vehicle['Vehicle Type']),
+                          future: HomeScreenFunction()
+                              .getModelImage(vehicle['Vehicle Type']),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

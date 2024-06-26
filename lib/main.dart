@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/screens/container.dart';
 import 'package:insthelper/screens/user/add_vehicle.dart';
+import 'package:insthelper/screens/user/notification_list.dart';
 import 'package:insthelper/screens/user/vehicle_view.dart';
 
 Future<void> main() async {
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       routes: ({
         '/': (context) => ContainerScreen(),
         '/add': (context) => AddVehicleScreen(),
+        '/alert': (context) => NotificationList(),
       }),
       initialRoute: '/',
     );

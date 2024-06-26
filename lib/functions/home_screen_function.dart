@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreenFunction {
@@ -5,21 +7,16 @@ class HomeScreenFunction {
       FirebaseDatabase.instance.ref("Vehicle-Management");
 
   Future<String> getModelImage(String modelName) async {
-    String datas = '';
     try {
       final snapshot = await _databaseReference
           .child('Models')
           .child(modelName)
           .child('image')
           .get();
-      // if (snapshot.exists) {
-      datas = snapshot.value.toString();
-      print(datas);
-      // }
-      // return null; // or handle error accordingly
+      return snapshot.value.toString();
     } catch (e) {
       print('Error fetching model image: $e');
+      return '';
     }
-    return datas;
   }
 }
