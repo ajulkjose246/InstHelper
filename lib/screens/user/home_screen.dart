@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +16,53 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime _getNextExpiryDate(Map vehicle) {
+    DateTime pollutionUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Pollution Upto']);
+    DateTime fitnessUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Fitness Upto']);
+    DateTime insuranceUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Insurance Upto']);
+
+    List<DateTime> dates = [pollutionUpto, fitnessUpto, insuranceUpto];
+    return dates.reduce((a, b) => a.isBefore(b) ? a : b);
+  }
+
+  Widget _getNextExpiryLabel(Map vehicle) {
+    DateTime now = DateTime.now().add(Duration(days: 30));
+    DateTime pollutionUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Pollution Upto']);
+    DateTime fitnessUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Fitness Upto']);
+    DateTime insuranceUpto =
+        DateFormat('yyyy-MM-dd').parse(vehicle['Insurance Upto']);
+
+    DateTime nextExpiry = _getNextExpiryDate(vehicle);
+    String type = '';
+
+    if (nextExpiry == pollutionUpto) {
+      type = 'Pollution';
+    } else if (nextExpiry == fitnessUpto) {
+      type = 'Fitness';
+    } else if (nextExpiry == insuranceUpto) {
+      type = 'Insurance';
+    }
+    return Row(
+      children: [
+        Text(
+          type,
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 19, color: Colors.red),
+        ),
+        const Spacer(),
+        Text(
+          DateFormat('yyyy-MM-dd').format(nextExpiry),
+          style: TextStyle(color: Colors.red),
+        )
+      ],
+    );
+  }
+
   var deviceSearch = '';
   @override
   Widget build(BuildContext context) {
@@ -107,107 +155,165 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 300,
-                      height: 150,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+              padding: const EdgeInsets.all(10),
+              child: StreamBuilder(
+                stream: FirebaseDatabase.instance
+                    .ref('Vehicle-Management')
+                    .child('Vehicles')
+                    .onValue,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasData &&
+                      snapshot.data!.snapshot.value != null) {
+                    Map data = snapshot.data!.snapshot.value as Map;
+                    List items = [];
+
+                    data.forEach((key, value) {
+                      items.add({"key": key, ...value});
+                    });
+
+                    items = items.where((vehicle) {
+                      DateTime now = DateTime.now().add(Duration(days: 30));
+                      DateTime pollutionUpto = DateFormat('yyyy-MM-dd')
+                          .parse(vehicle['Pollution Upto']);
+                      DateTime fitnessUpto = DateFormat('yyyy-MM-dd')
+                          .parse(vehicle['Fitness Upto']);
+                      DateTime insuranceUpto = DateFormat('yyyy-MM-dd')
+                          .parse(vehicle['Insurance Upto']);
+
+                      return pollutionUpto.isBefore(now) ||
+                          fitnessUpto.isBefore(now) ||
+                          insuranceUpto.isBefore(now);
+                    }).toList();
+
+                    items.sort((a, b) {
+                      DateTime aNextExpiry = _getNextExpiryDate(a);
+                      DateTime bNextExpiry = _getNextExpiryDate(b);
+                      return aNextExpiry.compareTo(bNextExpiry);
+                    });
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                            (items.length > 2) ? 3 : items.length, (index) {
+                          // (items.length > 2) ? 3 : items.length, (index) {
+                          var vehicle = items[index];
+                          return FutureBuilder(
+                            future: HomeScreenFunction()
+                                .getModelImage(vehicle['Vehicle Type']),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Container(
+                                    height: 150,
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Container(
+                                    height: 150,
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(Icons.error),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VehicleViewScreen(
+                                          vehicleRegistrationNo:
+                                              vehicle['Registration Number'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      height: 150,
+                                      width: 300,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  vehicle['Registration Number']
+                                                      .toString()
+                                                      .toUpperCase()
+                                                      .replaceAll('_', ' '),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 19,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                const Icon(Icons
+                                                    .arrow_circle_right_outlined),
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            Text(
+                                              vehicle['Model'],
+                                              style:
+                                                  const TextStyle(fontSize: 15),
+                                            ),
+                                            const Spacer(),
+                                            _getNextExpiryLabel(vehicle),
+                                            const Spacer(),
+                                            const Text(
+                                              "We will notify you 30 days before any validity expiry",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        }),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "KL 71 F 9894",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19),
-                                ),
-                                Spacer(),
-                                Icon(Icons.arrow_circle_right_outlined),
-                              ],
-                            ),
-                            Spacer(),
-                            Text(
-                              "Hyundai Exter",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            Spacer(),
-                            Row(
-                              children: [
-                                Text(
-                                  "Validity(NT)",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19),
-                                ),
-                                Spacer(),
-                                Text("17-Nov-2024"),
-                              ],
-                            ),
-                            Spacer(),
-                            Text(
-                                "We will notify you 30 days before the any validity expiry")
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 300,
-                      height: 150,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "KL 71 F 9894",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19),
-                                ),
-                                Spacer(),
-                                Icon(Icons.arrow_circle_right_outlined),
-                              ],
-                            ),
-                            Spacer(),
-                            Row(
-                              children: [
-                                Text(
-                                  "Insurance",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19),
-                                ),
-                                Spacer(),
-                                Text("17-Nov-2024"),
-                              ],
-                            ),
-                            Spacer(),
-                            Text(
-                                "We will notify you 30 days before the any validity expiry")
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                    );
+                  }
+
+                  return const Center(child: Text('No data available.'));
+                },
               ),
             ),
             const Padding(
