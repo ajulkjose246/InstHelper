@@ -1,7 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
-import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:provider/provider.dart';
+import 'vehicle_view.dart';
 
 class VechicleListScreen extends StatefulWidget {
   const VechicleListScreen({super.key});
@@ -11,6 +13,8 @@ class VechicleListScreen extends StatefulWidget {
 }
 
 class _VechicleListScreenState extends State<VechicleListScreen> {
+  var deviceSearch = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +28,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                 const Spacer(),
                 Center(
                   child: Container(
-                    width: 300,
+                    width: 250,
                     height: 50,
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -32,32 +36,66 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                         Radius.circular(20),
                       ),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 15),
                         prefixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          deviceSearch = val;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    context
+                        .read<HomescreenProvider>()
+                        .updateMyVariable(newValue: 4);
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      child: Image.asset(
+                        'assets/img/demo.jpg',
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
                 const Spacer(),
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/alert');
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20),
-                    ),
-                    child: Image.asset(
-                      'assets/img/demo.jpg',
-                      fit: BoxFit.cover,
+                    child: const ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      child: Icon(Icons.notifications),
                     ),
                   ),
                 ),
@@ -89,6 +127,18 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     items.add({"key": key, ...value});
                   });
 
+                  // Filter items based on search criteria
+                  List filteredItems = items.where((vehicle) {
+                    return deviceSearch.isEmpty ||
+                        vehicle['Registration Number']
+                            .toLowerCase()
+                            .replaceAll('_', ' ')
+                            .contains(deviceSearch.toLowerCase()) ||
+                        vehicle['Model']
+                            .toLowerCase()
+                            .contains(deviceSearch.toLowerCase());
+                  }).toList();
+
                   return GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -96,9 +146,9 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
-                    itemCount: items.length,
+                    itemCount: filteredItems.length,
                     itemBuilder: (context, index) {
-                      var vehicle = items[index];
+                      var vehicle = filteredItems[index];
                       return FutureBuilder(
                         future: HomeScreenFunction()
                             .getModelImage(vehicle['Vehicle Type']),
@@ -106,11 +156,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/view');
-                                },
+                                padding: const EdgeInsets.all(10),
                                 child: Container(
                                   height: 170,
                                   decoration: BoxDecoration(
@@ -120,16 +166,10 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                                   child: const Center(
                                     child: CircularProgressIndicator(),
                                   ),
-                                ),
-                              ),
-                            );
+                                ));
                           } else if (snapshot.hasError) {
                             return Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/view');
-                                },
+                                padding: const EdgeInsets.all(10),
                                 child: Container(
                                   height: 170,
                                   decoration: BoxDecoration(
@@ -139,9 +179,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                                   child: const Center(
                                     child: Icon(Icons.error),
                                   ),
-                                ),
-                              ),
-                            );
+                                ));
                           } else {
                             var imageData = snapshot.data as String;
                             return Padding(
@@ -191,7 +229,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                                                   errorBuilder: (context, error,
                                                       stackTrace) {
                                                     print(
-                                                        'Error loading image: $error'); // Debugging output
+                                                        'Error loading image: $error');
                                                     return const Center(
                                                       child: Icon(Icons.error),
                                                     );
@@ -215,7 +253,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                   );
                 }
 
-                return Center(child: Text('No data available.'));
+                return const Center(child: Text('No data available.'));
               },
             ),
           ),

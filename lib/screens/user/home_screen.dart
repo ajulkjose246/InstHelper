@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
+import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var deviceSearch = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,32 +38,45 @@ class _HomeScreenState extends State<HomeScreen> {
                           Radius.circular(20),
                         ),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        readOnly: true,
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(vertical: 15),
                           prefixIcon: Icon(Icons.search),
                         ),
+                        onTap: () {
+                          context
+                              .read<HomescreenProvider>()
+                              .updateMyVariable(newValue: 1);
+                        },
                       ),
                     ),
                   ),
                   const Spacer(),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
+                  GestureDetector(
+                    onTap: () {
+                      context
+                          .read<HomescreenProvider>()
+                          .updateMyVariable(newValue: 4);
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                      child: Image.asset(
-                        'assets/img/demo.jpg',
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                        child: Image.asset(
+                          'assets/img/demo.jpg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -78,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Radius.circular(20),
                         ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(
+                      child: const ClipRRect(
+                        borderRadius: BorderRadius.all(
                           Radius.circular(20),
                         ),
                         child: Icon(Icons.notifications),

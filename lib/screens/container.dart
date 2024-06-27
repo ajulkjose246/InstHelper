@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/user/home_screen.dart';
 import 'package:insthelper/screens/user/insurance_list.dart';
 import 'package:insthelper/screens/user/profile_view.dart';
 import 'package:insthelper/screens/user/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
 class ContainerScreen extends StatefulWidget {
   const ContainerScreen({super.key});
@@ -14,7 +16,6 @@ class ContainerScreen extends StatefulWidget {
 }
 
 class _ContainerScreenState extends State<ContainerScreen> {
-  int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     VechicleListScreen(),
@@ -30,11 +31,12 @@ class _ContainerScreenState extends State<ContainerScreen> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
       body: SafeArea(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: _widgetOptions
+            .elementAt(context.watch<HomescreenProvider>().selectedIndex),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Color.fromRGBO(139, 91, 159, 1),
+          color: const Color.fromRGBO(139, 91, 159, 1),
           boxShadow: [
             BoxShadow(
               blurRadius: 20,
@@ -54,7 +56,7 @@ class _ContainerScreenState extends State<ContainerScreen> {
             duration: const Duration(milliseconds: 400),
             tabBackgroundColor: Colors.grey[100]!,
             color: Colors.grey[100]!,
-            backgroundColor: Color.fromRGBO(139, 91, 159, 1),
+            backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
             tabs: const [
               GButton(
                 icon: Icons.home,
@@ -77,23 +79,26 @@ class _ContainerScreenState extends State<ContainerScreen> {
                 text: 'Profile',
               ),
             ],
-            selectedIndex: _selectedIndex,
+            selectedIndex: context.watch<HomescreenProvider>().selectedIndex,
             onTabChange: (index) {
               setState(() {
-                _selectedIndex = index;
+                context
+                    .read<HomescreenProvider>()
+                    .updateMyVariable(newValue: index);
               });
             },
           ),
         ),
       ),
-      floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton.small(
-              onPressed: () {
-                Navigator.pushNamed(context, '/add');
-              },
-              child: Icon(Icons.add),
-            )
-          : null,
+      floatingActionButton:
+          context.watch<HomescreenProvider>().selectedIndex == 0
+              ? FloatingActionButton.small(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/add');
+                  },
+                  child: const Icon(Icons.add),
+                )
+              : null,
     );
   }
 }
