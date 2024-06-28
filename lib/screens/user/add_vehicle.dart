@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/functions/add_vehicle_function.dart';
@@ -21,6 +22,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   int pageNumber = 0;
 
   List<String> vehicleModels = [];
+
+  bool isLoading = false;
 
   @override
   Future<void> didChangeDependencies() async {
@@ -70,6 +73,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       print("uploadedFile is null");
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
 
     final path = 'files/$uploadedFileName';
     final file = File(uploadedFile!.path!);
@@ -85,15 +91,37 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }
 
   DateTime? insuranceExpiryDate;
-  Future<void> _selectDate(BuildContext context) async {
+  DateTime? registrationDate;
+  DateTime? pollutionDate;
+  DateTime? fitnessDate;
+  Future<void> _selectDate(BuildContext context, String datetype) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    if (picked != null && picked != insuranceExpiryDate) {
+    if (picked != null &&
+        picked != insuranceExpiryDate &&
+        datetype == 'insurance') {
       setState(() {
         insuranceExpiryDate = picked;
+      });
+    }
+    if (picked != null &&
+        picked != registrationDate &&
+        datetype == 'registration') {
+      setState(() {
+        registrationDate = picked;
+      });
+    }
+    if (picked != null && picked != pollutionDate && datetype == 'pollution') {
+      setState(() {
+        pollutionDate = picked;
+      });
+    }
+    if (picked != null && picked != fitnessDate && datetype == 'fitness') {
+      setState(() {
+        fitnessDate = picked;
       });
     }
   }
@@ -134,12 +162,17 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       label: "Registration Number",
                       validator: true,
                       icon: const Icon(Icons.pin),
+                      regex: RegExp(r'^[A-Z]{2}\s\d{1,2}\s[A-Z]{1,2}\s\d{4}$'),
+                      regexlabel: 'KL XX AZ XXXX',
                     ),
                     FormInputField(
                       textcontroller: modelController,
                       label: "Model",
-                      validator: false,
+                      validator: true,
                       icon: const Icon(Icons.emoji_transportation),
+                      regex:
+                          RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                      regexlabel: 'Hexter',
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -181,34 +214,43 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     FormInputField(
                       textcontroller: engineNoController,
                       label: "Engine No",
-                      validator: false,
+                      validator: true,
                       icon: const Icon(
                         Icons.build_outlined,
                       ),
+                      regex: RegExp(r'^[a-zA-Z0-9-]+$'),
+                      regexlabel: '',
                     ),
                     FormInputField(
                       textcontroller: chassisNoController,
                       label: "Chassis No",
-                      validator: false,
+                      validator: true,
                       icon: const Icon(
                         Icons.construction_outlined,
                       ),
+                      regex: RegExp(r'^[a-zA-Z0-9-]+$'),
+                      regexlabel: '',
                     ),
                     FormInputField(
                       textcontroller: currentMileageController,
                       label: "Current Mileage",
-                      validator: false,
+                      validator: true,
                       icon: const Icon(
                         Icons.av_timer,
                       ),
+                      regex: RegExp(r'^\d+(\.\d{1,2})?$'),
+                      regexlabel: '',
                     ),
                     FormInputField(
                       textcontroller: fuelTypeController,
                       label: "Fuel Type",
-                      validator: false,
+                      validator: true,
                       icon: const Icon(
                         Icons.local_gas_station_outlined,
                       ),
+                      regex:
+                          RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                      regexlabel: '',
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -230,9 +272,17 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                pageNumber = 1;
-                              });
+                              if (uploadedFileName == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please upload a file'),
+                                  ),
+                                );
+                              } else {
+                                setState(() {
+                                  pageNumber = 1;
+                                });
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -273,34 +323,48 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         FormInputField(
                           textcontroller: ownerNameController,
                           label: "Owner's Name",
-                          validator: false,
+                          validator: true,
                           icon: const Icon(Icons.person),
+                          regex: RegExp(
+                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                          regexlabel: '',
                         ),
                         FormInputField(
                           textcontroller: ownershipController,
                           label: "Ownership",
-                          validator: false,
+                          validator: true,
                           icon: const Icon(Icons.numbers_sharp),
+                          regex: RegExp(
+                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                          regexlabel: '',
                         ),
                         FormInputField(
                           textcontroller: assignedDriverController,
                           label: "Assigned Driver",
-                          validator: false,
+                          validator: true,
                           icon: const Icon(Icons.person),
+                          regex: RegExp(
+                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                          regexlabel: '',
                         ),
                         FormInputField(
                           textcontroller: purposeOfUseController,
                           label: "Purpose of Use",
                           validator: true,
                           icon: const Icon(Icons.notes_rounded),
+                          regex: RegExp(
+                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
+                          regexlabel: '',
                         ),
                         FormInputField(
                           textcontroller: emergencyContactController,
                           label: "Emergency Contact",
-                          validator: false,
+                          validator: true,
                           icon: const Icon(
                             Icons.phone,
                           ),
+                          regex: RegExp(r"^[6-9]\d{9}$"),
+                          regexlabel: '',
                         ),
                         const SizedBox(height: 20),
                         Row(
@@ -354,184 +418,302 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ),
                       ],
                     )
-                  : ListView(
-                      children: [
-                        Transform.scale(
-                          scale: 1.0,
-                          child: DotLottieLoader.fromAsset(
-                            "assets/lottie/add_date.lottie",
-                            frameBuilder:
-                                (BuildContext ctx, DotLottie? dotlottie) {
-                              if (dotlottie != null) {
-                                return Lottie.memory(
-                                    dotlottie.animations.values.single);
-                              } else {
-                                return Container();
-                              }
-                            },
-                          ),
-                        ),
-                        FormInputField(
-                          textcontroller: registrationDateController,
-                          label: "Registration Date",
-                          validator: false,
-                          icon: const Icon(Icons.calendar_month),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: GestureDetector(
-                            onTap: () => _selectDate(context),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 16.0),
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: 1.0),
-                                borderRadius: BorderRadius.circular(10.0),
+                  : isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView(
+                          children: [
+                            Transform.scale(
+                              scale: 1.0,
+                              child: DotLottieLoader.fromAsset(
+                                "assets/lottie/add_date.lottie",
+                                frameBuilder:
+                                    (BuildContext ctx, DotLottie? dotlottie) {
+                                  if (dotlottie != null) {
+                                    return Lottie.memory(
+                                        dotlottie.animations.values.single);
+                                  } else {
+                                    return Container();
+                                  }
+                                },
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  const Icon(
-                                    Icons.calendar_month,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: GestureDetector(
+                                onTap: () =>
+                                    _selectDate(context, 'registration'),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 16.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1.0),
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      (insuranceExpiryDate != null)
-                                          ? "${insuranceExpiryDate!.toLocal()}"
-                                              .split(' ')[0]
-                                          : "Insurance Upto",
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.calendar_month,
                                       ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          (registrationDate != null)
+                                              ? "${registrationDate!.toLocal()}"
+                                                  .split(' ')[0]
+                                              : "Registration Date",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: GestureDetector(
+                                onTap: () => _selectDate(context, 'insurance'),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 16.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1.0),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.calendar_month,
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          (insuranceExpiryDate != null)
+                                              ? "${insuranceExpiryDate!.toLocal()}"
+                                                  .split(' ')[0]
+                                              : "Insurance Upto",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: GestureDetector(
+                                onTap: () => _selectDate(context, 'pollution'),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 16.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1.0),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.calendar_month,
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          (pollutionDate != null)
+                                              ? "${pollutionDate!.toLocal()}"
+                                                  .split(' ')[0]
+                                              : "Pollution Upto",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: GestureDetector(
+                                onTap: () => _selectDate(context, 'fitness'),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 16.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1.0),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.calendar_month,
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          (fitnessDate != null)
+                                              ? "${fitnessDate!.toLocal()}"
+                                                  .split(' ')[0]
+                                              : "Fitness Upto",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      pageNumber = 1;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        FormInputField(
-                          textcontroller: pollutionUptoController,
-                          label: "Pollution Upto",
-                          validator: false,
-                          icon: const Icon(
-                            Icons.calendar_month,
-                          ),
-                        ),
-                        FormInputField(
-                          textcontroller: fitnessUptoController,
-                          label: "Fitness Upto",
-                          validator: false,
-                          icon: const Icon(
-                            Icons.calendar_month,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  pageNumber = 1;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.arrow_back),
-                                  Text(
-                                    "Previous",
-                                    style: TextStyle(fontSize: 19),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.arrow_back),
+                                      Text(
+                                        "Previous",
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  if (insuranceExpiryDate == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Please select an insurance expiry date'),
-                                      ),
-                                    );
-                                  } else if (uploadedFileName == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Please upload a file'),
-                                      ),
-                                    );
-                                  } else {
-                                    await uploadFile();
-                                    if (uploadedFileUrl != null) {
-                                      AddVehicleFunction().addVehicle(
-                                          registrationNumberController,
-                                          modelController,
-                                          registrationDateController,
-                                          vehicleType!,
-                                          ownerNameController,
-                                          ownershipController,
-                                          assignedDriverController,
-                                          purposeOfUseController,
-                                          insuranceExpiryDate!,
-                                          pollutionUptoController,
-                                          fitnessUptoController,
-                                          currentMileageController,
-                                          fuelTypeController,
-                                          emergencyContactController,
-                                          engineNoController,
-                                          chassisNoController,
-                                          uploadedFileUrl!);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Vehicle added successfully'),
-                                        ),
-                                      );
-                                      Navigator.pop(context);
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Failed to upload file, please try again.'),
-                                        ),
-                                      );
+                                ),
+                                const Spacer(),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      if (registrationDate == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Please select an registration expiry date'),
+                                          ),
+                                        );
+                                      } else if (insuranceExpiryDate == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Please select an insurance expiry date'),
+                                          ),
+                                        );
+                                      } else if (pollutionDate == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Please select an pollution expiry date'),
+                                          ),
+                                        );
+                                      } else if (fitnessDate == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Please select an fitness expiry date'),
+                                          ),
+                                        );
+                                      } else {
+                                        await uploadFile();
+                                        if (uploadedFileUrl != null) {
+                                          AddVehicleFunction().addVehicle(
+                                            registrationNumberController,
+                                            modelController,
+                                            registrationDate!,
+                                            vehicleType!,
+                                            ownerNameController,
+                                            ownershipController,
+                                            assignedDriverController,
+                                            purposeOfUseController,
+                                            insuranceExpiryDate!,
+                                            pollutionDate!,
+                                            fitnessDate!,
+                                            currentMileageController,
+                                            fuelTypeController,
+                                            emergencyContactController,
+                                            engineNoController,
+                                            chassisNoController,
+                                            uploadedFileUrl!,
+                                          );
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Vehicle added successfully'),
+                                            ),
+                                          );
+                                          Navigator.pop(context);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Failed to upload file, please try again.'),
+                                            ),
+                                          );
+                                        }
+                                      }
                                     }
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Text(
-                                    "Submit",
-                                    style: TextStyle(fontSize: 19),
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
-                                  Icon(Icons.check),
-                                ],
-                              ),
+                                  child: const Row(
+                                    children: [
+                                      Text(
+                                        "Submit",
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                      Icon(Icons.check),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
         ),
       ),
     );

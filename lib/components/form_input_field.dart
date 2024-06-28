@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class FormInputField extends StatelessWidget {
   final String label;
+  final String regexlabel;
+  final RegExp regex;
   final Icon icon;
   final bool validator;
 
@@ -11,6 +13,8 @@ class FormInputField extends StatelessWidget {
     required this.label,
     required this.validator,
     required this.icon,
+    required this.regex,
+    required this.regexlabel,
   });
 
   final TextEditingController textcontroller;
@@ -32,6 +36,10 @@ class FormInputField extends StatelessWidget {
             ? (value) {
                 if (value == null || value.isEmpty) {
                   return "Please Enter The $label";
+                }
+
+                if (!regex.hasMatch(value)) {
+                  return "Invalid $label format $regexlabel";
                 }
                 return null;
               }

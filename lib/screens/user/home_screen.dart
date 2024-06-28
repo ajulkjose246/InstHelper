@@ -29,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getNextExpiryLabel(Map vehicle) {
-    DateTime now = DateTime.now().add(Duration(days: 30));
     DateTime pollutionUpto =
         DateFormat('yyyy-MM-dd').parse(vehicle['Pollution Upto']);
     DateTime fitnessUpto =
