@@ -87,7 +87,7 @@ class AddVehicleFunction {
     TextEditingController emergencyContactController,
     TextEditingController engineNoController,
     TextEditingController chassisNoController,
-    String uploadedFileName,
+    List<String> uploadedFileNames,
   ) {
     String formattedRegNumber =
         registrationNumberController.text.replaceAll(' ', '_').toUpperCase();
@@ -97,19 +97,19 @@ class AddVehicleFunction {
       "Model": modelController.text,
       "Engine No": engineNoController.text,
       "Chassis No": chassisNoController.text,
-      "Registration Date": registrationDateController.toString(),
+      "Registration Date": registrationDateController.toIso8601String(),
       "Vehicle Type": vehicleType,
       "Owner Name": ownerNameController.text,
       "Ownership": ownershipController.text,
       "Assigned Driver": drivers,
       "Purpose of Use": purposeOfUseController.text,
-      "Insurance Upto": insuranceExpiryDate.toString(),
-      "Pollution Upto": pollutionUptoController.toString(),
-      "Fitness Upto": fitnessUptoController.toString(),
+      "Insurance Upto": insuranceExpiryDate.toIso8601String(),
+      "Pollution Upto": pollutionUptoController.toIso8601String(),
+      "Fitness Upto": fitnessUptoController.toIso8601String(),
       "Current Mileage": currentMileageController.text,
       "Fuel Type": fuelType,
       "Emergency Contact": emergencyContactController.text,
-      "Uploaded File Name": uploadedFileName,
+      "Uploaded File Names": uploadedFileNames,
     });
   }
 }

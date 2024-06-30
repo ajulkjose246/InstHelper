@@ -3,12 +3,13 @@
 import 'dart:io';
 
 import 'package:dotlottie_loader/dotlottie_loader.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/functions/add_vehicle_function.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path/path.dart' as path;
 
 class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
@@ -58,41 +59,56 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String? fuelType;
   String? drivers;
 
-  PlatformFile? uploadedFile;
-  String? uploadedFileName;
+  List<XFile>? uploadedFiles;
+  List<String> uploadedFileUrls = [];
+  List<String> uploadedFileNames = [];
   String? uploadedFileUrl;
   UploadTask? uploadTask;
 
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      setState(() {
-        uploadedFile = result.files.first;
-        uploadedFileName = result.files.single.name;
-      });
-    }
+  Future<void> _pickFiles() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile>? pickedFiles = await picker.pickMultiImage();
+
+    setState(() {
+      uploadedFiles = pickedFiles;
+      for (var img in uploadedFiles!) {
+        uploadedFileNames.add(img.name);
+      }
+    });
   }
 
-  Future<void> uploadFile() async {
-    if (uploadedFile == null) {
-      print("uploadedFile is null");
+  Future<void> uploadFiles() async {
+    if (uploadedFiles == null || uploadedFiles!.isEmpty) {
+      print("No files selected");
       return;
     }
+
     setState(() {
       isLoading = true;
     });
 
-    final path = 'files/$uploadedFileName';
-    final file = File(uploadedFile!.path!);
+    for (var file in uploadedFiles!) {
+      final fileName = path.basename(file.path);
+      final Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('Vehicle_Management')
+          .child('files')
+          .child(fileName);
+      final File localFile = File(file.path);
 
-    final ref = FirebaseStorage.instance.ref('Vehicle_Management').child(path);
-    final uploadTask = ref.putFile(file);
+      try {
+        await ref.putFile(localFile);
+        final fileUrl = await ref.getDownloadURL();
+        uploadedFileUrls.add(fileUrl);
+        print("File uploaded: $fileUrl");
+      } catch (e) {
+        print("Failed to upload file: $e");
+      }
+    }
 
-    final snapshot = await uploadTask.whenComplete(() {});
-
-    uploadedFileUrl = await snapshot.ref.getDownloadURL();
-    print(uploadedFileUrl);
-    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   DateTime? insuranceExpiryDate;
@@ -293,13 +309,18 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     Row(
                       children: [
                         ElevatedButton(
-                          onPressed: _pickFile,
+                          onPressed: _pickFiles,
                           child: const Text("Upload File"),
                         ),
                         const SizedBox(width: 10),
-                        Text(
-                          uploadedFileName ?? "No file selected",
-                          style: const TextStyle(fontSize: 16),
+                        Expanded(
+                          child: Text(
+                            uploadedFileNames.isNotEmpty
+                                ? uploadedFileNames.join(', ')
+                                : "No files selected",
+                            style: const TextStyle(fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ),
                         ),
                       ],
                     ),
@@ -309,7 +330,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              if (uploadedFileName == null) {
+                              if (uploadedFileNames.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Please upload a file'),
@@ -720,8 +741,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                           ),
                                         );
                                       } else {
-                                        await uploadFile();
-                                        if (uploadedFileUrl != null) {
+                                        await uploadFiles();
+                                        if (uploadedFileUrls.isNotEmpty) {
                                           AddVehicleFunction().addVehicle(
                                             registrationNumberController,
                                             modelController,
@@ -739,7 +760,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             emergencyContactController,
                                             engineNoController,
                                             chassisNoController,
-                                            uploadedFileUrl!,
+                                            uploadedFileUrls,
                                           );
                                           setState(() {
                                             isLoading = false;
