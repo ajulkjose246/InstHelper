@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FormInputField extends StatelessWidget {
   final String label;
@@ -6,6 +7,7 @@ class FormInputField extends StatelessWidget {
   final RegExp regex;
   final Icon icon;
   final bool validator;
+  final bool numberkeyboard;
 
   const FormInputField({
     super.key,
@@ -15,6 +17,7 @@ class FormInputField extends StatelessWidget {
     required this.icon,
     required this.regex,
     required this.regexlabel,
+    required this.numberkeyboard,
   });
 
   final TextEditingController textcontroller;
@@ -25,6 +28,8 @@ class FormInputField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
         controller: textcontroller,
+        keyboardType:
+            numberkeyboard ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(

@@ -1,11 +1,10 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, library_private_types_in_public_api
 
 import 'dart:io';
 
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/functions/add_vehicle_function.dart';
@@ -22,6 +21,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   int pageNumber = 0;
 
   List<String> vehicleModels = [];
+  List<String> vehicleFuels = [];
+  List<String> vehicleDrivers = [];
 
   bool isLoading = false;
 
@@ -29,8 +30,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     List<String> models = await AddVehicleFunction().fetchModels();
+    List<String> fuels = await AddVehicleFunction().fetchFuel();
+    List<String> driver = await AddVehicleFunction().fetchDrivers();
     setState(() {
       vehicleModels = models;
+      vehicleFuels = fuels;
+      vehicleDrivers = driver;
     });
   }
 
@@ -43,15 +48,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final registrationDateController = TextEditingController();
   final ownerNameController = TextEditingController();
   final ownershipController = TextEditingController();
-  final assignedDriverController = TextEditingController();
   final purposeOfUseController = TextEditingController();
   final pollutionUptoController = TextEditingController();
   final fitnessUptoController = TextEditingController();
   final currentMileageController = TextEditingController();
-  final fuelTypeController = TextEditingController();
   final emergencyContactController = TextEditingController();
 
   String? vehicleType;
+  String? fuelType;
+  String? drivers;
 
   PlatformFile? uploadedFile;
   String? uploadedFileName;
@@ -162,8 +167,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       label: "Registration Number",
                       validator: true,
                       icon: const Icon(Icons.pin),
-                      regex: RegExp(r'^[A-Z]{2}\s\d{1,2}\s[A-Z]{1,2}\s\d{4}$'),
+                      regex: RegExp(
+                          r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
                       regexlabel: 'KL XX AZ XXXX',
+                      numberkeyboard: false,
                     ),
                     FormInputField(
                       textcontroller: modelController,
@@ -173,6 +180,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       regex:
                           RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                       regexlabel: 'Hexter',
+                      numberkeyboard: false,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -220,6 +228,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ),
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
+                      numberkeyboard: false,
                     ),
                     FormInputField(
                       textcontroller: chassisNoController,
@@ -230,6 +239,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ),
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
+                      numberkeyboard: false,
                     ),
                     FormInputField(
                       textcontroller: currentMileageController,
@@ -240,17 +250,44 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ),
                       regex: RegExp(r'^\d+(\.\d{1,2})?$'),
                       regexlabel: '',
+                      numberkeyboard: true,
                     ),
-                    FormInputField(
-                      textcontroller: fuelTypeController,
-                      label: "Fuel Type",
-                      validator: true,
-                      icon: const Icon(
-                        Icons.local_gas_station_outlined,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.local_gas_station_outlined,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: fuelType,
+                                  hint: const Text('Fuel Type'),
+                                  items: vehicleFuels.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      fuelType = newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      regex:
-                          RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
-                      regexlabel: '',
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -328,6 +365,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           regex: RegExp(
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
+                          numberkeyboard: false,
                         ),
                         FormInputField(
                           textcontroller: ownershipController,
@@ -337,15 +375,44 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           regex: RegExp(
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
+                          numberkeyboard: false,
                         ),
-                        FormInputField(
-                          textcontroller: assignedDriverController,
-                          label: "Assigned Driver",
-                          validator: true,
-                          icon: const Icon(Icons.person),
-                          regex: RegExp(
-                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
-                          regexlabel: '',
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.grey, width: 1.0),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.person),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: drivers,
+                                      hint: const Text('Assigned Driver'),
+                                      items: vehicleDrivers.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          drivers = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         FormInputField(
                           textcontroller: purposeOfUseController,
@@ -355,6 +422,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           regex: RegExp(
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
+                          numberkeyboard: false,
                         ),
                         FormInputField(
                           textcontroller: emergencyContactController,
@@ -365,6 +433,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           ),
                           regex: RegExp(r"^[6-9]\d{9}$"),
                           regexlabel: '',
+                          numberkeyboard: true,
                         ),
                         const SizedBox(height: 20),
                         Row(
@@ -660,13 +729,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             vehicleType!,
                                             ownerNameController,
                                             ownershipController,
-                                            assignedDriverController,
+                                            drivers!,
                                             purposeOfUseController,
                                             insuranceExpiryDate!,
                                             pollutionDate!,
                                             fitnessDate!,
                                             currentMileageController,
-                                            fuelTypeController,
+                                            fuelType!,
                                             emergencyContactController,
                                             engineNoController,
                                             chassisNoController,
