@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
+import 'package:insthelper/services/auth_services.dart';
 import 'package:line_icons/line_icons.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -114,7 +115,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () => Navigator.pushNamed(context, '/'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color.fromRGBO(139, 91, 159, 1),
                               padding: const EdgeInsets.symmetric(vertical: 15),
@@ -203,7 +204,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       child: IconButton(
                         icon: const Icon(LineIcons.googleLogo),
-                        onPressed: () {},
+                        onPressed: () => AuthService().signInWithGoogle(),
                       ),
                     ),
                     Container(

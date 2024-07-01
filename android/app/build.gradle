@@ -39,7 +39,7 @@ android {
     defaultConfig {
         applicationId = "com.quantumweft.insthelper"
         // minSdk = flutter.minSdkVersion
-        minSdkVersion flutter.minSdkVersion 
+        minSdkVersion 23 
         multiDexEnabled true
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
