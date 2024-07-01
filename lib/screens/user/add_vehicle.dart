@@ -46,12 +46,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final modelController = TextEditingController();
   final engineNoController = TextEditingController();
   final chassisNoController = TextEditingController();
-  final registrationDateController = TextEditingController();
   final ownerNameController = TextEditingController();
   final ownershipController = TextEditingController();
   final purposeOfUseController = TextEditingController();
-  final pollutionUptoController = TextEditingController();
-  final fitnessUptoController = TextEditingController();
   final currentMileageController = TextEditingController();
   final emergencyContactController = TextEditingController();
 
@@ -62,12 +59,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   List<XFile>? uploadedFiles;
   List<String> uploadedFileUrls = [];
   List<String> uploadedFileNames = [];
-  String? uploadedFileUrl;
-  UploadTask? uploadTask;
 
   Future<void> _pickFiles() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage();
+    final List<XFile> pickedFiles = await picker.pickMultiImage();
 
     setState(() {
       uploadedFiles = pickedFiles;

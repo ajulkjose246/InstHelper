@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,6 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
       if (snapshot.exists && snapshot.value != null) {
         setState(() {
           data = Map<String, dynamic>.from(snapshot.value as Map);
-          print(data);
         });
       }
     } catch (e) {
@@ -527,76 +528,61 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      width: double.infinity,
-                      height: 250,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Gallery",
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(139, 91, 159, 1)),
+                  data != null && data!['Uploaded File Names'] != null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            const SizedBox(height: 10),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
+                            width: double.infinity,
+                            height: 250,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  const Text(
+                                    "Gallery",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(139, 91, 159, 1)),
+                                  ),
+                                  const SizedBox(height: 10),
                                   SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: [
-                                        Container(
-                                          width: 300,
-                                          height: 150,
-                                          margin: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/img/bus.png',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 300,
-                                          height: 150,
-                                          margin: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/img/car.jpg',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                                        ...data!['Uploaded File Names']
+                                            .map<Widget>((fileName) {
+                                          return Container(
+                                            width: 300,
+                                            height: 150,
+                                            margin: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Image.network(
+                                              fileName,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          );
+                                        }).toList(),
                                       ],
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                            ),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
       ),

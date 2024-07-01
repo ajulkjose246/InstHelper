@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/screens/authentication/sign_in.dart';
+import 'package:insthelper/screens/authentication/sign_up.dart';
 import 'package:insthelper/screens/container.dart';
 import 'package:insthelper/screens/user/add_vehicle.dart';
 import 'package:insthelper/screens/user/alert_list.dart';
@@ -29,10 +31,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: ({
         '/': (context) => const ContainerScreen(),
+        '/signin': (context) => SignInScreen(),
+        '/signup': (context) => SignUpScreen(),
         '/add': (context) => const AddVehicleScreen(),
         '/alert': (context) => const AlertList(),
       }),
-      initialRoute: '/',
+      initialRoute: '/signin',
     );
   }
 }
