@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:insthelper/components/list_vehicle_widget.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:insthelper/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -179,7 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
 
                     items = items.where((vehicle) {
-                      DateTime now = DateTime.now().add(Duration(days: 30));
+                      DateTime now =
+                          DateTime.now().add(const Duration(days: 30));
                       DateTime pollutionUpto = DateFormat('yyyy-MM-dd')
                           .parse(vehicle['Pollution Upto']);
                       DateTime fitnessUpto = DateFormat('yyyy-MM-dd')
@@ -322,163 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: StreamBuilder(
-                stream: FirebaseDatabase.instance
-                    .ref('Vehicle-Management')
-                    .child('Vehicles')
-                    .onValue,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasData &&
-                      snapshot.data!.snapshot.value != null) {
-                    Map data = snapshot.data!.snapshot.value as Map;
-                    List items = [];
-
-                    data.forEach((key, value) {
-                      items.add({"key": key, ...value});
-                    });
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemCount: (items.length > 5) ? 6 : items.length,
-                      itemBuilder: (context, index) {
-                        var vehicle = items[index];
-                        return FutureBuilder(
-                          future: HomeScreenFunction()
-                              .getModelImage(vehicle['Vehicle Type']),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/view');
-                                  },
-                                  child: Container(
-                                    height: 170,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/view');
-                                  },
-                                  child: Container(
-                                    height: 170,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: const Center(
-                                      child: Icon(Icons.error),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              var imageData = snapshot.data as String;
-                              return Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => VehicleViewScreen(
-                                          vehicleRegistrationNo:
-                                              vehicle['Registration Number'],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 170,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            vehicle['Registration Number']
-                                                .toString()
-                                                .toUpperCase()
-                                                .replaceAll('_', ' '),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 19),
-                                          ),
-                                          Text(
-                                            vehicle['Model'],
-                                            style:
-                                                const TextStyle(fontSize: 15),
-                                          ),
-                                          Expanded(
-                                            child: imageData.isNotEmpty
-                                                ? Image.network(
-                                                    imageData,
-                                                    fit: BoxFit.contain,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      print(
-                                                          'Error loading image: $error'); // Debugging output
-                                                      return const Center(
-                                                        child:
-                                                            Icon(Icons.error),
-                                                      );
-                                                    },
-                                                  )
-                                                : Image.asset(
-                                                    'assets/img/car.png',
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      },
-                    );
-                  }
-
-                  return Center(child: Text('No data available.'));
-                },
-              ),
-            ),
+            const ListVehicleWidget(
+              isHomePage: true,
+              isSearch: '',
+            )
           ],
         ),
       ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/screens/user/home_screen.dart';
-import 'package:insthelper/screens/user/insurance_list.dart';
-import 'package:insthelper/screens/user/profile_view.dart';
-import 'package:insthelper/screens/user/vechicle_list.dart';
+import 'package:insthelper/screens/admin/home_screen.dart';
+import 'package:insthelper/screens/admin/insurance_list.dart';
+import 'package:insthelper/screens/admin/profile_view.dart';
+import 'package:insthelper/screens/admin/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 

@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
-import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:insthelper/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 
 class AlertList extends StatefulWidget {

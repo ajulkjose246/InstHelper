@@ -6,8 +6,8 @@ import 'package:insthelper/screens/authentication/auth_page.dart';
 import 'package:insthelper/screens/authentication/sign_in.dart';
 import 'package:insthelper/screens/authentication/sign_up.dart';
 import 'package:insthelper/screens/container.dart';
-import 'package:insthelper/screens/user/add_vehicle.dart';
-import 'package:insthelper/screens/user/alert_list.dart';
+import 'package:insthelper/screens/admin/add_vehicle.dart';
+import 'package:insthelper/screens/admin/alert_list.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
