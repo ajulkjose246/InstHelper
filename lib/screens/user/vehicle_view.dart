@@ -2,6 +2,7 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VehicleViewScreen extends StatefulWidget {
   final String vehicleRegistrationNo;
@@ -110,12 +111,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Owner Name",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.person),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Owner Name",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Owner Name'].toString()}",
@@ -131,12 +140,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Registered RTO",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.apartment),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Registered RTO",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": $rtoName",
@@ -152,12 +169,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Ownership",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.manage_accounts),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Person",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Ownership'].toString()}",
@@ -200,12 +225,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Vehicle Type",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.commute),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Vehicle Type",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Vehicle Type'].toString()}",
@@ -221,12 +254,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Model",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.emoji_transportation),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Model",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Model'].toString()}",
@@ -242,12 +283,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Fuel Type",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.local_gas_station_outlined),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Fuel Type",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Fuel Type'].toString()}",
@@ -263,12 +312,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Engine No",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.build_outlined),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Engine No",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Engine No'].toString()}",
@@ -284,12 +341,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Chassis No",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.construction_outlined),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Chassis No",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Chassis No'].toString()}",
@@ -332,15 +397,23 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Registration Date",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.calendar_month),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Registration Date",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
-                                  ": ${data!['Registration Date'].toString()}",
+                                  ": ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data!['Registration Date']))}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -353,15 +426,23 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Fitness Upto",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.calendar_month),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Fitness Upto",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
-                                  ": ${data!['Fitness Upto'].toString()}",
+                                  ": ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data!['Fitness Upto']))}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -374,15 +455,23 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Pollution Upto",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.calendar_month),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Pollution Upto",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
-                                  ": ${data!['Pollution Upto'].toString()}",
+                                  ": ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data!['Pollution Upto']))}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -395,15 +484,23 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Insurance Upto",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.calendar_month),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Insurance Upto",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
-                                  ": ${data!['Insurance Upto'].toString()}",
+                                  ": ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data!['Insurance Upto']))}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -443,12 +540,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Registration No",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.pin),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Registration No",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Registration Number'].toString().replaceAll('_', ' ')}",
@@ -464,12 +569,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Purpose of Use",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.notes_rounded),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Purpose of Use",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Purpose of Use'].toString()}",
@@ -485,12 +598,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Emergency Contact",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.phone),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Emergency Contact",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Emergency Contact'].toString()}",
@@ -506,12 +627,20 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "Assigned Driver",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.person),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Assigned Driver",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   ": ${data!['Assigned Driver'].toString()}",
