@@ -13,6 +13,7 @@ class AlertList extends StatefulWidget {
 
 class _AlertListState extends State<AlertList> {
   var filterValue = 1;
+  String deviceSearch = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +42,7 @@ class _AlertListState extends State<AlertList> {
                       decoration: BoxDecoration(
                         color: filterValue != 1
                             ? Colors.white
-                            : Color.fromRGBO(139, 91, 159, 1),
-                        // color: Color.fromRGBO(139, 91, 159, 1),
+                            : const Color.fromRGBO(139, 91, 159, 1),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Center(
@@ -70,8 +70,7 @@ class _AlertListState extends State<AlertList> {
                       decoration: BoxDecoration(
                         color: filterValue != 2
                             ? Colors.white
-                            : Color.fromRGBO(139, 91, 159, 1),
-                        // color: Color.fromRGBO(139, 91, 159, 1),
+                            : const Color.fromRGBO(139, 91, 159, 1),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Center(
@@ -99,8 +98,7 @@ class _AlertListState extends State<AlertList> {
                       decoration: BoxDecoration(
                         color: filterValue != 3
                             ? Colors.white
-                            : Color.fromRGBO(139, 91, 159, 1),
-                        // color: Color.fromRGBO(139, 91, 159, 1),
+                            : const Color.fromRGBO(139, 91, 159, 1),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Center(
@@ -114,6 +112,33 @@ class _AlertListState extends State<AlertList> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Container(
+                  width: double.infinity,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (val) {
+                      setState(() {
+                        deviceSearch = val;
+                      });
+                    },
+                  ),
+                ),
               ),
             ),
             Expanded(
@@ -147,22 +172,67 @@ class _AlertListState extends State<AlertList> {
                         filteredItems = items.where((vehicle) {
                           DateTime fitnessUptoDate = DateFormat('yyyy-MM-dd')
                               .parse(vehicle['Fitness Upto']);
-                          DateTime now = DateTime.now().add(Duration(days: 30));
-                          return fitnessUptoDate.isBefore(now);
+                          DateTime now =
+                              DateTime.now().add(const Duration(days: 30));
+                          bool isFitnessDateBefore =
+                              fitnessUptoDate.isBefore(now);
+
+                          // Second condition: Check search criteria
+                          bool isSearchMatch = deviceSearch.isEmpty ||
+                              vehicle['Registration Number']
+                                  .toLowerCase()
+                                  .replaceAll('_', ' ')
+                                  .contains(deviceSearch.toLowerCase()) ||
+                              vehicle['Model']
+                                  .toLowerCase()
+                                  .contains(deviceSearch.toLowerCase());
+
+                          // Combine both conditions
+                          return isFitnessDateBefore && isSearchMatch;
                         }).toList();
                       } else if (filterValue == 2) {
                         filteredItems = items.where((vehicle) {
                           DateTime insuranceUptoDate = DateFormat('yyyy-MM-dd')
                               .parse(vehicle['Insurance Upto']);
-                          DateTime now = DateTime.now().add(Duration(days: 30));
-                          return insuranceUptoDate.isBefore(now);
+                          DateTime now =
+                              DateTime.now().add(const Duration(days: 30));
+                          bool isInsuranceDateBefore =
+                              insuranceUptoDate.isBefore(now);
+
+                          // Second condition: Check search criteria
+                          bool isSearchMatch = deviceSearch.isEmpty ||
+                              vehicle['Registration Number']
+                                  .toLowerCase()
+                                  .replaceAll('_', ' ')
+                                  .contains(deviceSearch.toLowerCase()) ||
+                              vehicle['Model']
+                                  .toLowerCase()
+                                  .contains(deviceSearch.toLowerCase());
+
+                          // Combine both conditions
+                          return isInsuranceDateBefore && isSearchMatch;
                         }).toList();
                       } else {
                         filteredItems = items.where((vehicle) {
                           DateTime pollutionUptoDate = DateFormat('yyyy-MM-dd')
                               .parse(vehicle['Pollution Upto']);
-                          DateTime now = DateTime.now().add(Duration(days: 30));
-                          return pollutionUptoDate.isBefore(now);
+                          DateTime now =
+                              DateTime.now().add(const Duration(days: 30));
+                          bool isPollutionDateBefore =
+                              pollutionUptoDate.isBefore(now);
+
+                          // Second condition: Check search criteria
+                          bool isSearchMatch = deviceSearch.isEmpty ||
+                              vehicle['Registration Number']
+                                  .toLowerCase()
+                                  .replaceAll('_', ' ')
+                                  .contains(deviceSearch.toLowerCase()) ||
+                              vehicle['Model']
+                                  .toLowerCase()
+                                  .contains(deviceSearch.toLowerCase());
+
+                          // Combine both conditions
+                          return isPollutionDateBefore && isSearchMatch;
                         }).toList();
                       }
 
