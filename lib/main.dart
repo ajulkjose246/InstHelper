@@ -5,9 +5,11 @@ import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/authentication/auth_page.dart';
 import 'package:insthelper/screens/authentication/sign_in.dart';
 import 'package:insthelper/screens/authentication/sign_up.dart';
-import 'package:insthelper/screens/container.dart';
+import 'package:insthelper/screens/admin/container.dart';
 import 'package:insthelper/screens/admin/add_vehicle.dart';
 import 'package:insthelper/screens/admin/alert_list.dart';
+import 'package:insthelper/screens/user/alert_list.dart';
+import 'package:insthelper/screens/user/container.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -31,12 +33,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: ({
-        '/': (context) => const ContainerScreen(),
+        // Admin
+        '/admin': (context) => const ContainerScreen(),
         '/signin': (context) => SignInScreen(),
         '/signup': (context) => SignUpScreen(),
         '/auth': (context) => AuthPage(),
         '/add': (context) => const AddVehicleScreen(),
         '/alert': (context) => const AlertList(),
+
+        //User
+        '/user': (context) => const ContainerUserScreen(),
+        '/userAlert': (context) => const UserAlertList(),
       }),
       initialRoute: '/auth',
     );

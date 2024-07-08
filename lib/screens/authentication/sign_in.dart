@@ -115,7 +115,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(context, '/'),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/user'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color.fromRGBO(139, 91, 159, 1),
                               padding: const EdgeInsets.symmetric(vertical: 15),

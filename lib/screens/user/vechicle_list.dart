@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/admin_list_vehicle_widget.dart';
+import 'package:insthelper/components/user_list_vehicle_widget.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:provider/provider.dart';
 
-class VechicleListScreen extends StatefulWidget {
-  const VechicleListScreen({super.key});
+class VechicleUserListScreen extends StatefulWidget {
+  const VechicleUserListScreen({super.key});
 
   @override
-  State<VechicleListScreen> createState() => _VechicleListScreenState();
+  State<VechicleUserListScreen> createState() => _VechicleUserListScreen();
 }
 
-class _VechicleListScreenState extends State<VechicleListScreen> {
+class _VechicleUserListScreen extends State<VechicleUserListScreen> {
   var deviceSearch = '';
 
   @override
@@ -78,7 +78,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/userAlert');
+                    Navigator.pushNamed(context, '/alert');
                   },
                   child: Container(
                     width: 50,
@@ -101,7 +101,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
               ],
             ),
           ),
-          ListVehicleWidget(isHomePage: false, isSearch: deviceSearch)
+          UserListVehicleWidget(isHomePage: false, isSearch: deviceSearch)
         ],
       ),
     );

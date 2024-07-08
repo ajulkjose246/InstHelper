@@ -2,21 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:insthelper/components/admin_list_vehicle_widget.dart';
+import 'package:insthelper/components/user_list_vehicle_widget.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/user/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeUserScreen extends StatefulWidget {
+  const HomeUserScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeUserScreenState createState() => _HomeUserScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeUserScreenState extends State<HomeUserScreen> {
   DateTime _getNextExpiryDate(Map vehicle) {
     DateTime pollutionUpto =
         DateFormat('yyyy-MM-dd').parse(vehicle['Pollution Upto']);
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const Spacer(),
         Text(
           DateFormat('yyyy-MM-dd').format(nextExpiry),
-          style: TextStyle(color: Colors.red),
+          style: const TextStyle(color: Colors.red),
         )
       ],
     );
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/alert');
+                      Navigator.pushNamed(context, '/userAlert');
                     },
                     child: Container(
                       width: 50,
@@ -325,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
             ),
-            const ListVehicleWidget(
+            const UserListVehicleWidget(
               isHomePage: true,
               isSearch: '',
             )

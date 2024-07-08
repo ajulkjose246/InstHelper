@@ -1,17 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:insthelper/screens/user/vehicle_view.dart';
 import 'package:intl/intl.dart';
 
-class AlertList extends StatefulWidget {
-  const AlertList({super.key});
+class UserAlertList extends StatefulWidget {
+  const UserAlertList({super.key});
 
   @override
-  State<AlertList> createState() => _AlertListState();
+  State<UserAlertList> createState() => _UserAlertListState();
 }
 
-class _AlertListState extends State<AlertList> {
+class _UserAlertListState extends State<UserAlertList> {
   var filterValue = 1;
   String deviceSearch = '';
   @override
@@ -271,7 +271,8 @@ class _AlertListState extends State<AlertList> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => VehicleViewScreen(
+                                        builder: (context) =>
+                                            VehicleUserViewScreen(
                                           vehicleRegistrationNo:
                                               vehicle['Registration Number'],
                                         ),
