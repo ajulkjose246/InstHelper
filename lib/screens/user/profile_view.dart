@@ -11,6 +11,7 @@ class ProfileUserScreen extends StatefulWidget {
 class ProfileUserScreenState extends State<ProfileUserScreen> {
   @override
   Widget build(BuildContext context) {
+    print("User Profilwe ");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
       body: Column(

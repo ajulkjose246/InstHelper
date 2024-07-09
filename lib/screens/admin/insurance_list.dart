@@ -10,6 +10,7 @@ class InsuranceList extends StatefulWidget {
 class _InsuranceListState extends State<InsuranceList> {
   @override
   Widget build(BuildContext context) {
+    print("Admin insurance list");
     return Container(
       color: const Color.fromRGBO(236, 240, 245, 1),
       child: ListView(

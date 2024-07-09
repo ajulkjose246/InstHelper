@@ -28,6 +28,7 @@ class _ContainerUserScreenState extends State<ContainerUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("User container");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
       body: SafeArea(

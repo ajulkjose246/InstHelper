@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/screens/admin/home_screen.dart';
 import 'package:insthelper/screens/admin/insurance_list.dart';
 import 'package:insthelper/screens/admin/profile_view.dart';
 import 'package:insthelper/screens/admin/vechicle_list.dart';
-import 'package:insthelper/screens/user/home_screen.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class ContainerScreen extends StatefulWidget {
 
 class _ContainerScreenState extends State<ContainerScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
-    HomeUserScreen(),
+    HomeScreen(),
     VechicleListScreen(),
     InsuranceList(),
     Text(
@@ -28,6 +28,7 @@ class _ContainerScreenState extends State<ContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Admin container");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
       body: SafeArea(

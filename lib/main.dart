@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:insthelper/screens/authentication/auth_page.dart';
 import 'package:insthelper/screens/authentication/sign_in.dart';
 import 'package:insthelper/screens/authentication/sign_up.dart';
@@ -18,8 +19,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => HomescreenProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomescreenProvider()),
+        ChangeNotifierProvider(create: (_) => VehicleProvider()),
+        // Add more providers as needed
+      ],
       child: MyApp(),
     ),
   );

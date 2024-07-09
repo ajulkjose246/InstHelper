@@ -69,6 +69,7 @@ class _VehicleUserViewScreen extends State<VehicleUserViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("User vehicle view");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(139, 91, 159, 1),

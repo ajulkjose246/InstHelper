@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:insthelper/components/admin_list_vehicle_widget.dart';
 import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/screens/user/vehicle_view.dart';
+import 'package:insthelper/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var deviceSearch = '';
   @override
   Widget build(BuildContext context) {
+    print("Admin homescreen");
     return Scaffold(
       body: Container(
         color: const Color.fromRGBO(236, 240, 245, 1),
@@ -248,8 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            VehicleUserViewScreen(
+                                        builder: (context) => VehicleViewScreen(
                                           vehicleRegistrationNo:
                                               vehicle['Registration Number'],
                                         ),
@@ -325,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
             ),
-            const ListVehicleWidget(
+            const ListAdminVehicleWidget(
               isHomePage: true,
               isSearch: '',
             )

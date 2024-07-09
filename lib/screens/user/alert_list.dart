@@ -16,6 +16,7 @@ class _UserAlertListState extends State<UserAlertList> {
   String deviceSearch = '';
   @override
   Widget build(BuildContext context) {
+    print("User Alert List");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Alerts", style: TextStyle(color: Colors.white)),

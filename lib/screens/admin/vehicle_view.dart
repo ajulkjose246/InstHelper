@@ -1,90 +1,43 @@
 // ignore_for_file: avoid_print
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:insthelper/screens/admin/update_popup_message.dart';
 import 'package:intl/intl.dart';
 
-class VehicleViewScreen extends StatefulWidget {
+class VehicleViewScreen extends StatelessWidget {
   final String vehicleRegistrationNo;
   const VehicleViewScreen({super.key, required this.vehicleRegistrationNo});
 
   @override
-  State<VehicleViewScreen> createState() => _VehicleViewScreenState();
-}
-
-class _VehicleViewScreenState extends State<VehicleViewScreen> {
-  final _databaseReference =
-      FirebaseDatabase.instance.ref("Vehicle-Management");
-  Map<String, dynamic>? data;
-  var rtoName = '';
-
-  @override
-  void initState() {
-    super.initState();
-    getVehicleData();
-    fetchRTO();
-  }
-
-  Future<void> getVehicleData() async {
-    try {
-      final snapshot = await _databaseReference
-          .child('Vehicles')
-          .child(widget.vehicleRegistrationNo)
-          .get();
-
-      if (snapshot.exists && snapshot.value != null) {
-        setState(() {
-          data = Map<String, dynamic>.from(snapshot.value as Map);
-        });
-      }
-    } catch (e) {
-      print('Error fetching model image: $e');
-    }
-  }
-
-  Future<void> fetchRTO() async {
-    try {
-      List<String> parts = widget.vehicleRegistrationNo.split('_');
-      String extractedNumber = '';
-      if (parts.length >= 2) {
-        extractedNumber = parts[1];
-      } else {
-        print('Invalid format');
-      }
-      final snapshot = await _databaseReference
-          .child("RTO")
-          .child('KL-$extractedNumber')
-          .get();
-      if (snapshot.exists) {
-        setState(() {
-          rtoName = snapshot.value.toString();
-        });
-      } else {
-        print('No data available.');
-      }
-    } catch (error) {
-      print('Error fetching data: $error');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-        title: Text(
-          widget.vehicleRegistrationNo.replaceAll('_', ' '),
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    return ChangeNotifierProvider(
+      create: (context) => VehicleProvider(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+          title: Text(
+            vehicleRegistrationNo.replaceAll('_', ' '),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: const Color.fromRGBO(236, 240, 245, 1),
-        child: data == null
-            ? const Center(child: CircularProgressIndicator())
-            : ListView(
+        body: Consumer<VehicleProvider>(
+          builder: (context, provider, child) {
+            provider.fetchVehicleData(vehicleRegistrationNo);
+            if (provider.vehicles[vehicleRegistrationNo] == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final data = provider.vehicles[vehicleRegistrationNo];
+            return Container(
+              color: const Color.fromRGBO(236, 240, 245, 1),
+              child: ListView(
                 children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
@@ -96,10 +49,44 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       width: double.infinity,
                       height: 200,
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 20, top: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return UpdateMessage(
+                                        dialogHeight: 0.25,
+                                        type: 1,
+                                        formattedRegNumber:
+                                            data['Registration Number']
+                                                .toString(),
+                                        vehicleData: data,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromRGBO(
+                                          236, 240, 245, 1),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             const Text(
                               "Owner Details",
                               style: TextStyle(
@@ -127,7 +114,7 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                                   ],
                                 ),
                                 Text(
-                                  ": ${data!['Owner Name'].toString()}",
+                                  ": ${data['Owner Name'].toString()}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -156,36 +143,7 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                                   ],
                                 ),
                                 Text(
-                                  ": $rtoName",
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Icon(Icons.manage_accounts),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "Person",
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  ": ${data!['Ownership'].toString()}",
+                                  ": ${provider.rtoName}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -208,12 +166,46 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       width: double.infinity,
-                      height: 250,
+                      height: 270,
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 10, bottom: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return UpdateMessage(
+                                        dialogHeight: 0.52,
+                                        type: 2,
+                                        formattedRegNumber:
+                                            data!['Registration Number']
+                                                .toString(),
+                                        vehicleData: data,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromRGBO(
+                                          236, 240, 245, 1),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             const Text(
                               "Vehicle Details",
                               style: TextStyle(
@@ -380,12 +372,46 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       width: double.infinity,
-                      height: 225,
+                      height: 240,
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 20, top: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return UpdateMessage(
+                                        dialogHeight: 0.45,
+                                        type: 3,
+                                        formattedRegNumber:
+                                            data!['Registration Number']
+                                                .toString(),
+                                        vehicleData: data,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromRGBO(
+                                          236, 240, 245, 1),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             const Text(
                               "Important Dates",
                               style: TextStyle(
@@ -523,12 +549,46 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       width: double.infinity,
-                      height: 225,
+                      height: 245,
                       child: Padding(
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(
+                            top: 10, right: 20, left: 20, bottom: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return UpdateMessage(
+                                        dialogHeight: 0.45,
+                                        type: 4,
+                                        formattedRegNumber:
+                                            data!['Registration Number']
+                                                .toString(),
+                                        vehicleData: data,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromRGBO(
+                                          236, 240, 245, 1),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             const Text(
                               "Other Info",
                               style: TextStyle(
@@ -667,12 +727,33 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             width: double.infinity,
-                            height: 250,
+                            height: 280,
                             child: Padding(
-                              padding: const EdgeInsets.all(20),
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 20, right: 20, bottom: 20),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: const Color.fromRGBO(
+                                                236, 240, 245, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(
+                                            Icons.edit,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   const Text(
                                     "Gallery",
                                     style: TextStyle(
@@ -714,6 +795,9 @@ class _VehicleViewScreenState extends State<VehicleViewScreen> {
                       : Container(),
                 ],
               ),
+            );
+          },
+        ),
       ),
     );
   }

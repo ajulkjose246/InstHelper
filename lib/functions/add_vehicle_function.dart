@@ -75,7 +75,6 @@ class AddVehicleFunction {
     TextEditingController modelController,
     DateTime registrationDateController,
     String vehicleType,
-    TextEditingController ownerNameController,
     TextEditingController ownershipController,
     String drivers,
     TextEditingController purposeOfUseController,
@@ -103,7 +102,6 @@ class AddVehicleFunction {
       "Registration Date":
           registrationDateController.toIso8601String().split('T')[0],
       "Vehicle Type": vehicleType,
-      "Owner Name": ownerNameController.text,
       "Ownership": ownershipController.text,
       "Assigned Driver": drivers,
       "Purpose of Use": purposeOfUseController.text,
@@ -132,7 +130,6 @@ class AddVehicleFunction {
     TextEditingController chassisNoController,
     DateTime registrationDateController,
     String vehicleType,
-    TextEditingController ownerNameController,
     TextEditingController ownershipController,
     String drivers,
     TextEditingController purposeOfUseController,
@@ -154,7 +151,6 @@ class AddVehicleFunction {
       "Registration Date":
           registrationDateController.toIso8601String().split('T')[0],
       "Vehicle Type": vehicleType,
-      "Owner Name": ownerNameController.text,
       "Ownership": ownershipController.text,
       "Assigned Driver": drivers,
       "Purpose of Use": purposeOfUseController.text,

@@ -15,6 +15,7 @@ class _VechicleUserListScreen extends State<VechicleUserListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("User vehicle list");
     return Container(
       color: const Color.fromRGBO(236, 240, 245, 1),
       child: ListView(

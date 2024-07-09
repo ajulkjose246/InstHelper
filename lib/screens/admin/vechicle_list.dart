@@ -15,6 +15,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Admin Vehicle List");
     return Container(
       color: const Color.fromRGBO(236, 240, 245, 1),
       child: ListView(
@@ -101,7 +102,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
               ],
             ),
           ),
-          ListVehicleWidget(isHomePage: false, isSearch: deviceSearch)
+          ListAdminVehicleWidget(isHomePage: false, isSearch: deviceSearch)
         ],
       ),
     );

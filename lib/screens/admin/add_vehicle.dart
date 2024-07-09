@@ -46,7 +46,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final modelController = TextEditingController();
   final engineNoController = TextEditingController();
   final chassisNoController = TextEditingController();
-  final ownerNameController = TextEditingController();
   final ownershipController = TextEditingController();
   final purposeOfUseController = TextEditingController();
   final currentMileageController = TextEditingController();
@@ -144,6 +143,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Admin add vehicle");
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -372,16 +372,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                               return Container();
                             }
                           },
-                        ),
-                        FormInputField(
-                          textcontroller: ownerNameController,
-                          label: "Owner's Name",
-                          validator: true,
-                          icon: const Icon(Icons.person),
-                          regex: RegExp(
-                              r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
-                          regexlabel: '',
-                          numberkeyboard: false,
                         ),
                         FormInputField(
                           textcontroller: ownershipController,
@@ -743,7 +733,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             modelController,
                                             registrationDate!,
                                             vehicleType!,
-                                            ownerNameController,
                                             ownershipController,
                                             drivers!,
                                             purposeOfUseController,

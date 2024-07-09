@@ -66,6 +66,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
   var deviceSearch = '';
   @override
   Widget build(BuildContext context) {
+    print("User home screen");
     return Scaffold(
       body: Container(
         color: const Color.fromRGBO(236, 240, 245, 1),

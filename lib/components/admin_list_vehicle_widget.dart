@@ -6,8 +6,8 @@ import 'package:insthelper/functions/home_screen_function.dart';
 import 'package:insthelper/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 
-class ListVehicleWidget extends StatelessWidget {
-  const ListVehicleWidget({
+class ListAdminVehicleWidget extends StatelessWidget {
+  const ListAdminVehicleWidget({
     super.key,
     required this.isHomePage,
     required this.isSearch,

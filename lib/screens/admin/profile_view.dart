@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,6 +12,7 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    print("Admin Profile View");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
       body: Column(
@@ -63,6 +65,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   FirebaseAuth.instance.signOut();
+                  GoogleSignIn().signOut();
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Colors.red),
