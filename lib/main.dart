@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => SignInScreen(),
         '/signup': (context) => SignUpScreen(),
         '/auth': (context) => AuthPage(),
-        '/add': (context) => const AddVehicleScreen(),
+        '/add': (context) => AddVehicleScreen(),
         '/alert': (context) => const AlertList(),
 
         //User

@@ -20,9 +20,6 @@ class _ContainerScreenState extends State<ContainerScreen> {
     HomeScreen(),
     VechicleListScreen(),
     InsuranceList(),
-    Text(
-      'Service',
-    ),
     ProfileScreen(),
   ];
 
@@ -71,10 +68,10 @@ class _ContainerScreenState extends State<ContainerScreen> {
                 icon: Icons.health_and_safety,
                 text: 'Insurance',
               ),
-              GButton(
-                icon: LineIcons.tools,
-                text: 'Service',
-              ),
+              // GButton(
+              //   icon: LineIcons.tools,
+              //   text: 'Service',
+              // ),
               GButton(
                 icon: LineIcons.user,
                 text: 'Profile',

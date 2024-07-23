@@ -56,22 +56,56 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String? drivers;
 
   List<XFile>? uploadedFiles;
-  List<String> uploadedFileUrls = [];
-  List<String> uploadedFileNames = [];
+  List<String> uploadedImageFileUrls = [];
+  List<String> uploadedImageFileNames = [];
 
-  Future<void> _pickFiles() async {
+  List<String> uploadedFitnessFileUrls = [];
+  List<String> uploadedFitnessFileNames = [];
+
+  List<String> uploadedInsuranceFileUrls = [];
+  List<String> uploadedInsuranceFileNames = [];
+
+  List<String> uploadedPollutionFileUrls = [];
+  List<String> uploadedPollutionFileNames = [];
+
+  List<String> uploadedRcFileUrls = [];
+  List<String> uploadedRcFileNames = [];
+
+  Future<void> _pickFiles(String type) async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> pickedFiles = await picker.pickMultiImage();
 
     setState(() {
-      uploadedFiles = pickedFiles;
-      for (var img in uploadedFiles!) {
-        uploadedFileNames.add(img.name);
+      if (type == 'image') {
+        uploadedFiles = pickedFiles;
+        for (var img in uploadedFiles!) {
+          uploadedImageFileNames.add(img.name);
+        }
+      } else if (type == 'fitness') {
+        uploadedFiles = pickedFiles;
+        for (var img in uploadedFiles!) {
+          uploadedFitnessFileNames.add(img.name);
+        }
+      } else if (type == 'pollution') {
+        uploadedFiles = pickedFiles;
+        for (var img in uploadedFiles!) {
+          uploadedPollutionFileNames.add(img.name);
+        }
+      } else if (type == 'insurance') {
+        uploadedFiles = pickedFiles;
+        for (var img in uploadedFiles!) {
+          uploadedInsuranceFileNames.add(img.name);
+        }
+      } else if (type == 'rc') {
+        uploadedFiles = pickedFiles;
+        for (var img in uploadedFiles!) {
+          uploadedRcFileNames.add(img.name);
+        }
       }
     });
   }
 
-  Future<void> uploadFiles() async {
+  Future<void> uploadFiles(String type) async {
     if (uploadedFiles == null || uploadedFiles!.isEmpty) {
       print("No files selected");
       return;
@@ -93,8 +127,19 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       try {
         await ref.putFile(localFile);
         final fileUrl = await ref.getDownloadURL();
-        uploadedFileUrls.add(fileUrl);
         print("File uploaded: $fileUrl");
+
+        if (type == 'image') {
+          uploadedImageFileUrls.add(fileUrl);
+        } else if (type == 'fitness') {
+          uploadedFitnessFileUrls.add(fileUrl);
+        } else if (type == 'pollution') {
+          uploadedPollutionFileUrls.add(fileUrl);
+        } else if (type == 'insurance') {
+          uploadedInsuranceFileUrls.add(fileUrl);
+        } else if (type == 'rc') {
+          uploadedRcFileUrls.add(fileUrl);
+        }
       } catch (e) {
         print("Failed to upload file: $e");
       }
@@ -301,20 +346,31 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
-                        ElevatedButton(
-                          onPressed: _pickFiles,
-                          child: const Text("Upload File"),
-                        ),
-                        const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            uploadedFileNames.isNotEmpty
-                                ? uploadedFileNames.join(', ')
-                                : "No files selected",
+                          child: TextFormField(
+                            controller: TextEditingController(
+                              text: uploadedImageFileNames.isNotEmpty
+                                  ? uploadedImageFileNames.join(', ')
+                                  : "No files selected",
+                            ),
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              labelText: "Uploaded Files",
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _pickFiles("image");
+                                },
+                                icon: Icon(Icons.file_upload_outlined),
+                              ),
+                            ),
                             style: const TextStyle(fontSize: 16),
-                            overflow: TextOverflow.fade,
                           ),
                         ),
                       ],
@@ -325,7 +381,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              if (uploadedFileNames.isEmpty) {
+                              if (uploadedImageFileNames.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Please upload a file'),
@@ -551,6 +607,33 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: TextEditingController(
+                                      text: uploadedRcFileNames.isNotEmpty
+                                          ? uploadedRcFileNames.join(', ')
+                                          : "No files selected",
+                                    ),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: "Uploaded Files",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          _pickFiles("rc");
+                                        },
+                                        icon: Icon(Icons.file_upload_outlined),
+                                      ),
+                                    ),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -588,6 +671,38 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: TextEditingController(
+                                      text:
+                                          uploadedInsuranceFileNames.isNotEmpty
+                                              ? uploadedInsuranceFileNames
+                                                  .join(', ')
+                                              : "No files selected",
+                                    ),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: "Uploaded Files",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          _pickFiles("insurance");
+                                        },
+                                        icon: Icon(Icons.file_upload_outlined),
+                                      ),
+                                    ),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -627,6 +742,38 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: TextEditingController(
+                                      text:
+                                          uploadedPollutionFileNames.isNotEmpty
+                                              ? uploadedPollutionFileNames
+                                                  .join(', ')
+                                              : "No files selected",
+                                    ),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: "Uploaded Files",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          _pickFiles("pollution");
+                                        },
+                                        icon: Icon(Icons.file_upload_outlined),
+                                      ),
+                                    ),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -664,6 +811,36 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                   ),
                                 ),
                               ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: TextEditingController(
+                                      text: uploadedFitnessFileNames.isNotEmpty
+                                          ? uploadedFitnessFileNames.join(', ')
+                                          : "No files selected",
+                                    ),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: "Uploaded Files",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          _pickFiles("fitness");
+                                        },
+                                        icon: Icon(Icons.file_upload_outlined),
+                                      ),
+                                    ),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20),
                             Row(
@@ -726,26 +903,33 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                           ),
                                         );
                                       } else {
-                                        await uploadFiles();
-                                        if (uploadedFileUrls.isNotEmpty) {
+                                        await uploadFiles("insurance");
+                                        await uploadFiles("pollution");
+                                        await uploadFiles("fitness");
+                                        await uploadFiles("image");
+                                        await uploadFiles("rc");
+                                        if (uploadedImageFileUrls.isNotEmpty) {
                                           AddVehicleFunction().addVehicle(
-                                            registrationNumberController,
-                                            modelController,
-                                            registrationDate!,
-                                            vehicleType!,
-                                            ownershipController,
-                                            drivers!,
-                                            purposeOfUseController,
-                                            insuranceExpiryDate!,
-                                            pollutionDate!,
-                                            fitnessDate!,
-                                            currentMileageController,
-                                            fuelType!,
-                                            emergencyContactController,
-                                            engineNoController,
-                                            chassisNoController,
-                                            uploadedFileUrls,
-                                          );
+                                              registrationNumberController,
+                                              modelController,
+                                              registrationDate!,
+                                              vehicleType!,
+                                              ownershipController,
+                                              drivers!,
+                                              purposeOfUseController,
+                                              insuranceExpiryDate!,
+                                              pollutionDate!,
+                                              fitnessDate!,
+                                              currentMileageController,
+                                              fuelType!,
+                                              emergencyContactController,
+                                              engineNoController,
+                                              chassisNoController,
+                                              uploadedImageFileUrls,
+                                              uploadedRcFileUrls,
+                                              uploadedPollutionFileUrls,
+                                              uploadedInsuranceFileUrls,
+                                              uploadedFitnessFileUrls);
                                           setState(() {
                                             isLoading = false;
                                           });

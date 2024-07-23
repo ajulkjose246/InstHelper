@@ -114,7 +114,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  ": ${data['Owner Name'].toString()}",
+                                  ": ${data['Ownership'].toString()}",
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
