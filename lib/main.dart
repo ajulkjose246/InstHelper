@@ -12,12 +12,15 @@ import 'package:insthelper/screens/admin/alert_list.dart';
 import 'package:insthelper/screens/user/alert_list.dart';
 import 'package:insthelper/screens/user/container.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/adapters.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter();
+  await Hive.openBox('vehicleDataBox');
   runApp(
     MultiProvider(
       providers: [

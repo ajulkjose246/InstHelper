@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/functions/update_vehicle_function.dart';
+import 'package:insthelper/provider/vehicle_provider.dart';
 
 class UpdateMessage extends StatefulWidget {
   const UpdateMessage({
@@ -33,6 +33,7 @@ class _UpdateMessageState extends State<UpdateMessage> {
   final emergencyContactController = TextEditingController();
   final vehicleTypeController = TextEditingController();
   final fuelTypeController = TextEditingController();
+  final drivers = TextEditingController();
 
   DateTime? insuranceExpiryDate;
   DateTime? registrationDate;
@@ -73,12 +74,19 @@ class _UpdateMessageState extends State<UpdateMessage> {
   @override
   void initState() {
     super.initState();
-    ownershipController.text = widget.vehicleData!['Owner Name'];
-    vehicleTypeController.text = widget.vehicleData!['Vehicle Type'];
-    modelController.text = widget.vehicleData!['Model'];
-    fuelTypeController.text = widget.vehicleData!['Fuel Type'];
-    engineNoController.text = widget.vehicleData!['Engine No'];
-    chassisNoController.text = widget.vehicleData!['Chassis No'];
+    ownershipController.text = widget.vehicleData!['ownership'];
+    vehicleTypeController.text = widget.vehicleData!['vehicle_type'];
+    modelController.text = widget.vehicleData!['model'];
+    fuelTypeController.text = widget.vehicleData!['fuel_type'];
+    engineNoController.text = widget.vehicleData!['engine_no'];
+    chassisNoController.text = widget.vehicleData!['chassis_no'];
+    registrationDate = DateTime.parse(widget.vehicleData!['registration_date']);
+    insuranceExpiryDate = DateTime.parse(widget.vehicleData!['Insurance_Upto']);
+    pollutionDate = DateTime.parse(widget.vehicleData!['Pollution_Upto']);
+    fitnessDate = DateTime.parse(widget.vehicleData!['Fitness_Upto']);
+    purposeOfUseController.text = widget.vehicleData!['purpose_of_use'];
+    emergencyContactController.text = widget.vehicleData!['emergency_contact'];
+    drivers.text = widget.vehicleData!['assigned_driver'];
   }
 
   @override
@@ -137,9 +145,11 @@ class _UpdateMessageState extends State<UpdateMessage> {
                           child: const Text('Update'),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              UpdateVehicleFunction().updateVehicleOwnerDetails(
-                                  ownershipController,
-                                  widget.formattedRegNumber);
+                              VehicleProvider().updateVehicleData(
+                                widget.type,
+                                widget.vehicleData!['id'],
+                                ownershipController.text,
+                              );
                               Navigator.pop(context);
                             }
                           },
@@ -228,13 +238,15 @@ class _UpdateMessageState extends State<UpdateMessage> {
                               child: const Text('Update'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  UpdateVehicleFunction().updateVehicleDetails(
-                                      vehicleTypeController,
-                                      modelController,
-                                      fuelTypeController,
-                                      engineNoController,
-                                      chassisNoController,
-                                      widget.formattedRegNumber);
+                                  VehicleProvider().updateVehicleData(
+                                    widget.type,
+                                    widget.vehicleData!['id'],
+                                    vehicleTypeController.text,
+                                    modelController.text,
+                                    fuelTypeController.text,
+                                    engineNoController.text,
+                                    chassisNoController.text,
+                                  );
                                   Navigator.pop(context);
                                 }
                               },
@@ -441,7 +453,50 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                   child: const Text('Update'),
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
-                                      Navigator.of(context).pop();
+                                      if (registrationDate
+                                              ?.toIso8601String()
+                                              .split('T')[0] ==
+                                          widget.vehicleData![
+                                              'registration_date']) {
+                                        registrationDate = null;
+                                      }
+                                      if (insuranceExpiryDate
+                                              ?.toIso8601String()
+                                              .split('T')[0] ==
+                                          widget
+                                              .vehicleData!['Insurance_Upto']) {
+                                        insuranceExpiryDate = null;
+                                      }
+                                      if (pollutionDate
+                                              ?.toIso8601String()
+                                              .split('T')[0] ==
+                                          widget
+                                              .vehicleData!['Pollution_Upto']) {
+                                        pollutionDate = null;
+                                      }
+                                      if (fitnessDate
+                                              ?.toIso8601String()
+                                              .split('T')[0] ==
+                                          widget.vehicleData!['Fitness_Upto']) {
+                                        fitnessDate = null;
+                                      }
+                                      VehicleProvider().updateVehicleData(
+                                        widget.type,
+                                        widget.vehicleData!['id'],
+                                        registrationDate
+                                            ?.toIso8601String()
+                                            .split('T')[0],
+                                        insuranceExpiryDate
+                                            ?.toIso8601String()
+                                            .split('T')[0],
+                                        pollutionDate
+                                            ?.toIso8601String()
+                                            .split('T')[0],
+                                        fitnessDate
+                                            ?.toIso8601String()
+                                            .split('T')[0],
+                                      );
+                                      Navigator.pop(context);
                                     }
                                   },
                                 ),
@@ -468,34 +523,30 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                       children: [
                                         FormInputField(
                                           textcontroller:
-                                              registrationNumberController,
+                                              purposeOfUseController,
                                           label: "Purpose of Use",
                                           validator: true,
                                           icon: const Icon(Icons.notes_rounded),
-                                          regex: RegExp(
-                                              r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
+                                          regex: RegExp(''),
                                           regexlabel: 'KL XX AZ XXXX',
                                           numberkeyboard: false,
                                         ),
                                         FormInputField(
                                           textcontroller:
-                                              registrationNumberController,
+                                              emergencyContactController,
                                           label: "Emergency Contact",
                                           validator: true,
                                           icon: const Icon(Icons.phone),
-                                          regex: RegExp(
-                                              r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
+                                          regex: RegExp(''),
                                           regexlabel: 'KL XX AZ XXXX',
                                           numberkeyboard: false,
                                         ),
                                         FormInputField(
-                                          textcontroller:
-                                              registrationNumberController,
+                                          textcontroller: drivers,
                                           label: "Assigned Driver",
                                           validator: true,
                                           icon: const Icon(Icons.person),
-                                          regex: RegExp(
-                                              r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
+                                          regex: RegExp(''),
                                           regexlabel: 'KL XX AZ XXXX',
                                           numberkeyboard: false,
                                         ),
@@ -516,7 +567,14 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                       child: const Text('Update'),
                                       onPressed: () {
                                         if (_formKey.currentState!.validate()) {
-                                          Navigator.of(context).pop();
+                                          VehicleProvider().updateVehicleData(
+                                            widget.type,
+                                            widget.vehicleData!['id'],
+                                            purposeOfUseController.text,
+                                            emergencyContactController.text,
+                                            drivers.text,
+                                          );
+                                          Navigator.pop(context);
                                         }
                                       },
                                     ),

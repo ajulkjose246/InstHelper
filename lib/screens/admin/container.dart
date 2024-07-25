@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:insthelper/apiData/get_vehicle.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/screens/admin/home_screen.dart';
 import 'package:insthelper/screens/admin/insurance_list.dart';
@@ -25,6 +26,8 @@ class _ContainerScreenState extends State<ContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    GetVehicle().fetchVehicleData();
+    GetVehicle().fetchVehicleImage();
     print("Admin container");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),

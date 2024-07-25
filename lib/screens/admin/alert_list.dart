@@ -275,6 +275,7 @@ class _AlertListState extends State<AlertList> {
                                         builder: (context) => VehicleViewScreen(
                                           vehicleRegistrationNo:
                                               vehicle['Registration Number'],
+                                          vehicleRegistrationId: vehicle['id'],
                                         ),
                                       ),
                                     );
