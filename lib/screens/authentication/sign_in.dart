@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/services/auth_services.dart';
+import 'package:insthelper/screens/authentication/auth_services.dart';
 import 'package:line_icons/line_icons.dart';
 
 class SignInScreen extends StatefulWidget {

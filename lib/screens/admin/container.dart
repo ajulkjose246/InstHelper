@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:insthelper/apiData/get_vehicle.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/provider/trip_provider.dart';
+import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:insthelper/screens/admin/home_screen.dart';
-import 'package:insthelper/screens/admin/insurance_list.dart';
 import 'package:insthelper/screens/admin/profile_view.dart';
+import 'package:insthelper/screens/admin/trip_page.dart';
 import 'package:insthelper/screens/admin/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,23 @@ class _ContainerScreenState extends State<ContainerScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     VechicleListScreen(),
-    InsuranceList(),
+    TripPage(),
     ProfileScreen(),
   ];
+  @override
+  void initState() {
+    Provider.of<VehicleProvider>(context, listen: false).fetchAllVehicleData();
+    Provider.of<VehicleProvider>(context, listen: false).fetchModels();
+    Provider.of<VehicleProvider>(context, listen: false).fetchFuelType();
+    Provider.of<VehicleProvider>(context, listen: false).fetchDrivers();
+    Provider.of<VehicleProvider>(context, listen: false).fetchLocation();
+    Provider.of<TripProvider>(context, listen: false).fetchTrip();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    GetVehicle().fetchVehicleData();
-    GetVehicle().fetchVehicleImage();
     print("Admin container");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
@@ -68,8 +78,8 @@ class _ContainerScreenState extends State<ContainerScreen> {
                 text: 'Vehicle List',
               ),
               GButton(
-                icon: Icons.health_and_safety,
-                text: 'Insurance',
+                icon: Icons.trip_origin,
+                text: 'Trips',
               ),
               // GButton(
               //   icon: LineIcons.tools,

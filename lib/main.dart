@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:insthelper/screens/authentication/auth_page.dart';
 import 'package:insthelper/screens/authentication/sign_in.dart';
@@ -9,8 +10,6 @@ import 'package:insthelper/screens/authentication/sign_up.dart';
 import 'package:insthelper/screens/admin/container.dart';
 import 'package:insthelper/screens/admin/add_vehicle.dart';
 import 'package:insthelper/screens/admin/alert_list.dart';
-import 'package:insthelper/screens/user/alert_list.dart';
-import 'package:insthelper/screens/user/container.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -26,6 +25,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => HomescreenProvider()),
         ChangeNotifierProvider(create: (_) => VehicleProvider()),
+        ChangeNotifierProvider(create: (_) => TripProvider()),
         // Add more providers as needed
       ],
       child: MyApp(),
@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
         '/alert': (context) => const AlertList(),
 
         //User
-        '/user': (context) => const ContainerUserScreen(),
-        '/userAlert': (context) => const UserAlertList(),
+        // '/user': (context) => const ContainerUserScreen(),
+        // '/userAlert': (context) => const UserAlertList(),
       }),
       initialRoute: '/auth',
     );

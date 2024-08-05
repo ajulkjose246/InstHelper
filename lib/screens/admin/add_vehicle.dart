@@ -7,9 +7,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/functions/add_vehicle_function.dart';
+import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
@@ -21,7 +22,7 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   int pageNumber = 0;
 
-  List<String> vehicleModels = [];
+  List vehicleModels = [];
   List<String> vehicleFuels = [];
   List<String> vehicleDrivers = [];
 
@@ -30,14 +31,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    List<String> models = await AddVehicleFunction().fetchModels();
-    List<String> fuels = await AddVehicleFunction().fetchFuel();
-    List<String> driver = await AddVehicleFunction().fetchDrivers();
-    setState(() {
-      vehicleModels = models;
-      vehicleFuels = fuels;
-      vehicleDrivers = driver;
-    });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -253,22 +246,31 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: vehicleType,
-                                  hint: const Text('Vehicle Type'),
-                                  items: vehicleModels.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      vehicleType = newValue;
-                                    });
-                                  },
-                                ),
+                              child: Consumer<VehicleProvider>(
+                                builder: (context, vehicleProvider, child) {
+                                  final vehicleModels = vehicleProvider
+                                          .vehicleModels['vehicleTypes'] ??
+                                      [];
+                                  return DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: vehicleType,
+                                      hint: const Text('Vehicle Type'),
+                                      items: vehicleModels
+                                          .map<DropdownMenuItem<String>>(
+                                              (vehicle) {
+                                        return DropdownMenuItem<String>(
+                                          value: vehicle['type'],
+                                          child: Text(vehicle['type']),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          vehicleType = newValue;
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -323,22 +325,31 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: fuelType,
-                                  hint: const Text('Fuel Type'),
-                                  items: vehicleFuels.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      fuelType = newValue;
-                                    });
-                                  },
-                                ),
+                              child: Consumer<VehicleProvider>(
+                                builder: (context, vehicleProvider, child) {
+                                  final vehicleFuel = vehicleProvider
+                                          .vehicleFuel['vehicleFuel'] ??
+                                      [];
+                                  return DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: fuelType,
+                                      hint: const Text('Fuel Type'),
+                                      items: vehicleFuel
+                                          .map<DropdownMenuItem<String>>(
+                                              (vehicle) {
+                                        return DropdownMenuItem<String>(
+                                          value: vehicle['type'],
+                                          child: Text(vehicle['type']),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          fuelType = newValue;
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -454,22 +465,32 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 const Icon(Icons.person),
                                 const SizedBox(width: 10),
                                 Expanded(
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: drivers,
-                                      hint: const Text('Assigned Driver'),
-                                      items: vehicleDrivers.map((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          drivers = newValue;
-                                        });
-                                      },
-                                    ),
+                                  child: Consumer<VehicleProvider>(
+                                    builder: (context, vehicleProvider, child) {
+                                      final vehicleDrivers =
+                                          vehicleProvider.vehicleDrivers[
+                                                  'vehicleDrivers'] ??
+                                              [];
+                                      return DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          value: drivers,
+                                          hint: const Text('Assigned Driver'),
+                                          items: vehicleDrivers
+                                              .map<DropdownMenuItem<String>>(
+                                                  (vehicle) {
+                                            return DropdownMenuItem<String>(
+                                              value: vehicle['name'],
+                                              child: Text(vehicle['name']),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              drivers = newValue;
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ],
@@ -909,7 +930,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                         await uploadFiles("image");
                                         await uploadFiles("rc");
                                         if (uploadedImageFileUrls.isNotEmpty) {
-                                          AddVehicleFunction().addVehicle(
+                                          VehicleProvider().addVehicle(
                                               registrationNumberController,
                                               modelController,
                                               registrationDate!,

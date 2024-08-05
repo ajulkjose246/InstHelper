@@ -147,7 +147,7 @@ class _UpdateMessageState extends State<UpdateMessage> {
                             if (_formKey.currentState!.validate()) {
                               VehicleProvider().updateVehicleData(
                                 widget.type,
-                                widget.vehicleData!['id'],
+                                widget.vehicleData!['registration_number'],
                                 ownershipController.text,
                               );
                               Navigator.pop(context);
@@ -240,7 +240,7 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                 if (_formKey.currentState!.validate()) {
                                   VehicleProvider().updateVehicleData(
                                     widget.type,
-                                    widget.vehicleData!['id'],
+                                    widget.vehicleData!['registration_number'],
                                     vehicleTypeController.text,
                                     modelController.text,
                                     fuelTypeController.text,
@@ -482,7 +482,8 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                       }
                                       VehicleProvider().updateVehicleData(
                                         widget.type,
-                                        widget.vehicleData!['id'],
+                                        widget.vehicleData![
+                                            'registration_number'],
                                         registrationDate
                                             ?.toIso8601String()
                                             .split('T')[0],
@@ -569,7 +570,8 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                         if (_formKey.currentState!.validate()) {
                                           VehicleProvider().updateVehicleData(
                                             widget.type,
-                                            widget.vehicleData!['id'],
+                                            widget.vehicleData![
+                                                'registration_number'],
                                             purposeOfUseController.text,
                                             emergencyContactController.text,
                                             drivers.text,
