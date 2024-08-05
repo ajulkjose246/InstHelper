@@ -3,9 +3,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:insthelper/secrets/api_key.dart';
 
 class VehicleProvider extends ChangeNotifier {
-  final Uri url = Uri.parse('https://api.ajulkjose.in');
+  final Uri url = Uri.parse(ApiKey().dbApiUrl);
   final Map<String, String> _headers = {'Content-Type': 'application/json'};
   Map<String, dynamic> _vehicles = {};
   Map<String, dynamic> _vehicleModels = {};

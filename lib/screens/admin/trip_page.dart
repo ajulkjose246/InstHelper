@@ -1,10 +1,12 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/provider/map_auto_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:insthelper/components/location_list_tile.dart';
 
 class TripPage extends StatefulWidget {
   const TripPage({super.key});
@@ -14,15 +16,16 @@ class TripPage extends StatefulWidget {
 }
 
 class _TripPageState extends State<TripPage> {
-  TextEditingController timeController = TextEditingController();
+  TextEditingController startPointController = TextEditingController();
+  TextEditingController endPointController = TextEditingController();
   TextEditingController distanceController = TextEditingController();
   String? vehicleType;
-  String? startingLocation;
-  String? endingLocation;
+  var startingLocation;
+  var endingLocation;
   double? distance;
-  int? startingLocationId;
-  int? endingLocationId;
   var filterValue = 1;
+  int selectedLocId = 0;
+
   @override
   void initState() {
     super.initState();
@@ -33,8 +36,8 @@ class _TripPageState extends State<TripPage> {
 
   @override
   void dispose() {
-    timeController.dispose();
-    distanceController.dispose();
+    startPointController.dispose();
+    endPointController.dispose();
     super.dispose();
   }
 
@@ -56,31 +59,6 @@ class _TripPageState extends State<TripPage> {
 
   double _toRadians(double degree) {
     return degree * pi / 180;
-  }
-
-  void _calculateDistance() {
-    final vehicleProvider = context.read<VehicleProvider>();
-    final locations = vehicleProvider.locations['locations'] ?? [];
-
-    if (startingLocationId != null && endingLocationId != null) {
-      final startLocation = locations.firstWhere(
-        (loc) => loc['id'] == startingLocationId.toString(),
-        orElse: () => null,
-      );
-
-      final endLocation = locations.firstWhere(
-        (loc) => loc['id'] == endingLocationId.toString(),
-        orElse: () => null,
-      );
-
-      if (startLocation != null && endLocation != null) {
-        distance = calculateHaversineDistance(
-            double.parse(startLocation['latitude']),
-            double.parse(startLocation['longitude']),
-            double.parse(endLocation['latitude']),
-            double.parse(endLocation['longitude']));
-      }
-    }
   }
 
   @override
@@ -192,12 +170,6 @@ class _TripPageState extends State<TripPage> {
                             builder: (context, vehicleProvider, child) {
                               List<String> vehicleList =
                                   vehicleProvider.vehicles.keys.toList();
-                              final locations =
-                                  vehicleProvider.locations['locations'] ?? [];
-                              final locationMap = {
-                                for (var loc in locations)
-                                  loc['name']: int.parse(loc['id'])
-                              };
 
                               return Container(
                                 padding: const EdgeInsets.symmetric(
@@ -239,137 +211,41 @@ class _TripPageState extends State<TripPage> {
                           ),
                         ),
                         Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: FormInputField(
-                                textcontroller: timeController,
-                                label: "Starting Time",
-                                validator: false,
-                                icon: Icon(Icons.timer_outlined),
-                                regex: RegExp("source"),
-                                regexlabel: "",
-                                numberkeyboard: false)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: TextFormField(
+                            onChanged: (value) {
+                              selectedLocId = 0;
+                              context.read<MapAuto>().placeAutoComplete(value);
+                            },
+                            controller: startPointController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              prefixIcon: Icon(Icons.share_location_sharp),
+                              hintText: 'Location 1',
+                            ),
+                          ),
+                        ),
                         Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1.0),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.location_on_outlined),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Consumer<VehicleProvider>(
-                                          builder: (context, vehicleProvider,
-                                              child) {
-                                            final locations = vehicleProvider
-                                                    .locations['locations'] ??
-                                                [];
-                                            final locationMap = {
-                                              for (var loc in locations)
-                                                loc['name']:
-                                                    int.parse(loc['id'])
-                                            };
-                                            return DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                value: startingLocation,
-                                                hint: const Text('Start Point'),
-                                                items: locations.map<
-                                                    DropdownMenuItem<
-                                                        String>>((vehicle) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: vehicle['name'],
-                                                    child:
-                                                        Text(vehicle['name']),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    startingLocation = newValue;
-                                                    startingLocationId =
-                                                        locationMap[newValue];
-                                                    _calculateDistance(); // Calculate distance when start point changes
-                                                  });
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: TextFormField(
+                            onChanged: (value) {
+                              selectedLocId = 1;
+                              context.read<MapAuto>().placeAutoComplete(value);
+                            },
+                            controller: endPointController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
-                              const SizedBox(width: 10),
-                              const Icon(Icons.east),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1.0),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.location_on_outlined),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Consumer<VehicleProvider>(
-                                          builder: (context, vehicleProvider,
-                                              child) {
-                                            final locations = vehicleProvider
-                                                    .locations['locations'] ??
-                                                [];
-                                            final locationMap = {
-                                              for (var loc in locations)
-                                                loc['name']:
-                                                    int.parse(loc['id'])
-                                            };
-                                            return DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                value: endingLocation,
-                                                hint:
-                                                    const Text('Ending Point'),
-                                                items: locations.map<
-                                                    DropdownMenuItem<
-                                                        String>>((vehicle) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: vehicle['name'],
-                                                    child:
-                                                        Text(vehicle['name']),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    endingLocation = newValue;
-                                                    endingLocationId =
-                                                        locationMap[newValue];
-                                                    _calculateDistance(); // Calculate distance when end point changes
-                                                  });
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                              prefixIcon: Icon(Icons.share_location_sharp),
+                              hintText: 'Location 2',
+                            ),
                           ),
                         ),
                         Padding(
@@ -383,52 +259,52 @@ class _TripPageState extends State<TripPage> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                               prefixIcon: Icon(Icons.route),
-                              hintText:
-                                  'Distance (km)', // Added hint text for clarity
+                              hintText: 'Distance',
                             ),
-                            readOnly: true, // Make the distance field read-only
+                            readOnly: true,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  vehicleType = null;
-                                  timeController.clear();
-                                  distanceController.clear();
-                                  setState(() {
-                                    startingLocation = null;
-                                    endingLocation = null;
-                                    startingLocationId = null;
-                                    endingLocationId = null;
-                                    distance = null;
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                ),
-                                child: const Text(
-                                  "Reset",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  TripProvider().addTrip(
-                                      vehicleType!.replaceAll(' ', '_'),
-                                      timeController,
-                                      startingLocationId!,
-                                      endingLocationId!);
-                                },
-                                child: const Text("Save"),
-                              ),
-                            ],
-                          ),
-                        ),
+                        Consumer<MapAuto>(builder: (context, mapAuto, child) {
+                          return SizedBox(
+                            height: 500,
+                            child: ListView.builder(
+                              itemCount: mapAuto.predictions.length,
+                              itemBuilder: (context, index) {
+                                final location = mapAuto.predictions[index];
+                                return LocationListTile(
+                                  location: location['description'] ??
+                                      'No description',
+                                  press: () async {
+                                    if (selectedLocId == 0) {
+                                      startPointController.text =
+                                          location['description'];
+                                      startingLocation =
+                                          await mapAuto.getPlaceDetails(
+                                              location['place_id']);
+                                    } else {
+                                      endPointController.text =
+                                          location['description'];
+                                      endingLocation =
+                                          await mapAuto.getPlaceDetails(
+                                              location['place_id']);
+                                    }
+                                    if (endingLocation != null &&
+                                        startingLocation != null) {
+                                      calculateHaversineDistance(
+                                          startingLocation['lat'],
+                                          startingLocation['lng'],
+                                          endingLocation['lat'],
+                                          endingLocation['lng']);
+                                    }
+                                    context
+                                        .read<MapAuto>()
+                                        .placeAutoComplete("");
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        })
                       ],
                     ),
                   ),

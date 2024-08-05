@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:insthelper/provider/map_auto_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:insthelper/screens/authentication/auth_page.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => HomescreenProvider()),
         ChangeNotifierProvider(create: (_) => VehicleProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => MapAuto()),
         // Add more providers as needed
       ],
       child: MyApp(),

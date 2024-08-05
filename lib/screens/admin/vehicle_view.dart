@@ -4,9 +4,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:insthelper/screens/admin/update_popup_message.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class VehicleViewScreen extends StatelessWidget {
   final String vehicleRegistrationId;
@@ -18,6 +20,7 @@ class VehicleViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List data = [];
     return ChangeNotifierProvider(
       create: (context) => VehicleProvider(),
       child: Scaffold(
@@ -36,7 +39,7 @@ class VehicleViewScreen extends StatelessWidget {
             if (provider.vehicles[vehicleRegistrationNo] == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            final data = provider.vehicles[vehicleRegistrationNo];
+            data = provider.vehicles[vehicleRegistrationNo];
             return Container(
               color: const Color.fromRGBO(236, 240, 245, 1),
               child: ListView(
@@ -794,7 +797,7 @@ class VehicleViewScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  data != null && data[0]!['image'] != null
+                  data[0]!['image'] != null
                       ? Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
@@ -901,6 +904,20 @@ class VehicleViewScreen extends StatelessWidget {
               ),
             );
           },
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+          onPressed: () {
+            // Share the selected data
+            Share.share(
+              'Vehicle No : ${data[0]!['registration_number'].replaceAll('_', ' ')}\nOwner : ${data[0]!['ownership']}\nAssigned Driver : ${data[0]!['assigned_driver']} \nType : ${data[0]!['vehicle_type']}\nModel : ${data[0]!['model']}\nPurpose : ${data[0]!['purpose_of_use']}\nContact : ${data[0]!['emergency_contact']}',
+              subject: 'Vehicle Details',
+            );
+          },
+          child: const Icon(
+            LineIcons.share,
+            color: Colors.white,
+          ),
         ),
       ),
     );
