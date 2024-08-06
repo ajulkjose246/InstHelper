@@ -9,12 +9,14 @@ class VehicleProvider extends ChangeNotifier {
   final Uri url = Uri.parse(ApiKey().dbApiUrl);
   final Map<String, String> _headers = {'Content-Type': 'application/json'};
   Map<String, dynamic> _vehicles = {};
+  Map<String, dynamic> _specificVehicles = {};
   Map<String, dynamic> _vehicleModels = {};
   Map<String, dynamic> _vehicleFuel = {};
   Map<String, dynamic> _vehicleDrivers = {};
   Map<String, dynamic> _locations = {};
 
   Map<String, dynamic> get vehicles => _vehicles;
+  Map<String, dynamic> get specificVehicles => _specificVehicles;
   Map<String, dynamic> get vehicleModels => _vehicleModels;
   Map<String, dynamic> get vehicleFuel => _vehicleFuel;
   Map<String, dynamic> get vehicleDrivers => _vehicleDrivers;
@@ -92,7 +94,7 @@ class VehicleProvider extends ChangeNotifier {
         if (data is Map<String, dynamic> && data.containsKey('error')) {
           print('Error: ${data['error']}');
         } else if (data is List<dynamic>) {
-          _vehicles[vehicleRegistrationId] = data;
+          _specificVehicles[vehicleRegistrationId] = data;
           if (hasListeners) {
             notifyListeners();
           }

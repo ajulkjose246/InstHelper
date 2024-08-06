@@ -36,10 +36,10 @@ class VehicleViewScreen extends StatelessWidget {
         body: Consumer<VehicleProvider>(
           builder: (context, provider, child) {
             provider.fetchVehicleData(vehicleRegistrationNo);
-            if (provider.vehicles[vehicleRegistrationNo] == null) {
+            if (provider.specificVehicles[vehicleRegistrationNo] == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            data = provider.vehicles[vehicleRegistrationNo];
+            data = provider.specificVehicles[vehicleRegistrationNo];
             return Container(
               color: const Color.fromRGBO(236, 240, 245, 1),
               child: ListView(
