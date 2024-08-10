@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:insthelper/screens/admin/trip_view.dart';
 import 'package:provider/provider.dart';
 import 'package:insthelper/provider/map_auto_provider.dart';
 import 'package:insthelper/components/location_list_tile.dart';
@@ -25,6 +27,7 @@ class _TripPageState extends State<TripPage> {
   TextEditingController vehicleCurrentKMController = TextEditingController();
   List<TextEditingController> additionalLocationControllers = [];
   List<Map<String, dynamic>> vehicles = [];
+  TimeOfDay? selectedTime;
 
   FocusNode startFocusNode = FocusNode();
   FocusNode endFocusNode = FocusNode();
@@ -49,6 +52,7 @@ class _TripPageState extends State<TripPage> {
     _addLocationField(0);
     _addLocationField(1);
     _addVehicle();
+    Provider.of<TripProvider>(context, listen: false).fetchTrip();
   }
 
   @override
@@ -168,6 +172,8 @@ class _TripPageState extends State<TripPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tripProvider = Provider.of<TripProvider>(context);
+    final tripData = tripProvider.tripData;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
       body: SingleChildScrollView(
@@ -246,6 +252,80 @@ class _TripPageState extends State<TripPage> {
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: tripData.map((trip) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TripViewScreen(
+                                tripId: int.parse(trip['id']),
+                                tripName: trip['purpose'],
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      height: 100,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  trip['purpose'],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 19,
+                                  ),
+                                ),
+                                const Spacer(),
+                                const Icon(Icons.arrow_circle_right_outlined),
+                              ],
+                            ),
+                            const Spacer(),
+                            Text(
+                              'Total Vehicles: ${json.decode(trip['vehicle_id']).length}',
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            const Spacer(),
+                            Text(
+                              'Time: ${trip['starting_time']}',
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
         const Padding(
           padding: EdgeInsets.all(10),
           child: Text(
@@ -253,7 +333,6 @@ class _TripPageState extends State<TripPage> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
           ),
         ),
-        // for (int i = 0; i < vehicles.length; i++)
         Column(
           children: vehicles.asMap().entries.map((entry) {
             int index = entry.key;
@@ -628,16 +707,73 @@ class _TripPageState extends State<TripPage> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: FormInputField(
-              textcontroller: tripPurposeController,
-              label: "Purpose",
-              validator: false,
-              icon: const Icon(Icons.sms),
-              regex: RegExp("source"),
-              regexlabel: "",
-              numberkeyboard: false),
+        Row(
+          children: [
+            // Purpose FormInputField
+            Expanded(
+              flex: 2, // Adjust the flex as needed to control width ratio
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: FormInputField(
+                  textcontroller: tripPurposeController,
+                  label: "Purpose",
+                  validator: false,
+                  icon: const Icon(Icons.sms),
+                  regex: RegExp("source"),
+                  regexlabel: "",
+                  numberkeyboard: false,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10), // Add spacing between the two fields
+            // Time Picker FormField
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: FormField<TimeOfDay>(
+                  builder: (FormFieldState<TimeOfDay> state) {
+                    return InkWell(
+                      onTap: () async {
+                        TimeOfDay? picked = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (picked != null && picked != state.value) {
+                          setState(() {
+                            selectedTime = picked; // Store selected time
+                          });
+                          state.didChange(picked);
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: 'Time',
+                          border: const OutlineInputBorder(),
+                          errorText: state.errorText,
+                        ),
+                        child: Text(
+                          state.value == null
+                              ? TimeOfDay.now().format(context)
+                              : state.value!.format(context),
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  initialValue: selectedTime ?? TimeOfDay.now(),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a time.';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -662,7 +798,24 @@ class _TripPageState extends State<TripPage> {
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                print(additionalLocationControllers[0].text);
+                List<String> numbers = [];
+                List<String> drivers = [];
+                List<String> totalKm = [];
+                List<String> locations = [];
+                for (var vehicle in vehicles) {
+                  numbers.add(vehicle['vehicleNumberController'].text);
+                  drivers.add(vehicle['vehicleDriverController'].text);
+                  totalKm.add(vehicle['vehicleCurrentKMController'].text);
+                }
+                for (var location in additionalLocationControllers) {
+                  locations.add(location.text);
+                }
+                selectedTime ??= TimeOfDay.now().format(context) as TimeOfDay?;
+                TripProvider().addTrip(numbers, drivers, totalKm, locations,
+                    tripPurposeController.text, selectedTime!);
+              },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.green, // Text color

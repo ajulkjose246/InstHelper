@@ -20,7 +20,6 @@ class _AlertListState extends State<AlertList> {
     print("Admin alert list");
     final vehicleProvider = Provider.of<VehicleProvider>(context);
 
-    // Fetch vehicle data if it's not already fetched
     if (vehicleProvider.vehicles.isEmpty) {
       vehicleProvider.fetchAllVehicleData();
     }
