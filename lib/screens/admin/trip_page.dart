@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
@@ -18,8 +19,6 @@ class TripPage extends StatefulWidget {
 }
 
 class _TripPageState extends State<TripPage> {
-  TextEditingController startPointController = TextEditingController();
-  TextEditingController endPointController = TextEditingController();
   TextEditingController distanceController = TextEditingController();
   TextEditingController tripPurposeController = TextEditingController();
   TextEditingController tripTimeController = TextEditingController();
@@ -28,6 +27,7 @@ class _TripPageState extends State<TripPage> {
   List<TextEditingController> additionalLocationControllers = [];
   List<Map<String, dynamic>> vehicles = [];
   TimeOfDay? selectedTime;
+  final _formKey = GlobalKey<FormState>();
 
   FocusNode startFocusNode = FocusNode();
   FocusNode endFocusNode = FocusNode();
@@ -57,8 +57,6 @@ class _TripPageState extends State<TripPage> {
 
   @override
   void dispose() {
-    startPointController.dispose();
-    endPointController.dispose();
     for (var controller in additionalLocationControllers) {
       controller.dispose();
     }
@@ -100,10 +98,6 @@ class _TripPageState extends State<TripPage> {
     for (int i = 0; i < additionalLocations.length - 1; i++) {
       if (additionalLocations[i]['lat'] != null &&
           additionalLocations[i + 1]['lat'] != null) {
-        // Debugging print statements
-        print('Location $i: ${additionalLocations[i]}');
-        print('Location ${i + 1}: ${additionalLocations[i + 1]}');
-
         totalDistance += calculateHaversineDistance(
           additionalLocations[i]['lat']!,
           additionalLocations[i]['lng']!,
@@ -780,41 +774,118 @@ class _TripPageState extends State<TripPage> {
           children: [
             const Spacer(),
             ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.red, // Text color
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text("Reset"),
-            ),
-            const Spacer(),
-            ElevatedButton(
               onPressed: () {
-                print(additionalLocationControllers[0].text);
-                List<String> numbers = [];
-                List<String> drivers = [];
-                List<String> totalKm = [];
-                List<String> locations = [];
+                bool isValid = true; // Flag to track if the form is valid
+
+                // Check if all vehicle fields are filled
                 for (var vehicle in vehicles) {
-                  numbers.add(vehicle['vehicleNumberController'].text);
-                  drivers.add(vehicle['vehicleDriverController'].text);
-                  totalKm.add(vehicle['vehicleCurrentKMController'].text);
+                  if (vehicle['vehicleNumberController'].text.isEmpty ||
+                      vehicle['vehicleDriverController'].text.isEmpty ||
+                      vehicle['vehicleCurrentKMController'].text.isEmpty) {
+                    isValid = false;
+                    Fluttertoast.showToast(
+                        msg: "Please fill out all vehicle fields",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    break;
+                  }
                 }
-                for (var location in additionalLocationControllers) {
-                  locations.add(location.text);
+
+                // Check if all additional locations are filled
+                for (var locationController in additionalLocationControllers) {
+                  if (locationController.text.isEmpty) {
+                    isValid = false;
+                    Fluttertoast.showToast(
+                        msg: "Please fill out all location fields",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    break;
+                  }
                 }
-                selectedTime ??= TimeOfDay.now().format(context) as TimeOfDay?;
-                TripProvider().addTrip(numbers, drivers, totalKm, locations,
-                    tripPurposeController.text, selectedTime!);
+
+                // Check if trip purpose is filled
+                if (tripPurposeController.text.isEmpty) {
+                  isValid = false;
+                  Fluttertoast.showToast(
+                      msg: "Please enter the trip purpose",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+
+                // Check if time is selected
+                if (selectedTime == null) {
+                  isValid = false;
+                  Fluttertoast.showToast(
+                      msg: "Please select a time",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+
+                // If all fields are valid, proceed with submitting the form
+                if (isValid) {
+                  List<String> numbers = [];
+                  List<String> drivers = [];
+                  List<String> totalKm = [];
+                  List<String> locations = [];
+
+                  for (var vehicle in vehicles) {
+                    numbers.add(vehicle['vehicleNumberController'].text);
+                    drivers.add(vehicle['vehicleDriverController'].text);
+                    totalKm.add(vehicle['vehicleCurrentKMController'].text);
+                  }
+                  for (var location in additionalLocationControllers) {
+                    locations.add(location.text);
+                  }
+
+                  TripProvider().addTrip(numbers, drivers, totalKm, locations,
+                      tripPurposeController.text, selectedTime!);
+
+                  Fluttertoast.showToast(
+                      msg: "Trip added successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                  // Clear all the fields
+                  for (var vehicle in vehicles) {
+                    vehicle['vehicleNumberController'].clear();
+                    vehicle['vehicleDriverController'].clear();
+                    vehicle['vehicleCurrentKMController'].clear();
+                  }
+
+                  for (var locationController
+                      in additionalLocationControllers) {
+                    locationController.clear();
+                  }
+
+                  tripPurposeController.clear();
+                  selectedTime = null;
+
+                  setState(() {
+                    // Reset the focus nodes and any other stateful widgets if necessary
+                    additionalLocationControllers.clear();
+                    distanceController.clear();
+                    additionalFocusNodes.clear();
+                    additionalLocations.clear();
+                    vehicles.clear(); // Clear the vehicle list if needed
+                  });
+                  _addLocationField(0);
+                  _addLocationField(1);
+                  _addVehicle();
+                }
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -829,7 +900,7 @@ class _TripPageState extends State<TripPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text("Add"),
+              child: const Text("Add Trip"),
             ),
             const Spacer(),
           ],
