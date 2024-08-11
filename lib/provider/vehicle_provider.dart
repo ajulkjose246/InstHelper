@@ -80,6 +80,41 @@ class VehicleProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteVehicle(String registrationNumber) async {
+    List<String> sqlStatements = [];
+    String formattedRegNumber =
+        registrationNumber.replaceAll(' ', '_').toUpperCase();
+    sqlStatements.add(
+        "DELETE FROM `tbl_vehicle` WHERE `registration_number` ='$formattedRegNumber'");
+    sqlStatements.add(
+        "DELETE FROM `tbl_fitness` WHERE `vehicle_id`='$formattedRegNumber'");
+    sqlStatements.add(
+        "DELETE FROM `tbl_insurance` WHERE `vehicle_id`='$formattedRegNumber'");
+    sqlStatements.add(
+        "DELETE FROM `tbl_pollution` WHERE `vehicle_id`='$formattedRegNumber'");
+    for (String sql in sqlStatements) {
+      print(sql);
+
+      final body = json.encode({
+        'sql': sql,
+      });
+
+      try {
+        final response = await http.put(url, headers: _headers, body: body);
+
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
+          print(responseData);
+        } else {
+          print(
+              'Failed to Delete vehicle data. Status code: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
   Future<void> fetchVehicleData(String vehicleRegistrationId) async {
     final body = json.encode({
       'method': 'getSpecificVehicle',

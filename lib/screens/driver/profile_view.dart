@@ -44,15 +44,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                           radius: 50,
                           backgroundImage: NetworkImage(_user!.photoURL ?? ''),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           _user!.displayName ?? 'No Name',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           _user!.email ?? 'No Name',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.bold),
                         ),
                       ],

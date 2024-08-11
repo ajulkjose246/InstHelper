@@ -95,6 +95,28 @@ class TripProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteTrip(String tripId) async {
+    String sql = "DELETE FROM `tbl_trips` WHERE `id` =$tripId";
+
+    final body = json.encode({
+      'sql': sql,
+    });
+
+    try {
+      final response = await http.put(url, headers: _headers, body: body);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print(responseData);
+      } else {
+        print(
+            'Failed to Delete vehicle data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();

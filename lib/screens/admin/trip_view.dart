@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
@@ -450,45 +452,67 @@ class TripViewScreen extends StatelessWidget {
             }
           },
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
           backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-          onPressed: () {
-            if (data.isNotEmpty) {
-              List vehicleNumber = json.decode(data[0]['vehicle_id']);
-              List vehicleDrivers = json.decode(data[0]['driver']);
-              List starting_km = json.decode(data[0]['starting_km']);
-              List tripLocations = json.decode(data[0]['route']);
-              String startingTime = data[0]['starting_time'];
-              String purpose = data[0]['purpose'];
+          foregroundColor: Colors.white,
+          children: [
+            SpeedDialChild(
+              child: const Icon(LineIcons.share, color: Colors.white),
+              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              onTap: () {
+                if (data.isNotEmpty) {
+                  List vehicleNumber = json.decode(data[0]['vehicle_id']);
+                  List vehicleDrivers = json.decode(data[0]['driver']);
+                  List starting_km = json.decode(data[0]['starting_km']);
+                  List tripLocations = json.decode(data[0]['route']);
+                  String startingTime = data[0]['starting_time'];
+                  String purpose = data[0]['purpose'];
 
-              // Format the details to be shared
-              String shareContent = 'Trip Details\n----------------\n'
-                  'Date: $startingTime\n'
-                  'Purpose: $purpose\n\n'
-                  'Vehicle Details\n----------------\n';
+                  // Format the details to be shared
+                  String shareContent = 'Trip Details\n----------------\n'
+                      'Date: $startingTime\n'
+                      'Purpose: $purpose\n\n'
+                      'Vehicle Details\n----------------\n';
 
-              for (int i = 0; i < vehicleNumber.length; i++) {
-                shareContent +=
-                    'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
-                    'Driver: ${vehicleDrivers[i]}\n'
-                    'Starting KM: ${starting_km[i]}\n\n';
-              }
+                  for (int i = 0; i < vehicleNumber.length; i++) {
+                    shareContent +=
+                        'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
+                        'Driver: ${vehicleDrivers[i]}\n'
+                        'Starting KM: ${starting_km[i]}\n\n';
+                  }
 
-              shareContent += 'Location Details:\n----------------\n';
-              for (int i = 0; i < tripLocations.length; i++) {
-                shareContent += 'Location ${i + 1}: ${tripLocations[i]}\n';
-              }
+                  shareContent += 'Location Details:\n----------------\n';
+                  for (int i = 0; i < tripLocations.length; i++) {
+                    shareContent += 'Location ${i + 1}: ${tripLocations[i]}\n';
+                  }
 
-              Share.share(
-                shareContent,
-                subject: 'Trip Details',
-              );
-            }
-          },
-          child: const Icon(
-            LineIcons.share,
-            color: Colors.white,
-          ),
+                  Share.share(
+                    shareContent,
+                    subject: 'Trip Details',
+                  );
+                }
+              },
+            ),
+            SpeedDialChild(
+              child: const Icon(LineIcons.trash, color: Colors.white),
+              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              onTap: () {
+                if (data.isNotEmpty) {
+                  TripProvider().deleteTrip(data[0]['id']);
+                  Fluttertoast.showToast(
+                      msg: "Trip deleted successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
