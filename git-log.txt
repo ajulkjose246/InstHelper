@@ -1,0 +1,245 @@
+commit 85447316fe435aa6275a531582abc74f49f97274
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Aug 11 17:53:41 2024 +0530
+
+    notification option disabled
+
+commit 79a8d18882a2a224d5b18718e1f46ace135bc566
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Aug 10 16:23:28 2024 +0530
+
+    trip view page added
+
+commit 39c1322d40a0cdc4dc3d3fbc2d093de75afb4a9e
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Wed Aug 7 22:31:33 2024 +0530
+
+    added option for select multiple vehicle in trip
+
+commit a5ea4994b9aec20ff2a8429520708a633f54dba0
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Aug 6 23:59:28 2024 +0530
+
+    updated trip page
+
+commit 20fb80cd167f63d9973b007901b84e2d23a977f6
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Aug 5 22:33:30 2024 +0530
+
+    fetching locations using google api
+
+commit ce1ddd45899091a83bda9cdaa951171536d7d2f7
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Aug 5 22:32:15 2024 +0530
+
+    fetch location using google api
+
+commit 23bee0b124671b074fb1193cea159c7d90a19a1a
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Aug 5 11:09:37 2024 +0530
+
+    changed all fn firebase to sql and added trip module
+
+commit 747b6f7a4e7accef3780d2a374497f5345343036
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jul 25 23:28:17 2024 +0530
+
+    db changed to mysql except add vehicle
+
+commit 16a9b85b9ed18258ad5c747efda84a41be16122d
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jul 23 19:36:43 2024 +0530
+
+    api connection established
+
+commit 1347756038a087dd1467b3035c4598f7d9bbc085
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jul 9 10:25:41 2024 +0530
+
+    vehicle data update first 2 collection added
+
+commit 6286beeee0cf53167ebd422529503364479372fb
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Jul 8 11:59:08 2024 +0530
+
+    seperated user and admin  pages
+
+commit d04d4111764e26d5ab4eb941def4dffddc460407
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Jul 8 09:20:28 2024 +0530
+
+    added search option in alert list
+
+commit 3bf050e6d1deaf26ac039fd6dd86f4f51014cd9f
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jul 6 11:02:46 2024 +0530
+
+    user pages changed to admin
+
+commit 5639a442b66817007f7dcaeb77181732750e0f94
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jul 6 09:12:51 2024 +0530
+
+    firebase stucture updated and vehicle screen updated
+
+commit 867fbcfaf3d69f67a475c29a7f4b801ac0f7507b
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jul 2 00:16:23 2024 +0530
+
+    google login option added
+
+commit bfef7e55b2b3f049f7a95ce9e31250068b2c8575
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Jul 1 23:26:50 2024 +0530
+
+    login and register page designed
+
+commit 2cbfd8a26c98a8ccc95c64862ec009d3c5809202
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 30 23:13:01 2024 +0530
+
+    added multiple file upload option
+
+commit d5d2a3ea1e34ed94f159516ac421d6d9b68bd33f
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 30 16:24:38 2024 +0530
+
+    modify vehicle add form
+
+commit 00a96c47f8467cc06eb9bc22a42e1e78eacb881c
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jun 29 23:19:34 2024 +0530
+
+    documnet updated
+
+commit d53282f76508290d2841f2f00a8ee0ef151bc443
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Fri Jun 28 23:56:44 2024 +0530
+
+    added regexp in vehicle add form
+
+commit 78c184fcada53c41e1fa6dbe502dff26bd45d83e
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jun 27 23:47:32 2024 +0530
+
+    home page alert fetch from FB and sortrd
+
+commit 4740806eee020ff974c4b2dd2f79e7bee43ff4fe
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jun 27 19:49:34 2024 +0530
+
+    added vehicle search option
+
+commit 3908a9ae7796b10dca355b8a651b0e8702231cb4
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jun 27 00:23:48 2024 +0530
+
+    notification list to alert list and added a filter option in the alert page
+
+commit 1f9f6c903033522108aa60e6ebe61fd4bce1c18f
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Wed Jun 26 20:00:50 2024 +0530
+
+    notification list page and vehicle list page added
+
+commit 9ecd1577ff9540269122690ae069d533952ac014
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jun 25 23:06:12 2024 +0530
+
+    vehicle file upload option completed
+
+commit 399daa7dd5286486a5b9118fbd937f931ed18323
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 23 23:19:59 2024 +0530
+
+    vehicle view page completed
+
+commit d043b57ad51d401e7611d1f02e9cd2786e3e2e40
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 23 20:03:54 2024 +0530
+
+    home screen vehicle image based on the vehicle type image fetch from firebase
+
+commit 940d72d01a59e4943ff3d673a94b06a4ded23aa7
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 23 10:30:45 2024 +0530
+
+    vehicle list fetch from firebase in home screen
+
+commit 6c738ec41022c2e1dffc741cb5f9946c3f4c318b
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jun 22 23:41:58 2024 +0530
+
+    vehicle view page design completed
+
+commit e6d62712c777809678f3feac0645a92a402878fd
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jun 22 16:25:31 2024 +0530
+
+    documents updated,added figma design link in readme file)
+
+commit f0f2600074714aac67c0ca2b4d40ad44d75432ef
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jun 22 00:22:43 2024 +0530
+
+    added vehicle data to firebase
+
+commit 868918c696f7665b3d380690a3e4465a134f52e1
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jun 20 23:16:31 2024 +0530
+
+    app color theme changed
+
+commit 616b45f51dfc27d2bdd4f5bde2ca4445488d9d2d
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Thu Jun 20 22:01:34 2024 +0530
+
+    add vehicle redesigned and added lottie
+
+commit 79aa4269d2efbe6102f84da8452aab993e34e340
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Wed Jun 19 23:05:15 2024 +0530
+
+    added prefixIcons in add vehicle form
+
+commit 017caf5706bc6360047b34e440d97328242d61c2
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Wed Jun 19 20:50:29 2024 +0530
+
+    fetch models from firebase
+
+commit c71ed16ffdc79b7fc1042dfb94d155318ac6d8ac
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jun 18 23:11:32 2024 +0530
+
+    fetching models from firebase
+
+commit 82840f12520bf298069bbcee5abf8446f4362b85
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jun 18 22:11:53 2024 +0530
+
+    git hub readme file updated
+
+commit 3b06dd1ca725c70a3729bc5e2075630b9963ba3b
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Tue Jun 18 22:06:34 2024 +0530
+
+    vehicle list,insurance,profile and add vehicle screen designed
+
+commit 36908dfcd0e98e968f9be320d70c377070a3c9a2
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Mon Jun 17 12:09:23 2024 +0530
+
+    firebase connection established
+
+commit cc88c608dc37c84338293bd64a46f285f9a687d1
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sun Jun 16 10:47:50 2024 +0530
+
+    home screen design completed
+
+commit b61b8d316d8721f7dee26e91e80f75890d4fea87
+Author: ajulkjose246 <mail.ajulkjose@gmail.com>
+Date:   Sat Jun 15 15:32:55 2024 +0530
+
+    created insthelper project and documents

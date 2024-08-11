@@ -17,10 +17,11 @@ import 'package:insthelper/screens/authentication/sign_up.dart';
 import 'package:insthelper/screens/admin/container.dart';
 import 'package:insthelper/screens/admin/add_vehicle.dart';
 import 'package:insthelper/screens/admin/alert_list.dart';
+import 'package:insthelper/screens/driver/alert_list.dart';
+import 'package:insthelper/screens/driver/container.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:workmanager/workmanager.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -105,9 +106,6 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   await Future.delayed(Duration(seconds: 2));
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
@@ -200,6 +198,10 @@ class MyApp extends StatelessWidget {
         '/auth': (context) => AuthPage(),
         '/add': (context) => AddVehicleScreen(),
         '/alert': (context) => const AlertList(),
+
+        //Driver
+        '/driver': (context) => const DriverContainerScreen(),
+        '/driver_alert': (context) => const DriverAlertList(),
       }),
       initialRoute: '/auth',
     );

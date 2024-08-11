@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/admin_list_vehicle_widget.dart';
+import 'package:insthelper/components/driver_list_vehicle_widget.dart';
 import 'package:insthelper/components/request_permmision.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:insthelper/screens/driver/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class DriverHomeScreen extends StatefulWidget {
+  const DriverHomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _DriverHomeScreenState createState() => _DriverHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   void initState() {
     super.initState();
@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Spacer(),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/alert');
+                          Navigator.pushNamed(context, '/driver_alert');
                         },
                         child: Container(
                           width: 50,
@@ -310,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
                   ),
                 ),
-                const ListAdminVehicleWidget(
+                const ListDriverVehicleWidget(
                   isHomePage: true,
                   isSearch: '',
                 )

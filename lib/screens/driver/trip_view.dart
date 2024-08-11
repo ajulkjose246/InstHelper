@@ -43,6 +43,8 @@ class TripViewScreen extends StatelessWidget {
               List vehicleDrivers = json.decode(data[0]['driver']);
               List vehicleStartingKm = json.decode(data[0]['starting_km']);
               List tripLocations = json.decode(data[0]['route']);
+              String startingTime = data[0]['starting_time'];
+              String purpose = data[0]['purpose'];
 
               return Container(
                 color: const Color.fromRGBO(236, 240, 245, 1),
@@ -61,46 +63,15 @@ class TripViewScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   "Trip Details",
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       color: Color.fromRGBO(139, 91, 159, 1)),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -126,7 +97,7 @@ class TripViewScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "${data[0]['starting_time']}",
+                                  startingTime,
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -157,7 +128,7 @@ class TripViewScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "${data[0]['purpose']}",
+                                  purpose,
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                     fontSize: 19,
@@ -183,46 +154,15 @@ class TripViewScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   "Vehicle Details",
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromRGBO(139, 91, 159, 1),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
@@ -257,7 +197,8 @@ class TripViewScreen extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "${vehicleNumber[index].replaceAll("_", " ")}",
+                                          vehicleNumber[index]
+                                              .replaceAll("_", " "),
                                           textAlign: TextAlign.right,
                                           style: const TextStyle(
                                             fontSize: 19,
@@ -289,7 +230,7 @@ class TripViewScreen extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "${vehicleDrivers[index]}",
+                                          vehicleDrivers[index],
                                           textAlign: TextAlign.right,
                                           style: const TextStyle(
                                             fontSize: 19,
@@ -321,7 +262,7 @@ class TripViewScreen extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "${vehicleStartingKm[index]}",
+                                          vehicleStartingKm[index],
                                           textAlign: TextAlign.right,
                                           style: const TextStyle(
                                             fontSize: 19,
@@ -351,46 +292,15 @@ class TripViewScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   "Location Details",
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromRGBO(139, 91, 159, 1),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
@@ -425,7 +335,7 @@ class TripViewScreen extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          "${tripLocations[index]}",
+                                          tripLocations[index].toString(),
                                           textAlign: TextAlign.right,
                                           style: const TextStyle(
                                             fontSize: 19,
@@ -434,7 +344,6 @@ class TripViewScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 10),
                                     const SizedBox(height: 10),
                                   ],
                                 );
@@ -456,7 +365,6 @@ class TripViewScreen extends StatelessWidget {
             if (data.isNotEmpty) {
               List vehicleNumber = json.decode(data[0]['vehicle_id']);
               List vehicleDrivers = json.decode(data[0]['driver']);
-              List starting_km = json.decode(data[0]['starting_km']);
               List tripLocations = json.decode(data[0]['route']);
               String startingTime = data[0]['starting_time'];
               String purpose = data[0]['purpose'];
@@ -471,7 +379,7 @@ class TripViewScreen extends StatelessWidget {
                 shareContent +=
                     'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
                     'Driver: ${vehicleDrivers[i]}\n'
-                    'Starting KM: ${starting_km[i]}\n\n';
+                    'Starting KM: ${data[0]['starting_km'][i]}\n\n';
               }
 
               shareContent += 'Location Details:\n----------------\n';

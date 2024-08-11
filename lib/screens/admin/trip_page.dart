@@ -27,7 +27,6 @@ class _TripPageState extends State<TripPage> {
   List<TextEditingController> additionalLocationControllers = [];
   List<Map<String, dynamic>> vehicles = [];
   TimeOfDay? selectedTime;
-  final _formKey = GlobalKey<FormState>();
 
   FocusNode startFocusNode = FocusNode();
   FocusNode endFocusNode = FocusNode();
