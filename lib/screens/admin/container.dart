@@ -38,6 +38,8 @@ class _ContainerScreenState extends State<ContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+
     print("Admin container");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
@@ -55,49 +57,42 @@ class _ContainerScreenState extends State<ContainerScreen> {
             )
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-          child: GNav(
-            rippleColor: Colors.grey[300]!,
-            hoverColor: Colors.grey[100]!,
-            gap: 8,
-            activeColor: Colors.black,
-            iconSize: 24,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            duration: const Duration(milliseconds: 400),
-            tabBackgroundColor: Colors.grey[100]!,
-            color: Colors.grey[100]!,
-            backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-            tabs: const [
-              GButton(
-                icon: Icons.home,
-                text: 'Home',
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 8 / textScaleFactor,
+            ),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8 / textScaleFactor,
+              activeColor: Colors.black,
+              iconSize: 24 / textScaleFactor,
+              padding: EdgeInsets.symmetric(
+                horizontal: 20 / textScaleFactor,
+                vertical: 12 / textScaleFactor,
               ),
-              GButton(
-                icon: Icons.list_alt_outlined,
-                text: 'Vehicle List',
-              ),
-              GButton(
-                icon: Icons.trip_origin,
-                text: 'Trips',
-              ),
-              // GButton(
-              //   icon: LineIcons.tools,
-              //   text: 'Service',
-              // ),
-              GButton(
-                icon: LineIcons.user,
-                text: 'Profile',
-              ),
-            ],
-            selectedIndex: context.watch<HomescreenProvider>().selectedIndex,
-            onTabChange: (index) {
-              setState(() {
-                context
-                    .read<HomescreenProvider>()
-                    .updateMyVariable(newValue: index);
-              });
-            },
+              duration: const Duration(milliseconds: 400),
+              tabBackgroundColor: Colors.grey[100]!,
+              color: Colors.grey[100]!,
+              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              tabs: [
+                _buildGButton(Icons.home, 'Home', textScaleFactor),
+                _buildGButton(
+                    Icons.list_alt_outlined, 'Vehicle List', textScaleFactor),
+                _buildGButton(Icons.trip_origin, 'Trips', textScaleFactor),
+                _buildGButton(LineIcons.user, 'Profile', textScaleFactor),
+              ],
+              selectedIndex: context.watch<HomescreenProvider>().selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  context
+                      .read<HomescreenProvider>()
+                      .updateMyVariable(newValue: index);
+                });
+              },
+            ),
           ),
         ),
       ),
@@ -110,6 +105,17 @@ class _ContainerScreenState extends State<ContainerScreen> {
                   child: const Icon(Icons.add),
                 )
               : null,
+    );
+  }
+
+  GButton _buildGButton(IconData icon, String text, double textScaleFactor) {
+    return GButton(
+      icon: icon,
+      text: text,
+      textStyle: TextStyle(
+        fontSize: 14 / textScaleFactor,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 }

@@ -23,6 +23,9 @@ class VehicleViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List data = [];
+    // Get the text scale factor
+    final double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+
     return ChangeNotifierProvider(
         create: (context) => VehicleProvider(),
         child: Scaffold(
@@ -66,13 +69,17 @@ class VehicleViewScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "Owner Details",
-                                      style: TextStyle(
-                                          fontSize: 22,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "Owner Details",
+                                        style: TextStyle(
+                                          fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
                                           color:
-                                              Color.fromRGBO(139, 91, 159, 1)),
+                                              Color.fromRGBO(139, 91, 159, 1),
+                                        ),
+                                      ),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -121,22 +128,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Owner Name",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Owner Name",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]['ownership'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]['ownership'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -155,22 +168,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Registered RTO",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Registered RTO",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]['rto_name'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]['rto_name'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -199,13 +218,17 @@ class VehicleViewScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "Vehicle Details",
-                                      style: TextStyle(
-                                          fontSize: 22,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "Vehicle Details",
+                                        style: TextStyle(
+                                          fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
                                           color:
-                                              Color.fromRGBO(139, 91, 159, 1)),
+                                              Color.fromRGBO(139, 91, 159, 1),
+                                        ),
+                                      ),
                                     ),
                                     Align(
                                       alignment: Alignment.centerRight,
@@ -257,22 +280,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Vehicle Type",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Vehicle Type",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['vehicle_type'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['vehicle_type'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -291,22 +320,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Model",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Model",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['model'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['model'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -325,22 +360,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Fuel Type",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Fuel Type",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['fuel_type'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['fuel_type'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -359,22 +400,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Engine No",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Engine No",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['engine_no'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['engine_no'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -393,22 +440,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Chassis No",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Chassis No",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['chassis_no'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['chassis_no'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -438,13 +491,17 @@ class VehicleViewScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "Important Dates",
-                                      style: TextStyle(
-                                          fontSize: 22,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "Important Dates",
+                                        style: TextStyle(
+                                          fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
                                           color:
-                                              Color.fromRGBO(139, 91, 159, 1)),
+                                              Color.fromRGBO(139, 91, 159, 1),
+                                        ),
+                                      ),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -493,22 +550,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Registration Date",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey[600],
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Registration Date",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey[600],
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data[0]!['registration_date']))}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['registration_date']))}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -527,22 +590,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Insurance Upto",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Insurance Upto",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data[0]!['Insurance_Upto']))}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Insurance_Upto']))}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -561,22 +630,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Pollution Upto",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Pollution Upto",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data[0]!['Pollution_Upto']))}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Pollution_Upto']))}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -595,22 +670,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Fitness Upto",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Fitness Upto",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data[0]!['Fitness_Upto']))}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Fitness_Upto']))}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -640,13 +721,17 @@ class VehicleViewScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      "Other Info",
-                                      style: TextStyle(
-                                          fontSize: 22,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "Other Info",
+                                        style: TextStyle(
+                                          fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
                                           color:
-                                              Color.fromRGBO(139, 91, 159, 1)),
+                                              Color.fromRGBO(139, 91, 159, 1),
+                                        ),
+                                      ),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -695,22 +780,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Registration No",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Registration No",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['registration_number'].toString().replaceAll('_', ' ')}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['registration_number'].toString().replaceAll('_', ' ')}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -729,22 +820,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Purpose of Use",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Purpose of Use",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['purpose_of_use'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['purpose_of_use'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -763,22 +860,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Emergency Contact",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Emergency Contact",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['emergency_contact'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['emergency_contact'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -797,22 +900,28 @@ class VehicleViewScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          "Assigned Driver",
-                                          style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold,
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Assigned Driver",
+                                            style: TextStyle(
+                                              fontSize: 19 / textScaleFactor,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      " ${data[0]!['assigned_driver'].toString()}",
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        " ${data[0]!['assigned_driver'].toString()}",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 19 / textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -843,24 +952,27 @@ class VehicleViewScreen extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
-                                            "Gallery",
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color.fromRGBO(
-                                                  139, 91, 159, 1),
+                                          FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              "Gallery",
+                                              style: TextStyle(
+                                                fontSize: 22 / textScaleFactor,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromRGBO(
+                                                    139, 91, 159, 1),
+                                              ),
                                             ),
                                           ),
                                           GestureDetector(
                                             onTap: () {},
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                color: const Color.fromRGBO(
-                                                    236, 240, 245, 1),
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
+                                                  color: const Color.fromRGBO(
+                                                      236, 240, 245, 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               child: const Padding(
                                                 padding: EdgeInsets.all(10),
                                                 child: Icon(

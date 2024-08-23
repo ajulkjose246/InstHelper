@@ -7,6 +7,7 @@ import 'package:insthelper/provider/trip_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 
 class TripViewScreen extends StatelessWidget {
   final int tripId;
@@ -17,6 +18,29 @@ class TripViewScreen extends StatelessWidget {
     required this.tripId,
     required this.tripName,
   });
+
+  String _formatDate(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return "${date.day.toString().padLeft(2, '0')}-${_getMonthAbbreviation(date.month)}-${date.year}";
+  }
+
+  String _getMonthAbbreviation(int month) {
+    const monthAbbreviations = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    return monthAbbreviations[month - 1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +143,37 @@ class TripViewScreen extends StatelessWidget {
                                     const SizedBox(width: 10),
                                     Text(
                                       "Date ",
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        color: Colors.grey[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "${_formatDate(data[0]['starting_date'])}",
+                                  textAlign: TextAlign.right,
+                                  style: const TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      color: Colors.grey[600],
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "Time ",
                                       style: TextStyle(
                                         fontSize: 19,
                                         color: Colors.grey[600],

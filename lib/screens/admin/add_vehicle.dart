@@ -41,7 +41,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final chassisNoController = TextEditingController();
   final ownershipController = TextEditingController();
   final purposeOfUseController = TextEditingController();
-  final currentMileageController = TextEditingController();
+  final currentKMController = TextEditingController();
   final emergencyContactController = TextEditingController();
 
   String? vehicleType;
@@ -151,7 +151,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(1900, 8),
         lastDate: DateTime(2101));
     if (picked != null &&
         picked != insuranceExpiryDate &&
@@ -226,9 +226,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       label: "Model",
                       validator: true,
                       icon: const Icon(Icons.emoji_transportation),
-                      regex:
-                          RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
-                      regexlabel: 'Hexter',
+                      regex: RegExp(r"^[a-zA-Z0-9]+([\s\-',.][a-zA-Z0-9]+)*$"),
+                      regexlabel: 'e.g. Ashok Leyland, Swift Dzire',
                       numberkeyboard: false,
                     ),
                     Padding(
@@ -280,7 +279,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     FormInputField(
                       textcontroller: engineNoController,
                       label: "Engine No",
-                      validator: true,
+                      validator: false,
                       icon: const Icon(
                         Icons.build_outlined,
                       ),
@@ -291,7 +290,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     FormInputField(
                       textcontroller: chassisNoController,
                       label: "Chassis No",
-                      validator: true,
+                      validator: false,
                       icon: const Icon(
                         Icons.construction_outlined,
                       ),
@@ -300,8 +299,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       numberkeyboard: false,
                     ),
                     FormInputField(
-                      textcontroller: currentMileageController,
-                      label: "Current Mileage",
+                      textcontroller: currentKMController,
+                      label: "Current KM",
                       validator: true,
                       icon: const Icon(
                         Icons.av_timer,
@@ -392,17 +391,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              if (uploadedImageFileNames.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please upload a file'),
-                                  ),
-                                );
-                              } else {
-                                setState(() {
-                                  pageNumber = 1;
-                                });
-                              }
+                              setState(() {
+                                pageNumber = 1;
+                              });
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -924,53 +915,46 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                           ),
                                         );
                                       } else {
-                                        await uploadFiles("insurance");
-                                        await uploadFiles("pollution");
-                                        await uploadFiles("fitness");
-                                        await uploadFiles("image");
-                                        await uploadFiles("rc");
-                                        if (uploadedImageFileUrls.isNotEmpty) {
-                                          VehicleProvider().addVehicle(
-                                              registrationNumberController,
-                                              modelController,
-                                              registrationDate!,
-                                              vehicleType!,
-                                              ownershipController,
-                                              drivers!,
-                                              purposeOfUseController,
-                                              insuranceExpiryDate!,
-                                              pollutionDate!,
-                                              fitnessDate!,
-                                              currentMileageController,
-                                              fuelType!,
-                                              emergencyContactController,
-                                              engineNoController,
-                                              chassisNoController,
-                                              uploadedImageFileUrls,
-                                              uploadedRcFileUrls,
-                                              uploadedPollutionFileUrls,
-                                              uploadedInsuranceFileUrls,
-                                              uploadedFitnessFileUrls);
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Vehicle added successfully'),
-                                            ),
-                                          );
-                                          Navigator.pop(context);
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Failed to upload file, please try again.'),
-                                            ),
-                                          );
+                                        if (uploadedFiles != null &&
+                                            uploadedFiles!.isNotEmpty) {
+                                          await uploadFiles("insurance");
+                                          await uploadFiles("pollution");
+                                          await uploadFiles("fitness");
+                                          await uploadFiles("image");
+                                          await uploadFiles("rc");
                                         }
+                                        VehicleProvider().addVehicle(
+                                            registrationNumberController,
+                                            modelController,
+                                            registrationDate!,
+                                            vehicleType!,
+                                            ownershipController,
+                                            drivers!,
+                                            purposeOfUseController,
+                                            insuranceExpiryDate!,
+                                            pollutionDate!,
+                                            fitnessDate!,
+                                            currentKMController,
+                                            fuelType!,
+                                            emergencyContactController,
+                                            engineNoController,
+                                            chassisNoController,
+                                            uploadedImageFileUrls,
+                                            uploadedRcFileUrls,
+                                            uploadedPollutionFileUrls,
+                                            uploadedInsuranceFileUrls,
+                                            uploadedFitnessFileUrls);
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Vehicle added successfully'),
+                                          ),
+                                        );
+                                        Navigator.pop(context);
                                       }
                                     }
                                   },

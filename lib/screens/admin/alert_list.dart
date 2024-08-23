@@ -150,10 +150,13 @@ class _AlertListState extends State<AlertList> {
                                         const Spacer(),
                                         Text(
                                           filterValue == 1
-                                              ? vehicle['Fitness_Upto']
+                                              ? _formatDate(
+                                                  vehicle['Fitness_Upto'])
                                               : filterValue == 2
-                                                  ? vehicle['Insurance_Upto']
-                                                  : vehicle['Pollution_Upto'],
+                                                  ? _formatDate(
+                                                      vehicle['Insurance_Upto'])
+                                                  : _formatDate(vehicle[
+                                                      'Pollution_Upto']),
                                         ),
                                       ],
                                     ),
@@ -256,5 +259,10 @@ class _AlertListState extends State<AlertList> {
     }
 
     return filteredItems;
+  }
+
+  String _formatDate(String dateString) {
+    final inputDate = DateFormat('yyyy-MM-dd').parse(dateString);
+    return DateFormat('dd-MMM-yyyy').format(inputDate);
   }
 }

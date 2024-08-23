@@ -19,6 +19,64 @@ class ListAdminVehicleWidget extends StatefulWidget {
 }
 
 class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
+  String _getStatus(Color color) {
+    if (color == Colors.green) return 'Good';
+    if (color == Colors.amber) return 'Warning';
+    return 'Expired';
+  }
+
+  String _formatDate(String dateString) {
+    final date = DateFormat('yyyy-MM-dd').parse(dateString);
+    return DateFormat('dd-MMM-yyyy').format(date);
+  }
+
+  String _getRemainingDays(String dateString) {
+    final date = DateFormat('yyyy-MM-dd').parse(dateString);
+    final difference = date.difference(DateTime.now()).inDays;
+    return difference > 0 ? difference.toString() : '0';
+  }
+
+  Widget _buildStatusRow(String title, String date, Color statusColor) {
+    final formattedDate = _formatDate(date);
+    final remainingDays = _getRemainingDays(date);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(formattedDate, style: TextStyle(fontSize: 13)),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _getStatus(statusColor),
+                    style: TextStyle(
+                        color: statusColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                SizedBox(width: 4),
+                Text(
+                  'Remaining: $remainingDays days',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<VehicleProvider>(context, listen: false).fetchAllVehicleData();
@@ -40,8 +98,10 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
+            childAspectRatio: (MediaQuery.of(context).size.width / 2) /
+                (MediaQuery.of(context).size.height / 4.5),
           ),
           itemCount: widget.isHomePage
               ? (items.length > 5)
@@ -88,7 +148,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
               pollutionIcon = Colors.red;
             }
             return Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -102,13 +162,12 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                   );
                 },
                 child: Container(
-                  height: 170,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -118,11 +177,13 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                               .toUpperCase()
                               .replaceAll('_', ' '),
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          textScaleFactor: 0.8,
                         ),
                         Text(
                           vehicle['model'],
-                          style: const TextStyle(fontSize: 15),
+                          style: const TextStyle(fontSize: 13),
+                          textScaleFactor: 0.8,
                         ),
                         Expanded(
                           child: vehicle['vehicle_type_image'].isNotEmpty
@@ -130,8 +191,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                   vehicle['vehicle_type_image'],
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
-                                    print(
-                                        'Error loading image: $error'); // Debugging output
+                                    print('Error loading image: $error');
                                     return const Center(
                                       child: Icon(Icons.error),
                                     );
@@ -142,31 +202,70 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                   fit: BoxFit.contain,
                                 ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: const Color.fromRGBO(236, 240, 245, 1),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Icon(
-                                  Icons.health_and_safety,
-                                  color: insuranceIcon,
-                                ),
-                                Icon(
-                                  Icons.construction,
-                                  color: fitnessIcon,
-                                ),
-                                Icon(
-                                  Icons.air,
-                                  color: pollutionIcon,
-                                ),
-                              ],
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Vehicle Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _buildStatusRow(
+                                          'Insurance',
+                                          vehicle['Insurance_Upto'],
+                                          insuranceIcon),
+                                      SizedBox(height: 12),
+                                      _buildStatusRow('Fitness',
+                                          vehicle['Fitness_Upto'], fitnessIcon),
+                                      SizedBox(height: 12),
+                                      _buildStatusRow(
+                                          'Pollution',
+                                          vehicle['Pollution_Upto'],
+                                          pollutionIcon),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('Close'),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: const Color.fromRGBO(236, 240, 245, 1),
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    Icons.health_and_safety,
+                                    color: insuranceIcon,
+                                    size: 20,
+                                  ),
+                                  Icon(
+                                    Icons.construction,
+                                    color: fitnessIcon,
+                                    size: 20,
+                                  ),
+                                  Icon(
+                                    Icons.air,
+                                    color: pollutionIcon,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         )

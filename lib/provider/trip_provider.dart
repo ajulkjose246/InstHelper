@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TripProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _tripData = [];
@@ -14,14 +15,17 @@ class TripProvider extends ChangeNotifier {
   final Map<String, String> _headers = {'Content-Type': 'application/json'};
 
   Future<void> addTrip(
-      List<String> numbers,
-      List<String> drivers,
-      List<String> totalKm,
-      List<String> additionalLocations,
-      String tripPurpose,
-      TimeOfDay selectedTime) async {
+    List<String> numbers,
+    List<String> drivers,
+    List<String> totalKm,
+    List<String> additionalLocations,
+    String tripPurpose,
+    TimeOfDay selectedTime,
+    DateTime selectedDate,
+  ) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
     String sql =
-        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `starting_time`, `route`, `starting_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}','${json.encode(additionalLocations)}','${json.encode(totalKm)}')";
+        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `starting_time`, `starting_date`, `route`, `starting_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}','$formattedDate','${json.encode(additionalLocations)}','${json.encode(totalKm)}')";
 
     final body = json.encode({
       'sql': sql,
@@ -33,8 +37,7 @@ class TripProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         print('Trip added successfully');
       } else {
-        print(
-            'Failed to update vehicle data. Status code: ${response.statusCode}');
+        print('Failed to update vehicle data. Status code: ${sql}');
       }
     } catch (e) {
       print('Error: $e');

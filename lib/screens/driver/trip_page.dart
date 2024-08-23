@@ -40,6 +40,13 @@ class _TripPageState extends State<TripPage> {
           children: [
             _buildHeader(),
             const SizedBox(height: 10), // Add space between header and list
+            const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "My Trip List",
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+              ),
+            ),
             _buildTripList(filteredTripData), // Use filtered data
           ],
         ),

@@ -12,77 +12,89 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    print("Admin Profile View");
+    // Get the text scale factor
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage('assets/img/demo.jpg'),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Ajul K Jose",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20 / textScaleFactor),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50 / textScaleFactor,
+                          backgroundImage: AssetImage('assets/img/demo.jpg'),
+                        ),
+                        SizedBox(height: 10 / textScaleFactor),
+                        Text(
+                          "Ajul K Jose",
+                          style: TextStyle(
+                            fontSize: 20 / textScaleFactor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  margin: const EdgeInsets.all(15),
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Dark Mode"),
-                      Switch(
-                          activeColor: Colors.red,
-                          value: true,
-                          onChanged: (value) {})
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  GoogleSignIn().signOut();
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.red),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: EdgeInsets.all(15 / textScaleFactor),
+                    padding: EdgeInsets.all(10 / textScaleFactor),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Dark Mode",
+                          style: TextStyle(fontSize: 16 / textScaleFactor),
+                        ),
+                        Switch(
+                            activeColor: Colors.red,
+                            value: true,
+                            onChanged: (value) {})
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16 / textScaleFactor),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    GoogleSignIn().signOut();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.red),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16 / textScaleFactor,
                     ),
                   ),
                 ),
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
