@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:insthelper/components/request_permmision.dart';
+import 'package:insthelper/components/theme_mode.dart';
 import 'package:insthelper/firebase_options.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/map_auto_provider.dart';
+import 'package:insthelper/provider/theme_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:insthelper/screens/authentication/auth_page.dart';
@@ -44,6 +46,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => HomescreenProvider()),
         ChangeNotifierProvider(create: (_) => VehicleProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => MapAuto()),
         // Add more providers as needed
       ],
@@ -189,6 +192,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme:
+          Provider.of<ThemeProvider>(context).isDarkMode ? darkMode : lightMode,
       debugShowCheckedModeBanner: false,
       routes: ({
         // Admin

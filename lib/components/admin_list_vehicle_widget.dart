@@ -39,14 +39,20 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
   Widget _buildStatusRow(String title, String date, Color statusColor) {
     final formattedDate = _formatDate(date);
     final remainingDays = _getRemainingDays(date);
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+        Text(title,
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onSurface)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(formattedDate, style: TextStyle(fontSize: 13)),
+            Text(formattedDate,
+                style: TextStyle(
+                    fontSize: 13, color: theme.colorScheme.onSurface)),
             SizedBox(height: 4),
             Row(
               children: [
@@ -67,7 +73,10 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                 SizedBox(width: 4),
                 Text(
                   'Remaining: $remainingDays days',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.onSurface),
                 ),
               ],
             ),
@@ -80,6 +89,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
   @override
   Widget build(BuildContext context) {
     Provider.of<VehicleProvider>(context, listen: false).fetchAllVehicleData();
+    final theme = Theme.of(context);
     return Consumer<VehicleProvider>(
       builder: (context, vehicleProvider, child) {
         List items = vehicleProvider.vehicles.values.toList();
@@ -163,7 +173,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
@@ -176,13 +186,16 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                               .toString()
                               .toUpperCase()
                               .replaceAll('_', ' '),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: theme.colorScheme.onSurface),
                           textScaleFactor: 0.8,
                         ),
                         Text(
                           vehicle['model'],
-                          style: const TextStyle(fontSize: 13),
+                          style: TextStyle(
+                              fontSize: 13, color: theme.colorScheme.onSurface),
                           textScaleFactor: 0.8,
                         ),
                         Expanded(
@@ -192,8 +205,9 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     print('Error loading image: $error');
-                                    return const Center(
-                                      child: Icon(Icons.error),
+                                    return Center(
+                                      child: Icon(Icons.error,
+                                          color: theme.colorScheme.error),
                                     );
                                   },
                                 )
@@ -208,9 +222,11 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
+                                  backgroundColor: theme.colorScheme.surface,
                                   title: Text('Vehicle Status',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.colorScheme.onSurface)),
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -230,7 +246,10 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                   ),
                                   actions: [
                                     TextButton(
-                                      child: Text('Close'),
+                                      child: Text('Close',
+                                          style: TextStyle(
+                                              color:
+                                                  theme.colorScheme.primary)),
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
                                     ),
@@ -241,7 +260,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: const Color.fromRGBO(236, 240, 245, 1),
+                                color: theme.colorScheme.secondary,
                                 borderRadius: BorderRadius.circular(8)),
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),

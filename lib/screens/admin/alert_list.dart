@@ -26,11 +26,11 @@ class _AlertListState extends State<AlertList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Alerts", style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+        title: Text("Alerts", style: TextStyle(color: Colors.white)),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: Container(
-        color: const Color.fromRGBO(236, 240, 245, 1),
+        color: Theme.of(context).colorScheme.background,
         child: Column(
           children: [
             Padding(
@@ -53,17 +53,16 @@ class _AlertListState extends State<AlertList> {
                 child: Container(
                   width: double.infinity,
                   height: 50,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: TextField(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(vertical: 15),
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(Icons.search,
+                          color: Theme.of(context).colorScheme.onSurface),
                     ),
                     onChanged: (val) {
                       setState(() {
@@ -99,72 +98,82 @@ class _AlertListState extends State<AlertList> {
                               ),
                             );
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Container(
-                              height: 150,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          vehicle['registration_number']
-                                              .toString()
-                                              .toUpperCase()
-                                              .replaceAll('_', ' '),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 19),
-                                        ),
-                                        const Spacer(),
-                                        const Icon(
-                                            Icons.arrow_circle_right_outlined),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      vehicle['model'],
-                                      style: const TextStyle(fontSize: 15),
-                                    ),
-                                    const Spacer(),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          filterValue == 1
-                                              ? "Fitness"
-                                              : filterValue == 2
-                                                  ? "Insurance"
-                                                  : "Pollution",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 19),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          filterValue == 1
-                                              ? _formatDate(
-                                                  vehicle['Fitness_Upto'])
-                                              : filterValue == 2
-                                                  ? _formatDate(
-                                                      vehicle['Insurance_Upto'])
-                                                  : _formatDate(vehicle[
-                                                      'Pollution_Upto']),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    const Text(
-                                        "We will notify you 30 days before any validity expiry")
-                                  ],
-                                ),
+                          child: Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 4),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        vehicle['registration_number']
+                                            .toString()
+                                            .toUpperCase()
+                                            .replaceAll('_', ' '),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      Icon(Icons.arrow_forward_ios,
+                                          size: 18,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    vehicle['model'],
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey[600]),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        filterValue == 1
+                                            ? "Fitness"
+                                            : filterValue == 2
+                                                ? "Insurance"
+                                                : "Pollution",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                      ),
+                                      Text(
+                                        filterValue == 1
+                                            ? _formatDate(
+                                                vehicle['Fitness_Upto'])
+                                            : filterValue == 2
+                                                ? _formatDate(
+                                                    vehicle['Insurance_Upto'])
+                                                : _formatDate(
+                                                    vehicle['Pollution_Upto']),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "Expires in ${_getDaysUntilExpiry(vehicle)} days",
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey[600]),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -193,17 +202,21 @@ class _AlertListState extends State<AlertList> {
         height: 50,
         decoration: BoxDecoration(
           color: filterValue != value
-              ? Colors.white
-              : const Color.fromRGBO(139, 91, 159, 1),
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(50),
         ),
         child: Center(
-            child: Text(
-          label,
-          style: TextStyle(
+          child: Text(
+            label,
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: filterValue != value ? Colors.black : Colors.white),
-        )),
+              color: filterValue != value
+                  ? Theme.of(context).colorScheme.inversePrimary
+                  : Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -264,5 +277,15 @@ class _AlertListState extends State<AlertList> {
   String _formatDate(String dateString) {
     final inputDate = DateFormat('yyyy-MM-dd').parse(dateString);
     return DateFormat('dd-MMM-yyyy').format(inputDate);
+  }
+
+  int _getDaysUntilExpiry(Map<String, dynamic> vehicle) {
+    String dateString = filterValue == 1
+        ? vehicle['Fitness_Upto']
+        : filterValue == 2
+            ? vehicle['Insurance_Upto']
+            : vehicle['Pollution_Upto'];
+    DateTime expiryDate = DateFormat('yyyy-MM-dd').parse(dateString);
+    return expiryDate.difference(DateTime.now()).inDays;
   }
 }

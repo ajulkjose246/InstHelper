@@ -23,14 +23,14 @@ class VehicleViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List data = [];
-    // Get the text scale factor
     final double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final ThemeData theme = Theme.of(context);
 
     return ChangeNotifierProvider(
         create: (context) => VehicleProvider(),
         child: Scaffold(
             appBar: AppBar(
-              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              backgroundColor: theme.colorScheme.primaryContainer,
               title: Text(
                 vehicleRegistrationNo.replaceAll('_', ' '),
                 style: const TextStyle(
@@ -46,7 +46,7 @@ class VehicleViewScreen extends StatelessWidget {
                 }
                 data = provider.specificVehicles[vehicleRegistrationNo];
                 return Container(
-                  color: const Color.fromRGBO(236, 240, 245, 1),
+                  color: theme.scaffoldBackgroundColor,
                   child: ListView(
                     children: [
                       const SizedBox(
@@ -56,7 +56,7 @@ class VehicleViewScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           width: double.infinity,
@@ -76,8 +76,9 @@ class VehicleViewScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromRGBO(139, 91, 159, 1),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary,
                                         ),
                                       ),
                                     ),
@@ -87,7 +88,6 @@ class VehicleViewScreen extends StatelessWidget {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return UpdateMessage(
-                                              dialogHeight: 0.25,
                                               type: 1,
                                               formattedRegNumber: data[0]
                                                       ['registration_number']
@@ -99,8 +99,8 @@ class VehicleViewScreen extends StatelessWidget {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: const Color.fromRGBO(
-                                                236, 240, 245, 1),
+                                            color:
+                                                theme.scaffoldBackgroundColor,
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         child: const Padding(
@@ -204,7 +204,7 @@ class VehicleViewScreen extends StatelessWidget {
                             vertical: 10, horizontal: 20),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           width: double.infinity,
@@ -225,8 +225,9 @@ class VehicleViewScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromRGBO(139, 91, 159, 1),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary,
                                         ),
                                       ),
                                     ),
@@ -238,7 +239,6 @@ class VehicleViewScreen extends StatelessWidget {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return UpdateMessage(
-                                                dialogHeight: 0.52,
                                                 type: 2,
                                                 formattedRegNumber: data[0]![
                                                         'registration_number']
@@ -250,8 +250,8 @@ class VehicleViewScreen extends StatelessWidget {
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: const Color.fromRGBO(
-                                                  236, 240, 245, 1),
+                                              color:
+                                                  theme.scaffoldBackgroundColor,
                                               borderRadius:
                                                   BorderRadius.circular(20)),
                                           child: const Padding(
@@ -476,7 +476,7 @@ class VehicleViewScreen extends StatelessWidget {
                             vertical: 10, horizontal: 20),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           width: double.infinity,
@@ -498,8 +498,9 @@ class VehicleViewScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromRGBO(139, 91, 159, 1),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary,
                                         ),
                                       ),
                                     ),
@@ -509,7 +510,6 @@ class VehicleViewScreen extends StatelessWidget {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return UpdateMessage(
-                                              dialogHeight: 0.45,
                                               type: 3,
                                               formattedRegNumber: data[0]![
                                                       'registration_number']
@@ -521,8 +521,8 @@ class VehicleViewScreen extends StatelessWidget {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: const Color.fromRGBO(
-                                                236, 240, 245, 1),
+                                            color:
+                                                theme.scaffoldBackgroundColor,
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         child: const Padding(
@@ -706,7 +706,7 @@ class VehicleViewScreen extends StatelessWidget {
                             vertical: 10, horizontal: 20),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           width: double.infinity,
@@ -728,8 +728,9 @@ class VehicleViewScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 22 / textScaleFactor,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromRGBO(139, 91, 159, 1),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary,
                                         ),
                                       ),
                                     ),
@@ -739,7 +740,6 @@ class VehicleViewScreen extends StatelessWidget {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return UpdateMessage(
-                                              dialogHeight: 0.4,
                                               type: 4,
                                               formattedRegNumber: data[0]![
                                                       'registration_number']
@@ -751,8 +751,8 @@ class VehicleViewScreen extends StatelessWidget {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: const Color.fromRGBO(
-                                                236, 240, 245, 1),
+                                            color:
+                                                theme.scaffoldBackgroundColor,
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         child: const Padding(
@@ -846,86 +846,6 @@ class VehicleViewScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.phone,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Emergency Contact",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${data[0]!['emergency_contact'].toString()}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.person,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Assigned Driver",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${data[0]!['assigned_driver'].toString()}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ],
                             ),
                           ),
@@ -937,7 +857,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   vertical: 10, horizontal: 20),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: theme.cardColor,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 width: double.infinity,
@@ -959,8 +879,9 @@ class VehicleViewScreen extends StatelessWidget {
                                               style: TextStyle(
                                                 fontSize: 22 / textScaleFactor,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color.fromRGBO(
-                                                    139, 91, 159, 1),
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .inversePrimary,
                                               ),
                                             ),
                                           ),
@@ -968,8 +889,8 @@ class VehicleViewScreen extends StatelessWidget {
                                             onTap: () {},
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                  color: const Color.fromRGBO(
-                                                      236, 240, 245, 1),
+                                                  color: theme
+                                                      .scaffoldBackgroundColor,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20)),
@@ -1045,40 +966,86 @@ class VehicleViewScreen extends StatelessWidget {
               },
             ),
             floatingActionButton: SpeedDial(
-              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              backgroundColor: theme.colorScheme.inversePrimary,
               icon: Icons.add,
               activeIcon: Icons.close,
-              foregroundColor:
-                  Colors.white, // Change the color of the main icon
-              overlayColor: Colors.white,
+              foregroundColor: theme.colorScheme.onPrimary,
+              overlayColor: theme.scaffoldBackgroundColor,
               overlayOpacity: 0.5,
               children: [
                 SpeedDialChild(
-                  child: const Icon(LineIcons.share,
-                      color: Colors.white), // Change the color of this icon
-                  backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+                  child:
+                      Icon(LineIcons.share, color: theme.colorScheme.onPrimary),
+                  backgroundColor: theme.colorScheme.inversePrimary,
                   onTap: () {
+                    String shareText = '''
+Vehicle Details:
+Registration No: ${data[0]!['registration_number']!.replaceAll('_', ' ')}
+Owner: ${data[0]!['ownership']}
+Registered RTO: ${data[0]!['rto_name']}
+
+Vehicle Info:
+Type: ${data[0]!['vehicle_type']}
+Model: ${data[0]!['model']}
+Fuel Type: ${data[0]!['fuel_type']}
+Engine No: ${data[0]!['engine_no']}
+Chassis No: ${data[0]!['chassis_no']}
+
+Important Dates:
+Registration Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['registration_date']))}
+Insurance Upto: ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Insurance_Upto']))}
+Pollution Upto: ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Pollution_Upto']))}
+Fitness Upto: ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Fitness_Upto']))}
+
+Other Info:
+Purpose of Use: ${data[0]!['purpose_of_use']}
+''';
+
                     Share.share(
-                      'Vehicle No : ${data[0]!['registration_number']!.replaceAll('_', ' ')}\nOwner : ${data[0]!['ownership']}\nAssigned Driver : ${data[0]!['assigned_driver']}\nType : ${data[0]!['vehicle_type']}\nModel : ${data[0]!['model']}\nPurpose : ${data[0]!['purpose_of_use']}\nContact : ${data[0]!['emergency_contact']}',
+                      shareText,
                       subject: 'Vehicle Details',
                     );
                   },
                 ),
                 SpeedDialChild(
-                  child: const Icon(Icons.delete,
-                      color: Colors.white), // Change the color of this icon
-                  backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+                  child: Icon(Icons.delete, color: theme.colorScheme.onPrimary),
+                  backgroundColor: theme.colorScheme.inversePrimary,
                   onTap: () {
-                    VehicleProvider()
-                        .deleteVehicle(data[0]!['registration_number']);
-                    Fluttertoast.showToast(
-                        msg: "Vehicle deleted successfully",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Confirm Delete"),
+                          content: const Text(
+                              "Are you sure you want to delete this vehicle?"),
+                          actions: [
+                            TextButton(
+                              child: const Text("Cancel"),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("Delete"),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                                VehicleProvider().deleteVehicle(
+                                    data[0]!['registration_number']);
+                                Fluttertoast.showToast(
+                                    msg: "Vehicle deleted successfully",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                Navigator.pop(
+                                    context); // Go back to previous screen
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               ],

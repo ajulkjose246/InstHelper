@@ -13,34 +13,35 @@ class LocationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12), // Border radius
+            borderRadius: BorderRadius.circular(12),
             child: Container(
-              color: Colors.white, // Background color
+              color: theme.colorScheme.surface,
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal:
-                        16.0), // Optional: Adjust padding inside ListTile
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
                 horizontalTitleGap: 0,
-                leading: const Icon(Icons.location_on_outlined),
+                leading: Icon(Icons.location_on_outlined,
+                    color: theme.colorScheme.primary),
                 title: Text(
                   location,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyLarge,
                 ),
-                onTap: press, // Ensure the onTap callback is used
+                onTap: press,
               ),
             ),
           ),
         ),
-        const Divider(
+        Divider(
           height: 2,
           thickness: 2,
-          color: Color.fromRGBO(236, 240, 245, 1),
+          color: theme.dividerColor,
         ),
       ],
     );

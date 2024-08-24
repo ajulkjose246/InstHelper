@@ -42,11 +42,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final ownershipController = TextEditingController();
   final purposeOfUseController = TextEditingController();
   final currentKMController = TextEditingController();
-  final emergencyContactController = TextEditingController();
 
   String? vehicleType;
   String? fuelType;
-  String? drivers;
 
   List<XFile>? uploadedFiles;
   List<String> uploadedImageFileUrls = [];
@@ -181,14 +179,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Admin add vehicle");
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Add Vehicle",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+        backgroundColor: theme.colorScheme.primaryContainer,
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
@@ -215,7 +214,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       textcontroller: registrationNumberController,
                       label: "Registration Number",
                       validator: true,
-                      icon: const Icon(Icons.pin),
+                      icon: Icon(Icons.pin, color: theme.colorScheme.primary),
                       regex: RegExp(
                           r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
                       regexlabel: 'KL XX AZ XXXX',
@@ -225,7 +224,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       textcontroller: modelController,
                       label: "Model",
                       validator: true,
-                      icon: const Icon(Icons.emoji_transportation),
+                      icon: Icon(Icons.emoji_transportation,
+                          color: theme.colorScheme.primary),
                       regex: RegExp(r"^[a-zA-Z0-9]+([\s\-',.][a-zA-Z0-9]+)*$"),
                       regexlabel: 'e.g. Ashok Leyland, Swift Dzire',
                       numberkeyboard: false,
@@ -235,14 +235,14 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1.0),
+                          border: Border.all(
+                              color: theme.colorScheme.outline, width: 1.0),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Row(
                           children: [
-                            const Icon(
-                              Icons.directions_car,
-                            ),
+                            Icon(Icons.directions_car,
+                                color: theme.colorScheme.primary),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Consumer<VehicleProvider>(
@@ -280,8 +280,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       textcontroller: engineNoController,
                       label: "Engine No",
                       validator: false,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.build_outlined,
+                        color: theme.colorScheme.primary,
                       ),
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
@@ -291,8 +292,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       textcontroller: chassisNoController,
                       label: "Chassis No",
                       validator: false,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.construction_outlined,
+                        color: theme.colorScheme.primary,
                       ),
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
@@ -302,8 +304,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       textcontroller: currentKMController,
                       label: "Current KM",
                       validator: true,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.av_timer,
+                        color: theme.colorScheme.primary,
                       ),
                       regex: RegExp(r'^\d+(\.\d{1,2})?$'),
                       regexlabel: '',
@@ -314,14 +317,14 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1.0),
+                          border: Border.all(
+                              color: theme.colorScheme.outline, width: 1.0),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Row(
                           children: [
-                            const Icon(
-                              Icons.local_gas_station_outlined,
-                            ),
+                            Icon(Icons.local_gas_station_outlined,
+                                color: theme.colorScheme.primary),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Consumer<VehicleProvider>(
@@ -377,7 +380,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 onPressed: () {
                                   _pickFiles("image");
                                 },
-                                icon: Icon(Icons.file_upload_outlined),
+                                icon: Icon(Icons.file_upload_outlined,
+                                    color: theme.colorScheme.primary),
                               ),
                             ),
                             style: const TextStyle(fontSize: 16),
@@ -397,6 +401,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -435,79 +441,23 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           textcontroller: ownershipController,
                           label: "Ownership",
                           validator: true,
-                          icon: const Icon(Icons.numbers_sharp),
+                          icon: Icon(Icons.numbers_sharp,
+                              color: theme.colorScheme.primary),
                           regex: RegExp(
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
                           numberkeyboard: false,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.grey, width: 1.0),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.person),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Consumer<VehicleProvider>(
-                                    builder: (context, vehicleProvider, child) {
-                                      final vehicleDrivers =
-                                          vehicleProvider.vehicleDrivers[
-                                                  'vehicleDrivers'] ??
-                                              [];
-                                      return DropdownButtonHideUnderline(
-                                        child: DropdownButton<String>(
-                                          value: drivers,
-                                          hint: const Text('Assigned Driver'),
-                                          items: vehicleDrivers
-                                              .map<DropdownMenuItem<String>>(
-                                                  (vehicle) {
-                                            return DropdownMenuItem<String>(
-                                              value: vehicle['name'],
-                                              child: Text(vehicle['name']),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              drivers = newValue;
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                         FormInputField(
                           textcontroller: purposeOfUseController,
                           label: "Purpose of Use",
                           validator: true,
-                          icon: const Icon(Icons.notes_rounded),
+                          icon: Icon(Icons.notes_rounded,
+                              color: theme.colorScheme.primary),
                           regex: RegExp(
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
                           numberkeyboard: false,
-                        ),
-                        FormInputField(
-                          textcontroller: emergencyContactController,
-                          label: "Emergency Contact",
-                          validator: true,
-                          icon: const Icon(
-                            Icons.phone,
-                          ),
-                          regex: RegExp(r"^[6-9]\d{9}$"),
-                          regexlabel: '',
-                          numberkeyboard: true,
                         ),
                         const SizedBox(height: 20),
                         Row(
@@ -519,6 +469,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.colorScheme.primary,
+                                foregroundColor: theme.colorScheme.onPrimary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -543,6 +495,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.colorScheme.primary,
+                                foregroundColor: theme.colorScheme.onPrimary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -562,7 +516,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       ],
                     )
                   : isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(
+                              color: theme.colorScheme.primary))
                       : ListView(
                           children: [
                             Transform.scale(
@@ -590,14 +546,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       horizontal: 12.0, vertical: 16.0),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: Colors.grey, width: 1.0),
+                                        color: theme.colorScheme.outline,
+                                        width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
+                                        color: theme.colorScheme.primary,
                                       ),
                                       const SizedBox(
                                         width: 12,
@@ -608,9 +566,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                               ? "${registrationDate!.toLocal()}"
                                                   .split(' ')[0]
                                               : "Registration Date",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color:
+                                                theme.colorScheme.onBackground,
                                           ),
                                         ),
                                       ),
@@ -638,7 +597,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                         onPressed: () {
                                           _pickFiles("rc");
                                         },
-                                        icon: Icon(Icons.file_upload_outlined),
+                                        icon: Icon(Icons.file_upload_outlined,
+                                            color: theme.colorScheme.primary),
                                       ),
                                     ),
                                     style: const TextStyle(fontSize: 16),
@@ -655,14 +615,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       horizontal: 12.0, vertical: 16.0),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: Colors.grey, width: 1.0),
+                                        color: theme.colorScheme.outline,
+                                        width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
+                                        color: theme.colorScheme.primary,
                                       ),
                                       const SizedBox(
                                         width: 12,
@@ -673,9 +635,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                               ? "${insuranceExpiryDate!.toLocal()}"
                                                   .split(' ')[0]
                                               : "Insurance Upto",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color:
+                                                theme.colorScheme.onBackground,
                                           ),
                                         ),
                                       ),
@@ -708,7 +671,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                         onPressed: () {
                                           _pickFiles("insurance");
                                         },
-                                        icon: Icon(Icons.file_upload_outlined),
+                                        icon: Icon(Icons.file_upload_outlined,
+                                            color: theme.colorScheme.primary),
                                       ),
                                     ),
                                     style: const TextStyle(fontSize: 16),
@@ -725,14 +689,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       horizontal: 12.0, vertical: 16.0),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: Colors.grey, width: 1.0),
+                                        color: theme.colorScheme.outline,
+                                        width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
+                                        color: theme.colorScheme.primary,
                                       ),
                                       const SizedBox(
                                         width: 12,
@@ -743,9 +709,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                               ? "${pollutionDate!.toLocal()}"
                                                   .split(' ')[0]
                                               : "Pollution Upto",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color:
+                                                theme.colorScheme.onBackground,
                                           ),
                                         ),
                                       ),
@@ -778,7 +745,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                         onPressed: () {
                                           _pickFiles("pollution");
                                         },
-                                        icon: Icon(Icons.file_upload_outlined),
+                                        icon: Icon(Icons.file_upload_outlined,
+                                            color: theme.colorScheme.primary),
                                       ),
                                     ),
                                     style: const TextStyle(fontSize: 16),
@@ -795,14 +763,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                       horizontal: 12.0, vertical: 16.0),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: Colors.grey, width: 1.0),
+                                        color: theme.colorScheme.outline,
+                                        width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
+                                        color: theme.colorScheme.primary,
                                       ),
                                       const SizedBox(
                                         width: 12,
@@ -813,9 +783,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                               ? "${fitnessDate!.toLocal()}"
                                                   .split(' ')[0]
                                               : "Fitness Upto",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color:
+                                                theme.colorScheme.onBackground,
                                           ),
                                         ),
                                       ),
@@ -846,7 +817,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                         onPressed: () {
                                           _pickFiles("fitness");
                                         },
-                                        icon: Icon(Icons.file_upload_outlined),
+                                        icon: const Icon(
+                                            Icons.file_upload_outlined),
                                       ),
                                     ),
                                     style: const TextStyle(fontSize: 16),
@@ -864,6 +836,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
+                                    backgroundColor: theme.colorScheme.primary,
+                                    foregroundColor:
+                                        theme.colorScheme.onPrimary,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -929,14 +904,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             registrationDate!,
                                             vehicleType!,
                                             ownershipController,
-                                            drivers!,
                                             purposeOfUseController,
                                             insuranceExpiryDate!,
                                             pollutionDate!,
                                             fitnessDate!,
                                             currentKMController,
                                             fuelType!,
-                                            emergencyContactController,
                                             engineNoController,
                                             chassisNoController,
                                             uploadedImageFileUrls,
@@ -959,6 +932,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
+                                    backgroundColor: theme.colorScheme.primary,
+                                    foregroundColor:
+                                        theme.colorScheme.onPrimary,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),

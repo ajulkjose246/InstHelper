@@ -168,6 +168,7 @@ class _TripPageState extends State<TripPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final tripProvider = Provider.of<TripProvider>(context);
     final vehicleProvider = Provider.of<VehicleProvider>(context);
     final tripData = tripProvider.tripData;
@@ -188,7 +189,7 @@ class _TripPageState extends State<TripPage> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,21 +198,20 @@ class _TripPageState extends State<TripPage> {
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  const Spacer(),
-                  Center(
+                  Expanded(
                     child: Container(
-                      width: 250,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                       child: TextField(
                         readOnly: true,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(vertical: 15),
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: Icon(Icons.search,
+                              color: theme.colorScheme.onSurface),
                         ),
                         onTap: () {
                           context
@@ -221,7 +221,7 @@ class _TripPageState extends State<TripPage> {
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () {
                       context
@@ -229,10 +229,10 @@ class _TripPageState extends State<TripPage> {
                           .updateMyVariable(newValue: 3);
                     },
                     child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                       child: ClipRRect(
@@ -245,25 +245,26 @@ class _TripPageState extends State<TripPage> {
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/alert');
                     },
                     child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
-                      child: const ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        child: Icon(Icons.notifications),
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: Icon(Icons.notifications,
+                            color: theme.colorScheme.onSurface),
                       ),
                     ),
                   ),
-                  const Spacer(),
                 ],
               ),
             ),
@@ -271,11 +272,11 @@ class _TripPageState extends State<TripPage> {
               padding: const EdgeInsets.all(10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: theme.shadowColor.withOpacity(0.1),
                       spreadRadius: 1,
                       blurRadius: 3,
                       offset: const Offset(0, 1),
@@ -288,10 +289,7 @@ class _TripPageState extends State<TripPage> {
                   children: [
                     Text(
                       "Filter Trips:",
-                      style: TextStyle(
-                        fontSize: 18 / textScaleFactor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -364,11 +362,11 @@ class _TripPageState extends State<TripPage> {
                         child: Container(
                           width: 220,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
+                                color: theme.shadowColor.withOpacity(0.3),
                                 spreadRadius: 2,
                                 blurRadius: 5,
                                 offset: const Offset(0, 3),
@@ -387,29 +385,25 @@ class _TripPageState extends State<TripPage> {
                                     Expanded(
                                       child: Text(
                                         trip['purpose'],
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
+                                        style: theme.textTheme.titleMedium,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                       ),
                                     ),
                                     const SizedBox(width: 5),
-                                    const Icon(
-                                        Icons.arrow_circle_right_outlined,
-                                        size: 20),
+                                    Icon(Icons.arrow_circle_right_outlined,
+                                        size: 20, color: theme.iconTheme.color),
                                   ],
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
                                   'Total Vehicles: ${json.decode(trip['vehicle_id']).length}',
-                                  style: const TextStyle(fontSize: 14),
+                                  style: theme.textTheme.bodyMedium,
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
                                   'Time: ${trip['starting_time']}',
-                                  style: const TextStyle(fontSize: 14),
+                                  style: theme.textTheme.bodyMedium,
                                 ),
                               ],
                             ),
@@ -425,10 +419,7 @@ class _TripPageState extends State<TripPage> {
               padding: const EdgeInsets.all(10),
               child: Text(
                 "Select Trip Details",
-                style: TextStyle(
-                  fontSize: 20 / textScaleFactor,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: theme.textTheme.headlineSmall,
               ),
             ),
             Column(
@@ -439,19 +430,25 @@ class _TripPageState extends State<TripPage> {
                   padding: const EdgeInsets.all(10),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16)),
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.shadowColor.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.all(15),
+                        Padding(
+                          padding: const EdgeInsets.all(15),
                           child: Text(
-                            "Trip Vehicles",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            "Trip Vehicles ${index + 1}",
+                            style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Row(
@@ -483,8 +480,7 @@ class _TripPageState extends State<TripPage> {
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                         border: Border.all(
-                                          color: const Color.fromRGBO(
-                                              204, 204, 204, 1),
+                                          color: theme.dividerColor,
                                           width: 1.0,
                                         ),
                                       ),
@@ -515,6 +511,8 @@ class _TripPageState extends State<TripPage> {
                                         hint: const Text("Select Vehicle Type"),
                                         isExpanded: true,
                                         underline: Container(),
+                                        style: theme.textTheme.bodyMedium,
+                                        dropdownColor: theme.cardColor,
                                       ),
                                     );
                                   },
@@ -542,13 +540,15 @@ class _TripPageState extends State<TripPage> {
                                           horizontal: 12.0),
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                            color: Colors.grey, width: 1.0),
+                                            color: theme.dividerColor,
+                                            width: 1.0),
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.directions_car),
+                                          Icon(Icons.directions_car,
+                                              color: theme.iconTheme.color),
                                           const SizedBox(width: 10),
                                           Expanded(
                                             child: DropdownButtonHideUnderline(
@@ -568,8 +568,10 @@ class _TripPageState extends State<TripPage> {
                                                   return DropdownMenuItem<
                                                       String>(
                                                     value: value,
-                                                    child: Text(value
-                                                        .replaceAll('_', ' ')),
+                                                    child: Text(
+                                                      value.replaceAll(
+                                                          '_', ' '),
+                                                    ),
                                                   );
                                                 }).toList(),
                                                 onChanged: (String? newValue) {
@@ -585,6 +587,9 @@ class _TripPageState extends State<TripPage> {
                                                         index);
                                                   });
                                                 },
+                                                style:
+                                                    theme.textTheme.bodyMedium,
+                                                dropdownColor: theme.cardColor,
                                               ),
                                             ),
                                           ),
@@ -624,13 +629,15 @@ class _TripPageState extends State<TripPage> {
                                           horizontal: 12.0),
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                            color: Colors.grey, width: 1.0),
+                                            color: theme.dividerColor,
+                                            width: 1.0),
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.person),
+                                          Icon(Icons.person,
+                                              color: theme.iconTheme.color),
                                           const SizedBox(width: 10),
                                           Expanded(
                                             child: DropdownButtonHideUnderline(
@@ -649,8 +656,16 @@ class _TripPageState extends State<TripPage> {
                                                   return DropdownMenuItem<
                                                       String>(
                                                     value: value,
-                                                    child: Text(value
-                                                        .replaceAll('_', ' ')),
+                                                    child: SizedBox(
+                                                      width:
+                                                          150, // Adjust this value as needed
+                                                      child: Text(
+                                                        value.replaceAll(
+                                                            '_', ' '),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ),
                                                   );
                                                 }).toList(),
                                                 onChanged: (String? newValue) {
@@ -659,6 +674,10 @@ class _TripPageState extends State<TripPage> {
                                                         .text = newValue ?? '';
                                                   });
                                                 },
+                                                isExpanded: true,
+                                                style:
+                                                    theme.textTheme.bodyMedium,
+                                                dropdownColor: theme.cardColor,
                                               ),
                                             ),
                                           ),
@@ -673,10 +692,14 @@ class _TripPageState extends State<TripPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                  decoration: BoxDecoration(
+                                    color: theme.cardColor,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    border: Border.all(
+                                      color: theme.dividerColor,
+                                      width: 1.0,
+                                    ),
                                   ),
                                   child: TextFormField(
                                     controller:
@@ -686,24 +709,29 @@ class _TripPageState extends State<TripPage> {
                                       border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                          color:
-                                              Color.fromRGBO(204, 204, 204, 1),
-                                        ),
+                                        borderSide: BorderSide.none,
                                       ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 12.0),
                                     ),
+                                    style: theme.textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.add),
+                              icon:
+                                  Icon(Icons.add, color: theme.iconTheme.color),
                               onPressed: _addVehicle,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: () => _removeVehicle(index),
-                            ),
+                            if (vehicles.length >
+                                1) // Only show remove button if there's more than one vehicle
+                              IconButton(
+                                icon: Icon(Icons.remove,
+                                    color: theme.iconTheme.color),
+                                onPressed: () => _removeVehicle(index),
+                              ),
                           ],
                         )
                       ],
@@ -716,11 +744,11 @@ class _TripPageState extends State<TripPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: theme.shadowColor.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
                       offset: const Offset(0, 3),
@@ -731,12 +759,9 @@ class _TripPageState extends State<TripPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Trip Locations",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
                     ...additionalLocationControllers
@@ -775,23 +800,26 @@ class _TripPageState extends State<TripPage> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10)),
                                           ),
-                                          prefixIcon: const Icon(
-                                              Icons.share_location_sharp),
+                                          prefixIcon: Icon(
+                                              Icons.share_location_sharp,
+                                              color: theme.iconTheme.color),
                                           hintText:
                                               'Additional Locations ${index + 1}',
+                                          hintStyle: theme.textTheme.bodyMedium,
                                         ),
                                       ),
                                     ),
                                     IconButton(
-                                        icon: const Icon(Icons.add_circle),
+                                        icon: Icon(Icons.add_circle,
+                                            color: theme.iconTheme.color),
                                         onPressed: () {
                                           _addLocationField(index + 1);
                                           _calculateTotalDistance();
                                         }),
                                     additionalLocations.length > 2
                                         ? IconButton(
-                                            icon:
-                                                const Icon(Icons.remove_circle),
+                                            icon: Icon(Icons.remove_circle,
+                                                color: theme.iconTheme.color),
                                             onPressed: () {
                                               _removeLocationField(index);
                                               _calculateTotalDistance();
@@ -804,7 +832,7 @@ class _TripPageState extends State<TripPage> {
                                   activeFocusNode ==
                                       additionalFocusNodes[index])
                                 Container(
-                                  color: Colors.white,
+                                  color: theme.cardColor,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 5),
                                   child: Column(
@@ -848,18 +876,27 @@ class _TripPageState extends State<TripPage> {
               padding: const EdgeInsets.all(10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
+                    color: theme.cardColor,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white,
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
+                        color: theme.shadowColor.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 1),
                       ),
                     ],
                   ),
@@ -869,12 +906,14 @@ class _TripPageState extends State<TripPage> {
                       TextFormField(
                         controller: distanceController,
                         readOnly: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          prefixIcon: Icon(Icons.route),
+                          prefixIcon:
+                              Icon(Icons.route, color: theme.iconTheme.color),
                           labelText: 'Trip Distance',
+                          labelStyle: theme.textTheme.bodyMedium,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -882,7 +921,7 @@ class _TripPageState extends State<TripPage> {
                         textcontroller: tripPurposeController,
                         label: "Purpose",
                         validator: false,
-                        icon: const Icon(Icons.sms),
+                        icon: Icon(Icons.sms, color: theme.iconTheme.color),
                         regex: RegExp("source"),
                         regexlabel: "",
                         numberkeyboard: false,
@@ -915,12 +954,13 @@ class _TripPageState extends State<TripPage> {
                                       labelText: 'Date',
                                       border: const OutlineInputBorder(),
                                       errorText: state.errorText,
+                                      labelStyle: theme.textTheme.bodyMedium,
                                     ),
                                     child: Text(
                                       selectedDate == null
                                           ? 'Select Date'
                                           : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                                      style: const TextStyle(fontSize: 16.0),
+                                      style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
                                 );
@@ -960,12 +1000,13 @@ class _TripPageState extends State<TripPage> {
                                         labelText: 'Time',
                                         border: const OutlineInputBorder(),
                                         errorText: state.errorText,
+                                        labelStyle: theme.textTheme.bodyMedium,
                                       ),
                                       child: Text(
                                         selectedTime == null
                                             ? 'Select Time'
                                             : selectedTime!.format(context),
-                                        style: const TextStyle(fontSize: 16.0),
+                                        style: theme.textTheme.bodyMedium,
                                       ),
                                     ),
                                   );
@@ -1126,14 +1167,11 @@ class _TripPageState extends State<TripPage> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green, // Text color
+                    foregroundColor: theme.colorScheme.onPrimary,
+                    backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 15),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    textStyle: theme.textTheme.labelLarge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -1154,12 +1192,13 @@ class _TripPageState extends State<TripPage> {
 
   Widget _buildDropdown(String label, String? value, List<String?> items,
       void Function(String?) onChanged) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(
-          color: const Color.fromRGBO(204, 204, 204, 1),
+          color: theme.dividerColor,
           width: 1.0,
         ),
       ),
@@ -1175,6 +1214,8 @@ class _TripPageState extends State<TripPage> {
         isExpanded: true,
         underline: Container(),
         hint: Text("Select $label"),
+        style: theme.textTheme.bodyMedium,
+        dropdownColor: theme.cardColor,
       ),
     );
   }

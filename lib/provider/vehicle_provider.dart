@@ -28,14 +28,12 @@ class VehicleProvider extends ChangeNotifier {
     DateTime registrationDateController,
     String vehicleType,
     TextEditingController ownershipController,
-    String drivers,
     TextEditingController purposeOfUseController,
     DateTime insuranceExpiryDate,
     DateTime pollutionUptoController,
     DateTime fitnessUptoController,
     TextEditingController currentKMController,
     String fuelType,
-    TextEditingController emergencyContactController,
     TextEditingController engineNoController,
     TextEditingController chassisNoController,
     List<String> uploadedImageNames,
@@ -48,7 +46,7 @@ class VehicleProvider extends ChangeNotifier {
     String formattedRegNumber =
         registrationNumberController.text.replaceAll(' ', '_').toUpperCase();
     sqlStatements.add(
-        "INSERT INTO `tbl_vehicle`(`assigned_driver`, `chassis_no`, `total_km`, `emergency_contact`, `engine_no`, `fuel_type`, `model`, `ownership`, `purpose_of_use`, `registration_date`, `registration_number`, `vehicle_type`,`uploaded_files`) VALUES ('$drivers','${chassisNoController.text}','${currentKMController.text}','${emergencyContactController.text}','${engineNoController.text}','$fuelType','${modelController.text}','${ownershipController.text}','${purposeOfUseController.text}','${registrationDateController.toIso8601String().split('T')[0]}','$formattedRegNumber','$vehicleType','${json.encode(uploadedRcNames)}')");
+        "INSERT INTO `tbl_vehicle`( `chassis_no`, `total_km`, `engine_no`, `fuel_type`, `model`, `ownership`, `purpose_of_use`, `registration_date`, `registration_number`, `vehicle_type`,`uploaded_files`) VALUES ('${chassisNoController.text}','${currentKMController.text}','${engineNoController.text}','$fuelType','${modelController.text}','${ownershipController.text}','${purposeOfUseController.text}','${registrationDateController.toIso8601String().split('T')[0]}','$formattedRegNumber','$vehicleType','${json.encode(uploadedRcNames)}')");
     sqlStatements.add(
         "INSERT INTO `tbl_insurance`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$formattedRegNumber','${insuranceExpiryDate.toIso8601String().split('T')[0]}','${json.encode(uploadedInsuranceNames)}')");
     sqlStatements.add(
@@ -220,7 +218,7 @@ class VehicleProvider extends ChangeNotifier {
         break;
       case 4:
         sqlStatements.add(
-          "UPDATE `tbl_vehicle` SET `purpose_of_use`='$value1',`emergency_contact`='$value2',`assigned_driver`='$value3' WHERE `registration_number` ='$vehicleRegistrationNo'",
+          "UPDATE `tbl_vehicle` SET `purpose_of_use`='$value1' WHERE `registration_number` ='$vehicleRegistrationNo'",
         );
         break;
       default:

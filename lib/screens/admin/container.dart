@@ -39,17 +39,18 @@ class _ContainerScreenState extends State<ContainerScreen> {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final theme = Theme.of(context);
 
     print("Admin container");
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+      backgroundColor: theme.colorScheme.background,
       body: SafeArea(
         child: _widgetOptions
             .elementAt(context.watch<HomescreenProvider>().selectedIndex),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(139, 91, 159, 1),
+          color: theme.colorScheme.primaryContainer,
           boxShadow: [
             BoxShadow(
               blurRadius: 20,
@@ -64,25 +65,26 @@ class _ContainerScreenState extends State<ContainerScreen> {
               vertical: 8 / textScaleFactor,
             ),
             child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
+              rippleColor: theme.colorScheme.primary.withOpacity(0.2),
+              hoverColor: theme.colorScheme.primary.withOpacity(0.1),
               gap: 8 / textScaleFactor,
-              activeColor: Colors.black,
+              activeColor: theme.colorScheme.onPrimary,
               iconSize: 24 / textScaleFactor,
               padding: EdgeInsets.symmetric(
                 horizontal: 20 / textScaleFactor,
                 vertical: 12 / textScaleFactor,
               ),
               duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.grey[100]!,
-              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+              tabBackgroundColor: theme.colorScheme.tertiary,
+              backgroundColor: theme.colorScheme.primaryContainer,
               tabs: [
-                _buildGButton(Icons.home, 'Home', textScaleFactor),
+                _buildGButton(Icons.home, 'Home', textScaleFactor, theme),
+                _buildGButton(Icons.list_alt_outlined, 'Vehicle List',
+                    textScaleFactor, theme),
                 _buildGButton(
-                    Icons.list_alt_outlined, 'Vehicle List', textScaleFactor),
-                _buildGButton(Icons.trip_origin, 'Trips', textScaleFactor),
-                _buildGButton(LineIcons.user, 'Profile', textScaleFactor),
+                    Icons.trip_origin, 'Trips', textScaleFactor, theme),
+                _buildGButton(
+                    LineIcons.user, 'Profile', textScaleFactor, theme),
               ],
               selectedIndex: context.watch<HomescreenProvider>().selectedIndex,
               onTabChange: (index) {
@@ -102,19 +104,23 @@ class _ContainerScreenState extends State<ContainerScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/add');
                   },
-                  child: const Icon(Icons.add),
+                  backgroundColor: theme.colorScheme.primary,
+                  child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
                 )
               : null,
     );
   }
 
-  GButton _buildGButton(IconData icon, String text, double textScaleFactor) {
+  GButton _buildGButton(
+      IconData icon, String text, double textScaleFactor, ThemeData theme) {
     return GButton(
       icon: icon,
       text: text,
+      iconActiveColor: theme.colorScheme.inversePrimary,
       textStyle: TextStyle(
         fontSize: 14 / textScaleFactor,
         fontWeight: FontWeight.bold,
+        color: theme.colorScheme.inversePrimary,
       ),
     );
   }

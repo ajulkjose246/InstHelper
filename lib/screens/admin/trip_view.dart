@@ -7,9 +7,8 @@ import 'package:insthelper/provider/trip_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:intl/intl.dart';
 
-class TripViewScreen extends StatelessWidget {
+class TripViewScreen extends StatefulWidget {
   final int tripId;
   final String tripName;
 
@@ -19,6 +18,11 @@ class TripViewScreen extends StatelessWidget {
     required this.tripName,
   });
 
+  @override
+  State<TripViewScreen> createState() => _TripViewScreenState();
+}
+
+class _TripViewScreenState extends State<TripViewScreen> {
   String _formatDate(String dateString) {
     DateTime date = DateTime.parse(dateString);
     return "${date.day.toString().padLeft(2, '0')}-${_getMonthAbbreviation(date.month)}-${date.year}";
@@ -42,16 +46,17 @@ class TripViewScreen extends StatelessWidget {
     return monthAbbreviations[month - 1];
   }
 
+  List data = [];
+
   @override
   Widget build(BuildContext context) {
-    List data = [];
     return ChangeNotifierProvider(
       create: (context) => TripProvider(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           title: Text(
-            tripName.replaceAll('_', ' '),
+            widget.tripName.replaceAll('_', ' '),
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -59,7 +64,7 @@ class TripViewScreen extends StatelessWidget {
         ),
         body: Consumer<TripProvider>(
           builder: (context, provider, child) {
-            provider.fetchSpecificTrip(tripId);
+            provider.fetchSpecificTrip(widget.tripId);
             data = provider.tripSpecificData;
 
             if (data.isEmpty) {
@@ -71,505 +76,228 @@ class TripViewScreen extends StatelessWidget {
               List tripLocations = json.decode(data[0]['route']);
 
               return Container(
-                color: const Color.fromRGBO(236, 240, 245, 1),
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: ListView(
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Trip Details",
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(139, 91, 159, 1)),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      color: Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "Date ",
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        color: Colors.grey[600],
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  "${_formatDate(data[0]['starting_date'])}",
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      color: Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "Time ",
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        color: Colors.grey[600],
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  "${data[0]['starting_time']}",
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      color: Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "Purpose ",
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        color: Colors.grey[600],
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  "${data[0]['purpose']}",
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    ),
+                    _buildInfoCard(context, "Trip Details", [
+                      _buildInfoRow(context, "Date",
+                          _formatDate(data[0]['starting_date'])),
+                      _buildInfoRow(context, "Time", data[0]['starting_time']),
+                      _buildInfoRow(context, "Purpose", data[0]['purpose']),
+                    ]),
                     const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Vehicle Details",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(139, 91, 159, 1),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: vehicleNumber.length,
-                              itemBuilder: (context, index) {
-                                return Column(
+                    _buildInfoCard(
+                        context,
+                        "Vehicle Details",
+                        List.generate(
+                            vehicleNumber.length,
+                            (index) => Column(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              color: Colors.grey[600],
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              "Vehicle ${index + 1}",
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: Colors.grey[600],
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "${vehicleNumber[index].replaceAll("_", " ")}",
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              color: Colors.grey[600],
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              "Driver ",
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: Colors.grey[600],
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "${vehicleDrivers[index]}",
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              color: Colors.grey[600],
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              "Starting KM ",
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: Colors.grey[600],
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "${vehicleStartingKm[index]}",
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                        context,
+                                        "Vehicle ${index + 1}",
+                                        vehicleNumber[index]
+                                            .replaceAll("_", " ")),
+                                    _buildInfoRow(context, "Driver",
+                                        vehicleDrivers[index]),
+                                    _buildInfoRow(context, "Starting KM",
+                                        vehicleStartingKm[index]),
+                                    if (index < vehicleNumber.length - 1)
+                                      const Divider(),
                                   ],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                                ))),
                     const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Location Details",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(139, 91, 159, 1),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return UpdateMessage(
-                                    //       dialogHeight: 0.25,
-                                    //       type: 1,
-                                    //       formattedRegNumber: data[0]
-                                    //               ['registration_number']
-                                    //           .toString(),
-                                    //       vehicleData: data[0],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            236, 240, 245, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: tripLocations.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              color: Colors.grey[600],
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              "Location ${index + 1}",
-                                              style: TextStyle(
-                                                fontSize: 19,
-                                                color: Colors.grey[600],
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "${tripLocations[index]}",
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const SizedBox(height: 10),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    _buildInfoCard(
+                        context,
+                        "Location Details",
+                        List.generate(
+                            tripLocations.length,
+                            (index) => _buildInfoRow(
+                                context,
+                                "Location ${index + 1}",
+                                tripLocations[index]))),
                   ],
                 ),
               );
             }
           },
         ),
-        floatingActionButton: SpeedDial(
-          icon: Icons.add,
-          activeIcon: Icons.close,
-          backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-          foregroundColor: Colors.white,
+        floatingActionButton: _buildSpeedDial(context, data),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(
+      BuildContext context, String title, List<Widget> children) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SpeedDialChild(
-              child: const Icon(LineIcons.share, color: Colors.white),
-              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-              onTap: () {
-                if (data.isNotEmpty) {
-                  List vehicleNumber = json.decode(data[0]['vehicle_id']);
-                  List vehicleDrivers = json.decode(data[0]['driver']);
-                  List starting_km = json.decode(data[0]['starting_km']);
-                  List tripLocations = json.decode(data[0]['route']);
-                  String startingTime = data[0]['starting_time'];
-                  String purpose = data[0]['purpose'];
-
-                  // Format the details to be shared
-                  String shareContent = 'Trip Details\n----------------\n'
-                      'Date: $startingTime\n'
-                      'Purpose: $purpose\n\n'
-                      'Vehicle Details\n----------------\n';
-
-                  for (int i = 0; i < vehicleNumber.length; i++) {
-                    shareContent +=
-                        'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
-                        'Driver: ${vehicleDrivers[i]}\n'
-                        'Starting KM: ${starting_km[i]}\n\n';
-                  }
-
-                  shareContent += 'Location Details:\n----------------\n';
-                  for (int i = 0; i < tripLocations.length; i++) {
-                    shareContent += 'Location ${i + 1}: ${tripLocations[i]}\n';
-                  }
-
-                  Share.share(
-                    shareContent,
-                    subject: 'Trip Details',
-                  );
-                }
-              },
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
             ),
-            SpeedDialChild(
-              child: const Icon(LineIcons.trash, color: Colors.white),
-              backgroundColor: const Color.fromRGBO(139, 91, 159, 1),
-              onTap: () {
-                if (data.isNotEmpty) {
-                  TripProvider().deleteTrip(data[0]['id']);
-                  Fluttertoast.showToast(
-                      msg: "Trip deleted successfully",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                  Navigator.pop(context);
-                }
-              },
-            ),
+            const SizedBox(height: 16),
+            ...children,
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSpeedDial(BuildContext context, List data) {
+    return SpeedDial(
+      icon: Icons.add,
+      activeIcon: Icons.close,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      children: [
+        SpeedDialChild(
+          child: Icon(LineIcons.share,
+              color: Theme.of(context).colorScheme.onPrimary),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          onTap: () => _shareTrip(data),
+        ),
+        SpeedDialChild(
+          child: Icon(LineIcons.trash,
+              color: Theme.of(context).colorScheme.onPrimary),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          onTap: () => _deleteTrip(context, data),
+        ),
+      ],
+    );
+  }
+
+  void _shareTrip(List data) {
+    if (data.isNotEmpty) {
+      List vehicleNumber = json.decode(data[0]['vehicle_id']);
+      List vehicleDrivers = json.decode(data[0]['driver']);
+      List starting_km = json.decode(data[0]['starting_km']);
+      List tripLocations = json.decode(data[0]['route']);
+      String startingDate = _formatDate(data[0]['starting_date']);
+      String startingTime = data[0]['starting_time'];
+      String purpose = data[0]['purpose'];
+
+      // Format the details to be shared
+      String shareContent = 'Trip Details\n----------------\n'
+          'Date: $startingDate\n'
+          'Time: $startingTime\n'
+          'Purpose: $purpose\n\n'
+          'Vehicle Details\n----------------\n';
+
+      for (int i = 0; i < vehicleNumber.length; i++) {
+        shareContent +=
+            'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
+            'Driver: ${vehicleDrivers[i]}\n'
+            'Starting KM: ${starting_km[i]}\n\n';
+      }
+
+      shareContent += 'Location Details\n----------------\n';
+      for (int i = 0; i < tripLocations.length; i++) {
+        shareContent += 'Location ${i + 1}: ${tripLocations[i]}\n';
+      }
+
+      Share.share(
+        shareContent,
+        subject: 'Trip Details for ${widget.tripName.replaceAll('_', ' ')}',
+      ).then((result) {
+        if (result.status == ShareResultStatus.success) {
+          Fluttertoast.showToast(
+            msg: "Trip details shared successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: "Failed to share trip details",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+      });
+    }
+  }
+
+  void _deleteTrip(BuildContext context, List data) {
+    if (data.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Confirm Delete"),
+            content: const Text("Are you sure you want to delete this trip?"),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text("Delete"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  TripProvider().deleteTrip(data[0]['id']);
+                  Fluttertoast.showToast(
+                    msg: "Trip deleted successfully",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

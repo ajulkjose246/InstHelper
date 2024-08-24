@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       type = 'Insurance';
     }
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final theme = Theme.of(context);
 
     return Row(
       children: [
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 19 / textScaleFactor,
-              color: Colors.red,
+              color: theme.colorScheme.error,
             ),
           ),
         ),
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             DateFormat('yyyy-MMM-dd').format(nextExpiry),
             style: TextStyle(
-              color: Colors.red,
+              color: theme.colorScheme.error,
               fontSize: 14 / textScaleFactor,
             ),
             overflow: TextOverflow.ellipsis,
@@ -98,10 +99,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // Get screen size and text scale factor
     final screenSize = MediaQuery.of(context).size;
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Container(
-        color: const Color.fromRGBO(236, 240, 245, 1),
+        color: theme.colorScheme.background,
         child: Consumer<VehicleProvider>(
           builder: (context, vehicleProvider, child) {
             List<dynamic> apiVehicles =
@@ -139,17 +141,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: Container(
                           height: 40,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                           child: TextField(
                             readOnly: true,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding:
                                   EdgeInsets.symmetric(vertical: 15),
-                              prefixIcon: Icon(Icons.search),
+                              prefixIcon: Icon(Icons.search,
+                                  color: theme.colorScheme.onSurface),
                             ),
                             onTap: () {
                               context
@@ -169,8 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           width: 40,
                           height: 40,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                           child: ClipRRect(
@@ -191,13 +194,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           width: 40,
                           height: 40,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
-                          child: const ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: Icon(Icons.notifications),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            child: Icon(Icons.notifications,
+                                color: theme.colorScheme.onSurface),
                           ),
                         ),
                       ),
@@ -207,7 +212,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: combinedData.isEmpty
-                      ? const Center(child: Text('No data available.'))
+                      ? Center(
+                          child: Text('No data available.',
+                              style: TextStyle(
+                                  color: theme.colorScheme.onBackground)))
                       : SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -240,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             0.15, // Minimum height
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: theme.colorScheme.surface,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Padding(
@@ -262,15 +270,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           FontWeight.bold,
                                                       fontSize:
                                                           16 / textScaleFactor,
+                                                      color: theme.colorScheme
+                                                          .onSurface,
                                                     ),
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                                 Icon(
-                                                    Icons
-                                                        .arrow_circle_right_outlined,
-                                                    size: 24 / textScaleFactor),
+                                                  Icons
+                                                      .arrow_circle_right_outlined,
+                                                  size: 24 / textScaleFactor,
+                                                  color: theme
+                                                      .colorScheme.onSurface,
+                                                ),
                                               ],
                                             ),
                                             SizedBox(
@@ -278,8 +291,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             Text(
                                               vehicle['model'],
                                               style: TextStyle(
-                                                  fontSize:
-                                                      14 / textScaleFactor),
+                                                fontSize: 14 / textScaleFactor,
+                                                color:
+                                                    theme.colorScheme.onSurface,
+                                              ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             SizedBox(
@@ -290,8 +305,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             Text(
                                               "We will notify you 30 days before any validity expiry",
                                               style: TextStyle(
-                                                  fontSize:
-                                                      12 / textScaleFactor),
+                                                fontSize: 12 / textScaleFactor,
+                                                color:
+                                                    theme.colorScheme.onSurface,
+                                              ),
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -313,6 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 19 / textScaleFactor,
+                      color: theme.colorScheme.onBackground,
                     ),
                   ),
                 ),

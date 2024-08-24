@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:insthelper/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,11 +14,11 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    // Get the text scale factor
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
+      backgroundColor: theme.colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -37,6 +39,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                           style: TextStyle(
                             fontSize: 20 / textScaleFactor,
                             fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.inversePrimary,
                           ),
                         ),
                       ],
@@ -44,7 +47,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     margin: EdgeInsets.all(15 / textScaleFactor),
@@ -54,12 +57,18 @@ class ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Text(
                           "Dark Mode",
-                          style: TextStyle(fontSize: 16 / textScaleFactor),
+                          style: TextStyle(
+                            fontSize: 16 / textScaleFactor,
+                            color: theme.colorScheme.inversePrimary,
+                          ),
                         ),
                         Switch(
-                            activeColor: Colors.red,
-                            value: true,
-                            onChanged: (value) {})
+                          activeColor: theme.colorScheme.primary,
+                          value: context.watch<ThemeProvider>().isDarkMode,
+                          onChanged: (value) {
+                            context.read<ThemeProvider>().setThemeMode(value);
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -86,7 +95,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Text(
                     "Logout",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       fontSize: 16 / textScaleFactor,
                     ),
                   ),
