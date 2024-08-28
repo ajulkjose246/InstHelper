@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:insthelper/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,106 +12,98 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  User? _user;
-  bool _isDarkMode = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _getUser();
-  }
-
-  void _getUser() {
-    final User? user = FirebaseAuth.instance.currentUser;
-    setState(() {
-      _user = user;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                if (_user != null) ...[
+      backgroundColor: theme.colorScheme.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: EdgeInsets.only(top: 20 / textScaleFactor),
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(_user!.photoURL ?? ''),
+                          radius: 50 / textScaleFactor,
+                          backgroundImage: AssetImage('assets/img/demo.jpg'),
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10 / textScaleFactor),
                         Text(
-                          _user!.displayName ?? 'No Name',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          _user!.email ?? 'No Name',
-                          style: const TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold),
+                          "Ajul K Jose",
+                          style: TextStyle(
+                            fontSize: 20 / textScaleFactor,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.inversePrimary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  margin: const EdgeInsets.all(15),
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Dark Mode"),
-                      Switch(
-                          activeColor: Colors.red,
-                          value: _isDarkMode,
-                          onChanged: (value) {
-                            setState(() {
-                              _isDarkMode = value;
-                            });
-                          })
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  await GoogleSignIn().signOut();
-                  // Optionally, redirect to the login screen or another screen
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: EdgeInsets.all(15 / textScaleFactor),
+                    padding: EdgeInsets.all(10 / textScaleFactor),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Dark Mode",
+                          style: TextStyle(
+                            fontSize: 16 / textScaleFactor,
+                            color: theme.colorScheme.inversePrimary,
+                          ),
+                        ),
+                        Switch(
+                          activeColor: theme.colorScheme.primary,
+                          value: context.watch<ThemeProvider>().isDarkMode,
+                          onChanged: (value) {
+                            context.read<ThemeProvider>().setThemeMode(value);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16 / textScaleFactor),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    GoogleSignIn().signOut();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.red),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimary,
+                      fontSize: 16 / textScaleFactor,
                     ),
                   ),
                 ),
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

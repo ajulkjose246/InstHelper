@@ -15,60 +15,54 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Admin Vehicle List");
+    final theme = Theme.of(context);
     return Container(
-      color: const Color.fromRGBO(236, 240, 245, 1),
+      color: theme.scaffoldBackgroundColor,
       child: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
               children: [
-                const Spacer(),
-                Center(
+                Expanded(
                   child: Container(
-                    width: 250,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: TextField(
-                      decoration: const InputDecoration(
+                      readOnly: true,
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 15),
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: Icon(Icons.search,
+                            color: theme.colorScheme.onSurface),
                       ),
-                      onChanged: (val) {
-                        setState(() {
-                          deviceSearch = val;
-                        });
+                      onTap: () {
+                        context
+                            .read<HomescreenProvider>()
+                            .updateMyVariable(newValue: 1);
                       },
                     ),
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
                     context
                         .read<HomescreenProvider>()
-                        .updateMyVariable(newValue: 4);
+                        .updateMyVariable(newValue: 3);
                   },
                   child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: Image.asset(
                         'assets/img/demo.jpg',
                         fit: BoxFit.cover,
@@ -76,34 +70,50 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     ),
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/userAlert');
+                    Navigator.pushNamed(context, '/alert');
                   },
                   child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    child: const ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                      child: Icon(Icons.notifications),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Icon(Icons.notifications,
+                          color: theme.colorScheme.onSurface),
                     ),
                   ),
                 ),
-                const Spacer(),
               ],
             ),
           ),
           ListDriverVehicleWidget(isHomePage: false, isSearch: deviceSearch)
         ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton(BuildContext context,
+      {required VoidCallback onTap, required Widget child}) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: child,
+        ),
       ),
     );
   }

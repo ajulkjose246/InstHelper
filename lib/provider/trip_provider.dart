@@ -20,12 +20,13 @@ class TripProvider extends ChangeNotifier {
     List<String> totalKm,
     List<String> additionalLocations,
     String tripPurpose,
-    TimeOfDay selectedTime,
     DateTime selectedDate,
+    DateTime selectedEndDate,
   ) async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    String formattedEndDate = DateFormat('yyyy-MM-dd').format(selectedEndDate);
     String sql =
-        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `starting_time`, `starting_date`, `route`, `starting_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}','$formattedDate','${json.encode(additionalLocations)}','${json.encode(totalKm)}')";
+        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `ending_date`, `starting_date`, `route`, `starting_km`,`ending_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','$formattedEndDate','$formattedDate','${json.encode(additionalLocations)}','${json.encode(totalKm)}','${json.encode(totalKm)}')";
 
     final body = json.encode({
       'sql': sql,

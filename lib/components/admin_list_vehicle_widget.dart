@@ -3,6 +3,7 @@ import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListAdminVehicleWidget extends StatefulWidget {
   const ListAdminVehicleWidget({
@@ -53,11 +54,12 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
             Text(formattedDate,
                 style: TextStyle(
                     fontSize: 13, color: theme.colorScheme.onSurface)),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -70,7 +72,7 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text(
                   'Remaining: $remainingDays days',
                   style: TextStyle(
@@ -200,10 +202,13 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                         ),
                         Expanded(
                           child: vehicle['vehicle_type_image'].isNotEmpty
-                              ? Image.network(
-                                  vehicle['vehicle_type_image'],
+                              ? CachedNetworkImage(
+                                  imageUrl: vehicle['vehicle_type_image'],
                                   fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) {
                                     print('Error loading image: $error');
                                     return Center(
                                       child: Icon(Icons.error,
@@ -234,10 +239,10 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                           'Insurance',
                                           vehicle['Insurance_Upto'],
                                           insuranceIcon),
-                                      SizedBox(height: 12),
+                                      const SizedBox(height: 12),
                                       _buildStatusRow('Fitness',
                                           vehicle['Fitness_Upto'], fitnessIcon),
-                                      SizedBox(height: 12),
+                                      const SizedBox(height: 12),
                                       _buildStatusRow(
                                           'Pollution',
                                           vehicle['Pollution_Upto'],

@@ -26,8 +26,8 @@ class _TripPageState extends State<TripPage> {
   TextEditingController vehicleCurrentKMController = TextEditingController();
   List<TextEditingController> additionalLocationControllers = [];
   List<Map<String, dynamic>> vehicles = [];
-  TimeOfDay? selectedTime;
-  DateTime? selectedDate;
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
 
   FocusNode startFocusNode = FocusNode();
   FocusNode endFocusNode = FocusNode();
@@ -255,7 +255,8 @@ class _TripPageState extends State<TripPage> {
                       height: 40,
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surface,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                       ),
                       child: ClipRRect(
                         borderRadius:
@@ -937,92 +938,95 @@ class _TripPageState extends State<TripPage> {
                                   onTap: () async {
                                     DateTime? picked = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
+                                      initialDate:
+                                          selectedStartDate ?? DateTime.now(),
                                       firstDate: DateTime(2000),
                                       lastDate: DateTime(2101),
                                     );
                                     if (picked != null &&
                                         picked != state.value) {
                                       setState(() {
-                                        selectedDate = picked;
+                                        selectedStartDate = picked;
                                       });
                                       state.didChange(picked);
                                     }
                                   },
                                   child: InputDecorator(
                                     decoration: InputDecoration(
-                                      labelText: 'Date',
+                                      labelText: 'Start Date',
                                       border: const OutlineInputBorder(),
                                       errorText: state.errorText,
                                       labelStyle: theme.textTheme.bodyMedium,
                                     ),
                                     child: Text(
-                                      selectedDate == null
-                                          ? 'Select Date'
-                                          : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+                                      selectedStartDate == null
+                                          ? 'Select Start Date'
+                                          : '${selectedStartDate!.day}/${selectedStartDate!.month}/${selectedStartDate!.year}',
                                       style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
                                 );
                               },
-                              initialValue: selectedDate,
+                              initialValue: selectedStartDate,
                               validator: (value) {
                                 if (value == null) {
-                                  return 'Please select a date.';
+                                  return 'Please select a start date.';
                                 }
                                 return null;
                               },
                             ),
                           ),
-                          // Time Picker FormField
+                          const SizedBox(width: 10),
                           Expanded(
                             flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: FormField<TimeOfDay>(
-                                builder: (FormFieldState<TimeOfDay> state) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      TimeOfDay? picked = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                      );
-                                      if (picked != null &&
-                                          picked != state.value) {
-                                        setState(() {
-                                          selectedTime = picked;
-                                        });
-                                        state.didChange(picked);
-                                      }
-                                    },
-                                    child: InputDecorator(
-                                      decoration: InputDecoration(
-                                        labelText: 'Time',
-                                        border: const OutlineInputBorder(),
-                                        errorText: state.errorText,
-                                        labelStyle: theme.textTheme.bodyMedium,
-                                      ),
-                                      child: Text(
-                                        selectedTime == null
-                                            ? 'Select Time'
-                                            : selectedTime!.format(context),
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
+                            child: FormField<DateTime>(
+                              builder: (FormFieldState<DateTime> state) {
+                                return InkWell(
+                                  onTap: () async {
+                                    DateTime? picked = await showDatePicker(
+                                      context: context,
+                                      initialDate: selectedEndDate ??
+                                          (selectedStartDate ?? DateTime.now()),
+                                      firstDate:
+                                          selectedStartDate ?? DateTime(2000),
+                                      lastDate: DateTime(2101),
+                                    );
+                                    if (picked != null &&
+                                        picked != state.value) {
+                                      setState(() {
+                                        selectedEndDate = picked;
+                                      });
+                                      state.didChange(picked);
+                                    }
+                                  },
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: 'End Date',
+                                      border: const OutlineInputBorder(),
+                                      errorText: state.errorText,
+                                      labelStyle: theme.textTheme.bodyMedium,
                                     ),
-                                  );
-                                },
-                                initialValue: selectedTime,
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'Please select a time.';
-                                  }
-                                  return null;
-                                },
-                              ),
+                                    child: Text(
+                                      selectedEndDate == null
+                                          ? 'Select End Date'
+                                          : '${selectedEndDate!.day}/${selectedEndDate!.month}/${selectedEndDate!.year}',
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                );
+                              },
+                              initialValue: selectedEndDate,
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Please select an end date.';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -1081,11 +1085,37 @@ class _TripPageState extends State<TripPage> {
                           fontSize: 16.0);
                     }
 
-                    // Check if date is selected
-                    if (selectedDate == null) {
+                    // Check if start date is selected
+                    if (selectedStartDate == null) {
                       isValid = false;
                       Fluttertoast.showToast(
-                          msg: "Please select a date",
+                          msg: "Please select a start date",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+
+                    // Check if end date is selected
+                    if (selectedEndDate == null) {
+                      isValid = false;
+                      Fluttertoast.showToast(
+                          msg: "Please select an end date",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+
+                    // Check if end date is after start date
+                    if (selectedStartDate != null &&
+                        selectedEndDate != null &&
+                        selectedEndDate!.isBefore(selectedStartDate!)) {
+                      isValid = false;
+                      Fluttertoast.showToast(
+                          msg: "End date must be after start date",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
@@ -1094,16 +1124,6 @@ class _TripPageState extends State<TripPage> {
                     }
 
                     // Check if time is selected
-                    if (selectedTime == null) {
-                      isValid = false;
-                      Fluttertoast.showToast(
-                          msg: "Please select a time",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    }
 
                     // If all fields are valid, proceed with submitting the form
                     if (isValid) {
@@ -1127,8 +1147,8 @@ class _TripPageState extends State<TripPage> {
                           totalKm,
                           locations,
                           tripPurposeController.text,
-                          selectedTime!,
-                          selectedDate!);
+                          selectedStartDate!,
+                          selectedEndDate!);
 
                       Fluttertoast.showToast(
                           msg: "Trip added successfully",
@@ -1150,8 +1170,8 @@ class _TripPageState extends State<TripPage> {
                       }
 
                       tripPurposeController.clear();
-                      selectedTime = null;
-                      selectedDate = null;
+                      selectedStartDate = null;
+                      selectedEndDate = null;
 
                       setState(() {
                         // Reset the focus nodes and any other stateful widgets if necessary

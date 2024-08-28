@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:insthelper/screens/admin/update_popup_message.dart';
+import 'package:insthelper/components/vehicle_update_popup_message.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 

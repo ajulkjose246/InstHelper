@@ -75,18 +75,47 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
+            // Padding(
+            //   padding: EdgeInsets.all(16 / textScaleFactor),
+            //   child: SizedBox(
+            //     width: double.infinity,
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         FirebaseAuth.instance.signOut();
+            //         GoogleSignIn().signOut();
+            //       },
+            //       style: ButtonStyle(
+            //         backgroundColor: WidgetStateProperty.all(Colors.red),
+            //         shape: WidgetStateProperty.all(
+            //           RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(12),
+            //           ),
+            //         ),
+            //       ),
+            //       child: Text(
+            //         "Logout",
+            //         style: TextStyle(
+            //           color: theme.colorScheme.onPrimary,
+            //           fontSize: 16 / textScaleFactor,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: EdgeInsets.all(16 / textScaleFactor),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    GoogleSignIn().signOut();
+                  onPressed: () async {
+                    // await FirebaseAuth.instance.signOut();
+                    // await GoogleSignIn().signOut();
+
+                    Navigator.pushNamed(context, '/auth');
                   },
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.red),
-                    shape: WidgetStateProperty.all(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

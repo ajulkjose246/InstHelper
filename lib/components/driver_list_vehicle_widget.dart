@@ -3,6 +3,7 @@ import 'package:insthelper/provider/vehicle_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:insthelper/screens/driver/vehicle_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListDriverVehicleWidget extends StatefulWidget {
   const ListDriverVehicleWidget({
@@ -20,9 +21,78 @@ class ListDriverVehicleWidget extends StatefulWidget {
 }
 
 class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
+  String _getStatus(Color color) {
+    if (color == Colors.green) return 'Good';
+    if (color == Colors.amber) return 'Warning';
+    return 'Expired';
+  }
+
+  String _formatDate(String dateString) {
+    final date = DateFormat('yyyy-MM-dd').parse(dateString);
+    return DateFormat('dd-MMM-yyyy').format(date);
+  }
+
+  String _getRemainingDays(String dateString) {
+    final date = DateFormat('yyyy-MM-dd').parse(dateString);
+    final difference = date.difference(DateTime.now()).inDays;
+    return difference > 0 ? difference.toString() : '0';
+  }
+
+  Widget _buildStatusRow(String title, String date, Color statusColor) {
+    final formattedDate = _formatDate(date);
+    final remainingDays = _getRemainingDays(date);
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title,
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onSurface)),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(formattedDate,
+                style: TextStyle(
+                    fontSize: 13, color: theme.colorScheme.onSurface)),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _getStatus(statusColor),
+                    style: TextStyle(
+                        color: statusColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Remaining: $remainingDays days',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.onSurface),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<VehicleProvider>(context, listen: false).fetchAllVehicleData();
+    final theme = Theme.of(context);
     return Consumer<VehicleProvider>(
       builder: (context, vehicleProvider, child) {
         List items = vehicleProvider.vehicles.values.toList();
@@ -41,8 +111,10 @@ class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
+            childAspectRatio: (MediaQuery.of(context).size.width / 2) /
+                (MediaQuery.of(context).size.height / 4.5),
           ),
           itemCount: widget.isHomePage
               ? (items.length > 5)
@@ -89,7 +161,7 @@ class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
               pollutionIcon = Colors.red;
             }
             return Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -103,13 +175,12 @@ class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
                   );
                 },
                 child: Container(
-                  height: 170,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -118,23 +189,31 @@ class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
                               .toString()
                               .toUpperCase()
                               .replaceAll('_', ' '),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: theme.colorScheme.onSurface),
+                          textScaleFactor: 0.8,
                         ),
                         Text(
                           vehicle['model'],
-                          style: const TextStyle(fontSize: 15),
+                          style: TextStyle(
+                              fontSize: 13, color: theme.colorScheme.onSurface),
+                          textScaleFactor: 0.8,
                         ),
                         Expanded(
                           child: vehicle['vehicle_type_image'].isNotEmpty
-                              ? Image.network(
-                                  vehicle['vehicle_type_image'],
+                              ? CachedNetworkImage(
+                                  imageUrl: vehicle['vehicle_type_image'],
                                   fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    print(
-                                        'Error loading image: $error'); // Debugging output
-                                    return const Center(
-                                      child: Icon(Icons.error),
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) {
+                                    print('Error loading image: $error');
+                                    return Center(
+                                      child: Icon(Icons.error,
+                                          color: theme.colorScheme.error),
                                     );
                                   },
                                 )
@@ -143,31 +222,75 @@ class _ListDriverVehicleWidgetState extends State<ListDriverVehicleWidget> {
                                   fit: BoxFit.contain,
                                 ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: const Color.fromRGBO(236, 240, 245, 1),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Icon(
-                                  Icons.health_and_safety,
-                                  color: insuranceIcon,
-                                ),
-                                Icon(
-                                  Icons.construction,
-                                  color: fitnessIcon,
-                                ),
-                                Icon(
-                                  Icons.air,
-                                  color: pollutionIcon,
-                                ),
-                              ],
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: theme.colorScheme.surface,
+                                  title: Text('Vehicle Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.colorScheme.onSurface)),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _buildStatusRow(
+                                          'Insurance',
+                                          vehicle['Insurance_Upto'],
+                                          insuranceIcon),
+                                      const SizedBox(height: 12),
+                                      _buildStatusRow('Fitness',
+                                          vehicle['Fitness_Upto'], fitnessIcon),
+                                      const SizedBox(height: 12),
+                                      _buildStatusRow(
+                                          'Pollution',
+                                          vehicle['Pollution_Upto'],
+                                          pollutionIcon),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('Close',
+                                          style: TextStyle(
+                                              color:
+                                                  theme.colorScheme.primary)),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: theme.colorScheme.secondary,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    Icons.health_and_safety,
+                                    color: insuranceIcon,
+                                    size: 20,
+                                  ),
+                                  Icon(
+                                    Icons.construction,
+                                    color: fitnessIcon,
+                                    size: 20,
+                                  ),
+                                  Icon(
+                                    Icons.air,
+                                    color: pollutionIcon,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         )

@@ -14,11 +14,12 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
+      backgroundColor: Theme.of(context).colorScheme.background,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -26,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Welcome Back",
@@ -34,7 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontSize: 40,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Lufga',
-                        color: Color.fromRGBO(139, 91, 159, 1)),
+                        color: Theme.of(context).colorScheme.primary),
                   ),
                 ),
                 const Align(
@@ -51,8 +52,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 Container(
                   width: double.infinity,
                   height: 450,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(100),
                       topRight: Radius.circular(100),
@@ -67,13 +68,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Text(
+                        Text(
                           "Log In",
                           style: TextStyle(
                               fontSize: 50,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Lufga',
-                              color: Color.fromRGBO(139, 91, 159, 1)),
+                              color: Theme.of(context).colorScheme.primary),
                         ),
                         const SizedBox(
                           height: 20,
@@ -91,10 +92,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           height: 20,
                         ),
                         FormInputField(
-                          textcontroller: usernameController,
+                          textcontroller: passwordController,
                           label: '',
                           validator: true,
-                          icon: const Icon(Icons.person),
+                          icon: const Icon(Icons.lock),
                           regex: RegExp(''),
                           regexlabel: '',
                           numberkeyboard: false,
@@ -115,16 +116,28 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () =>
-                                Navigator.pushNamed(context, '/user'),
+                            onPressed: () {
+                              if (usernameController.text == 'admin' &&
+                                  passwordController.text == 'admin') {
+                                Navigator.pushNamed(context, '/admin');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Invalid username or password')),
+                                );
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color.fromRGBO(139, 91, 159, 1),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
                               padding: const EdgeInsets.symmetric(vertical: 15),
                             ),
-                            child: const Text(
+                            child: Text(
                               "Login",
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   fontFamily: 'Lufga',
                                   fontSize: 19),
                             ),
@@ -143,13 +156,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: TextStyle(fontSize: 19, fontFamily: 'Lufga'),
                     ),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/signup'),
-                      child: const Text(
+                      // onTap: () => Navigator.pushNamed(context, '/signup'),
+                      child: Text(
                         " Join Now",
                         style: TextStyle(
                             fontSize: 19,
                             fontFamily: 'Lufga',
-                            color: Color.fromRGBO(139, 91, 159, 1)),
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
                   ],
@@ -188,66 +201,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: const Icon(LineIcons.googleLogo),
-                        onPressed: () => AuthService().signInWithGoogle(),
-                      ),
-                    ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: const Icon(LineIcons.github),
-                        onPressed: () {},
-                      ),
-                    ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: const Icon(LineIcons.facebook),
-                        onPressed: () {},
-                      ),
-                    ),
+                    _buildSocialButton(LineIcons.googleLogo,
+                        () => AuthService().signInWithGoogle()),
+                    _buildSocialButton(LineIcons.github, () {}),
+                    _buildSocialButton(LineIcons.facebook, () {}),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -255,6 +212,29 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSocialButton(IconData icon, VoidCallback onPressed) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        onPressed: onPressed,
       ),
     );
   }

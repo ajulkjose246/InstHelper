@@ -22,7 +22,6 @@ import 'package:insthelper/screens/admin/alert_list.dart';
 import 'package:insthelper/screens/driver/alert_list.dart';
 import 'package:insthelper/screens/driver/container.dart';
 import 'package:provider/provider.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -33,10 +32,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await Hive.initFlutter();
-  await Hive.openBox('vehicleDataBox');
-  // await initializeService();
-  // tz.initializeTimeZones();
   RequestPermmision().requestPermission();
   // Workmanager().initialize(callbackDispatcher);
 

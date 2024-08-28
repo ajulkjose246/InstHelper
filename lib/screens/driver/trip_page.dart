@@ -4,6 +4,7 @@ import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/trip_provider.dart';
 import 'package:insthelper/screens/driver/trip_view.dart';
 import 'package:provider/provider.dart';
+import 'package:insthelper/provider/theme_provider.dart';
 
 class TripPage extends StatefulWidget {
   const TripPage({super.key});
@@ -24,6 +25,7 @@ class _TripPageState extends State<TripPage> {
   @override
   Widget build(BuildContext context) {
     final tripProvider = Provider.of<TripProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final tripData = tripProvider.tripData;
 
     // Filter trips where the driver contains "Ajul"
@@ -33,7 +35,7 @@ class _TripPageState extends State<TripPage> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,11 +220,14 @@ class _TripPageState extends State<TripPage> {
                 height: 120,
                 width: double.infinity, // Full width
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.3),
                       spreadRadius: 2,
                       blurRadius: 5,
                       offset: const Offset(0, 3), // Shadow position
@@ -239,9 +244,12 @@ class _TripPageState extends State<TripPage> {
                           Expanded(
                             child: Text(
                               trip['purpose'],
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 19,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
                               ),
                             ),
                           ),
@@ -251,12 +259,18 @@ class _TripPageState extends State<TripPage> {
                       const SizedBox(height: 10),
                       Text(
                         'Total Vehicles: ${json.decode(trip['vehicle_id']).length}',
-                        style: const TextStyle(fontSize: 15),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                       const SizedBox(height: 5),
                       Text(
                         'Time: ${trip['starting_time']}',
-                        style: const TextStyle(fontSize: 15),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                     ],
                   ),

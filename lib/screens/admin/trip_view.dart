@@ -73,6 +73,7 @@ class _TripViewScreenState extends State<TripViewScreen> {
               List vehicleNumber = json.decode(data[0]['vehicle_id']);
               List vehicleDrivers = json.decode(data[0]['driver']);
               List vehicleStartingKm = json.decode(data[0]['starting_km']);
+              List vehicleEndingKm = json.decode(data[0]['ending_km']);
               List tripLocations = json.decode(data[0]['route']);
 
               return Container(
@@ -82,10 +83,11 @@ class _TripViewScreenState extends State<TripViewScreen> {
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   children: [
                     _buildInfoCard(context, "Trip Details", [
+                      _buildInfoRow(context, "Purpose", data[0]['purpose']),
                       _buildInfoRow(context, "Date",
                           _formatDate(data[0]['starting_date'])),
-                      _buildInfoRow(context, "Time", data[0]['starting_time']),
-                      _buildInfoRow(context, "Purpose", data[0]['purpose']),
+                      _buildInfoRow(context, "Return",
+                          _formatDate(data[0]['ending_date'])),
                     ]),
                     const SizedBox(height: 10),
                     _buildInfoCard(
@@ -104,6 +106,8 @@ class _TripViewScreenState extends State<TripViewScreen> {
                                         vehicleDrivers[index]),
                                     _buildInfoRow(context, "Starting KM",
                                         vehicleStartingKm[index]),
+                                    _buildInfoRow(context, "Ending KM",
+                                        vehicleEndingKm[index]),
                                     if (index < vehicleNumber.length - 1)
                                       const Divider(),
                                   ],
@@ -211,13 +215,13 @@ class _TripViewScreenState extends State<TripViewScreen> {
       List starting_km = json.decode(data[0]['starting_km']);
       List tripLocations = json.decode(data[0]['route']);
       String startingDate = _formatDate(data[0]['starting_date']);
-      String startingTime = data[0]['starting_time'];
+      String ending_date = _formatDate(data[0]['ending_date']);
       String purpose = data[0]['purpose'];
 
       // Format the details to be shared
       String shareContent = 'Trip Details\n----------------\n'
           'Date: $startingDate\n'
-          'Time: $startingTime\n'
+          'Return: $ending_date\n'
           'Purpose: $purpose\n\n'
           'Vehicle Details\n----------------\n';
 

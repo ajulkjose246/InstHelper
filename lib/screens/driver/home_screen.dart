@@ -3,7 +3,7 @@ import 'package:insthelper/components/driver_list_vehicle_widget.dart';
 import 'package:insthelper/components/request_permmision.dart';
 import 'package:insthelper/provider/homescreen_provider.dart';
 import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/driver/vehicle_view.dart';
+import 'package:insthelper/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -58,54 +58,52 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     } else if (nextExpiry == insuranceUpto) {
       type = 'Insurance';
     }
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final theme = Theme.of(context);
+
     return Row(
       children: [
-        Text(
-          type,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 19, color: Colors.red),
+        Expanded(
+          flex: 2,
+          child: Text(
+            type,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 19 / textScaleFactor,
+              color: theme.colorScheme.error,
+            ),
+          ),
         ),
-        const Spacer(),
-        Text(
-          DateFormat('yyyy-MM-dd').format(nextExpiry),
-          style: const TextStyle(color: Colors.red),
+        SizedBox(width: 8 / textScaleFactor),
+        Expanded(
+          flex: 3,
+          child: Text(
+            DateFormat('yyyy-MMM-dd').format(nextExpiry),
+            style: TextStyle(
+              color: theme.colorScheme.error,
+              fontSize: 14 / textScaleFactor,
+            ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.right,
+          ),
         ),
       ],
     );
   }
 
-  // void scheduleNotification(DateTime nextExpiry, String title, String body) {
-  //   final now = DateTime.now();
-  //   DateTime notificationDate;
-
-  //   // Determine notification frequency
-  //   if (now.isAfter(nextExpiry) ||
-  //       now.isAfter(nextExpiry.subtract(const Duration(days: 5)))) {
-  //     // Schedule daily notifications if current date is after expiry or within 5 days before expiry
-  //     notificationDate = now.add(const Duration(days: 1));
-  //   } else if (now.isAfter(nextExpiry.subtract(const Duration(days: 30)))) {
-  //     // Schedule weekly notifications if current date is within 30 days before expiry
-  //     notificationDate = now.add(const Duration(days: 7));
-  //   } else {
-  //     // Do not schedule notifications if outside the defined ranges
-  //     return;
-  //   }
-
-  //   // Schedule the notification using flutter_local_notifications
-  //   NotificationModel().scheduleExpiryNotification(
-  //     title,
-  //     body,
-  //     notificationDate,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     RequestPermmision().requestPermission();
+    print("object");
+    // Get screen size and text scale factor
+    final screenSize = MediaQuery.of(context).size;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Container(
-        color: const Color.fromRGBO(236, 240, 245, 1),
+        color: theme.colorScheme.background,
         child: Consumer<VehicleProvider>(
           builder: (context, vehicleProvider, child) {
             List<dynamic> apiVehicles =
@@ -134,39 +132,27 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               return aNextExpiry.compareTo(bNextExpiry);
             });
 
-            // for (var vehicle in combinedData) {
-            //   DateTime nextExpiry = getNextExpiryDate(vehicle);
-            //   if (nextExpiry.isBefore(now)) {
-            //     Widget expiryType = getNextExpiryLabel(vehicle);
-            //     scheduleNotification(
-            //       nextExpiry,
-            //       "Expiry Alert for ${vehicle['registration_number']}",
-            //       "The $expiryType of ${vehicle['model']} is expiring on ${DateFormat('yyyy-MM-dd').format(nextExpiry)}. Please renew it.",
-            //     );
-            //   }
-            // }
             return ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
-                      const Spacer(),
-                      Center(
+                      Expanded(
                         child: Container(
-                          width: 250,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                           child: TextField(
                             readOnly: true,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding:
                                   EdgeInsets.symmetric(vertical: 15),
-                              prefixIcon: Icon(Icons.search),
+                              prefixIcon: Icon(Icons.search,
+                                  color: theme.colorScheme.onSurface),
                             ),
                             onTap: () {
                               context
@@ -176,7 +162,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
                           context
@@ -184,10 +170,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                               .updateMyVariable(newValue: 3);
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                           child: ClipRRect(
@@ -200,32 +186,36 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/driver_alert');
+                          Navigator.pushNamed(context, '/alert');
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
-                          child: const ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: Icon(Icons.notifications),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            child: Icon(Icons.notifications,
+                                color: theme.colorScheme.onSurface),
                           ),
                         ),
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: combinedData.isEmpty
-                      ? const Center(child: Text('No data available.'))
+                      ? Center(
+                          child: Text('No data available.',
+                              style: TextStyle(
+                                  color: theme.colorScheme.onBackground)))
                       : SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -251,46 +241,76 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
                                     child: Container(
-                                      height: 150,
-                                      width: 300,
+                                      width: screenSize.width *
+                                          0.7, // 70% of screen width
+                                      constraints: BoxConstraints(
+                                        minHeight: screenSize.height *
+                                            0.15, // Minimum height
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: theme.colorScheme.surface,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(20),
+                                        padding: const EdgeInsets.all(15),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Row(
                                               children: [
-                                                Text(
-                                                  vehicle['registration_number']
-                                                      .toString()
-                                                      .toUpperCase()
-                                                      .replaceAll('_', ' '),
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 19,
+                                                Expanded(
+                                                  child: Text(
+                                                    vehicle['registration_number']
+                                                        .toString()
+                                                        .toUpperCase()
+                                                        .replaceAll('_', ' '),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          16 / textScaleFactor,
+                                                      color: theme.colorScheme
+                                                          .onSurface,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
-                                                const Spacer(),
-                                                const Icon(Icons
-                                                    .arrow_circle_right_outlined),
+                                                Icon(
+                                                  Icons
+                                                      .arrow_circle_right_outlined,
+                                                  size: 24 / textScaleFactor,
+                                                  color: theme
+                                                      .colorScheme.onSurface,
+                                                ),
                                               ],
                                             ),
-                                            const Spacer(),
+                                            SizedBox(
+                                                height: 5 / textScaleFactor),
                                             Text(
                                               vehicle['model'],
-                                              style:
-                                                  const TextStyle(fontSize: 15),
+                                              style: TextStyle(
+                                                fontSize: 14 / textScaleFactor,
+                                                color:
+                                                    theme.colorScheme.onSurface,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            const Spacer(),
+                                            SizedBox(
+                                                height: 5 / textScaleFactor),
                                             getNextExpiryLabel(vehicle),
-                                            const Spacer(),
-                                            const Text(
+                                            SizedBox(
+                                                height: 5 / textScaleFactor),
+                                            Text(
                                               "We will notify you 30 days before any validity expiry",
+                                              style: TextStyle(
+                                                fontSize: 12 / textScaleFactor,
+                                                color:
+                                                    theme.colorScheme.onSurface,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
                                         ),
@@ -303,11 +323,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           ),
                         ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(10),
+                Padding(
+                  padding: const EdgeInsets.all(10),
                   child: Text(
                     "Vehicle List",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 19 / textScaleFactor,
+                      color: theme.colorScheme.onBackground,
+                    ),
                   ),
                 ),
                 const ListDriverVehicleWidget(
