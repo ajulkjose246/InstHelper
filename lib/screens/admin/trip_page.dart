@@ -166,13 +166,83 @@ class _TripPageState extends State<TripPage> {
     });
   }
 
+  IconData _getVehicleIcon(String vehicleType) {
+    switch (vehicleType.toLowerCase()) {
+      case 'car':
+        return Icons.directions_car;
+      case 'ambulance':
+        return Icons.emergency_rounded;
+      case 'bus':
+        return Icons.directions_bus;
+      case 'truck':
+      case 'pickup':
+        return Icons.local_shipping;
+      case 'bike':
+        return Icons.motorcycle;
+      case 'van':
+      case 'traveller':
+        return Icons.airport_shuttle;
+      default:
+        return Icons.directions_car;
+    }
+  }
+
+  Widget _buildDropdown(String label, String? value, List<String?> items,
+      void Function(String?) onChanged) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: 1.0,
+        ),
+      ),
+      child: DropdownButton<String>(
+        value: value,
+        onChanged: onChanged,
+        items: items.map<DropdownMenuItem<String>>((item) {
+          IconData iconData;
+          if (label == "Vehicle Type") {
+            iconData = _getVehicleIcon(item ?? '');
+          } else if (label == "Vehicle") {
+            iconData = Icons.local_taxi;
+          } else {
+            iconData = Icons.category;
+          }
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(iconData, size: 20, color: theme.iconTheme.color),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    item?.replaceAll("_", " ") ?? "All ${label}s",
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+        isExpanded: true,
+        underline: Container(),
+        hint: Text("Select $label"),
+        style: theme.textTheme.bodyMedium,
+        dropdownColor: theme.cardColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tripProvider = Provider.of<TripProvider>(context);
     final vehicleProvider = Provider.of<VehicleProvider>(context);
     final tripData = tripProvider.tripData;
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
 
     // Filter tripData based on selectedVehicleType and selectedVehicle
     final filteredTripData = tripData.where((trip) {
@@ -506,7 +576,16 @@ class _TripPageState extends State<TripPage> {
                                                 (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value,
-                                            child: Text(value),
+                                            child: Row(
+                                              children: [
+                                                Icon(_getVehicleIcon(value),
+                                                    size: 20,
+                                                    color:
+                                                        theme.iconTheme.color),
+                                                const SizedBox(width: 10),
+                                                Text(value),
+                                              ],
+                                            ),
                                           );
                                         }).toList(),
                                         hint: const Text("Select Vehicle Type"),
@@ -548,7 +627,11 @@ class _TripPageState extends State<TripPage> {
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.directions_car,
+                                          Icon(
+                                              _getVehicleIcon(vehicle[
+                                                      'vehicleTypeController']
+                                                  .text),
+                                              size: 20,
                                               color: theme.iconTheme.color),
                                           const SizedBox(width: 10),
                                           Expanded(
@@ -572,6 +655,8 @@ class _TripPageState extends State<TripPage> {
                                                     child: Text(
                                                       value.replaceAll(
                                                           '_', ' '),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                   );
                                                 }).toList(),
@@ -638,6 +723,7 @@ class _TripPageState extends State<TripPage> {
                                       child: Row(
                                         children: [
                                           Icon(Icons.person,
+                                              size: 20,
                                               color: theme.iconTheme.color),
                                           const SizedBox(width: 10),
                                           Expanded(
@@ -1206,36 +1292,6 @@ class _TripPageState extends State<TripPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown(String label, String? value, List<String?> items,
-      void Function(String?) onChanged) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(
-          color: theme.dividerColor,
-          width: 1.0,
-        ),
-      ),
-      child: DropdownButton<String>(
-        value: value,
-        onChanged: onChanged,
-        items: items.map<DropdownMenuItem<String>>((item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item ?? "All ${label}s"),
-          );
-        }).toList(),
-        isExpanded: true,
-        underline: Container(),
-        hint: Text("Select $label"),
-        style: theme.textTheme.bodyMedium,
-        dropdownColor: theme.cardColor,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:insthelper/components/form_input_field.dart';
 import 'package:insthelper/screens/authentication/auth_services.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,6 +16,20 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: usernameController.text,
+        password: passwordController.text,
+      );
+      Navigator.pushNamed(context, '/auth');
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'An error occurred')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 450,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(100),
                       topRight: Radius.circular(100),
                       bottomRight: Radius.circular(100),
@@ -116,18 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (usernameController.text == 'admin' &&
-                                  passwordController.text == 'admin') {
-                                Navigator.pushNamed(context, '/admin');
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text('Invalid username or password')),
-                                );
-                              }
-                            },
+                            onPressed: signInWithEmailAndPassword,
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   Theme.of(context).colorScheme.primary,

@@ -9,6 +9,7 @@ import 'package:insthelper/screens/admin/trip_page.dart';
 import 'package:insthelper/screens/admin/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ContainerScreen extends StatefulWidget {
   const ContainerScreen({super.key});
@@ -77,6 +78,7 @@ class _ContainerScreenState extends State<ContainerScreen> {
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: theme.colorScheme.tertiary,
               backgroundColor: theme.colorScheme.primaryContainer,
+              color: Colors.white,
               tabs: [
                 _buildGButton(Icons.home, 'Home', textScaleFactor, theme),
                 _buildGButton(Icons.list_alt_outlined, 'Vehicle List',
@@ -100,12 +102,37 @@ class _ContainerScreenState extends State<ContainerScreen> {
       ),
       floatingActionButton:
           context.watch<HomescreenProvider>().selectedIndex == 0
-              ? FloatingActionButton.small(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/add');
-                  },
+              ? SpeedDial(
+                  animatedIcon: AnimatedIcons.menu_close,
+                  animatedIconTheme:
+                      IconThemeData(color: theme.colorScheme.onPrimary),
                   backgroundColor: theme.colorScheme.primary,
-                  child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
+                  visible: true,
+                  curve: Curves.bounceIn,
+                  children: [
+                    SpeedDialChild(
+                      child: Icon(Icons.directions_car,
+                          color: theme.colorScheme.onPrimary),
+                      backgroundColor: theme.colorScheme.primary,
+                      onTap: () => Navigator.pushNamed(context, '/add'),
+                      label: 'Add Vehicle',
+                      labelStyle: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.onBackground),
+                      labelBackgroundColor: theme.colorScheme.background,
+                    ),
+                    SpeedDialChild(
+                      child: Icon(Icons.person_add,
+                          color: theme.colorScheme.onPrimary),
+                      backgroundColor: theme.colorScheme.primary,
+                      onTap: () => Navigator.pushNamed(context, '/add_driver'),
+                      label: 'Add Driver',
+                      labelStyle: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.onBackground),
+                      labelBackgroundColor: theme.colorScheme.background,
+                    ),
+                  ],
                 )
               : null,
     );

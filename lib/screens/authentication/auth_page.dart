@@ -18,7 +18,9 @@ class AuthPage extends StatelessWidget {
 
             // Check if the user is not null and has a display name
             String email = user?.email ?? 'No email';
-            if (email == "mail.ajulkjose@gmail.com") {
+
+            if (email == "mail.ajulkjose@gmail.com" ||
+                email == "admin@gmail.com") {
               return ContainerScreen();
             } else {
               return const DriverContainerScreen();

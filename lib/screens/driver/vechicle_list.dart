@@ -32,17 +32,16 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: TextField(
-                      readOnly: true,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 15),
                         prefixIcon: Icon(Icons.search,
                             color: theme.colorScheme.onSurface),
                       ),
-                      onTap: () {
-                        context
-                            .read<HomescreenProvider>()
-                            .updateMyVariable(newValue: 1);
+                      onChanged: (val) {
+                        setState(() {
+                          deviceSearch = val;
+                        });
                       },
                     ),
                   ),
