@@ -309,7 +309,38 @@ class _TripViewScreenState extends State<TripViewScreen> {
   }
 
   void _shareTrip(Map<String, dynamic> tripData) {
-    // ... existing share functionality ...
+    final vehicleNumbers = json.decode(tripData['vehicle_id']);
+    final vehicleDrivers = json.decode(tripData['driver']);
+    final vehicleStartingKm = json.decode(tripData['starting_km']);
+    final vehicleEndingKm = json.decode(tripData['ending_km']);
+    final tripLocations = json.decode(tripData['route']);
+
+    String shareText = '''
+Trip Details:
+Name: ${widget.tripName.replaceAll('_', ' ')}
+Purpose: ${tripData['purpose']}
+Start Date: ${_formatDate(tripData['starting_date'])}
+End Date: ${_formatDate(tripData['ending_date'])}
+
+Vehicle Details:
+''';
+
+    for (int i = 0; i < vehicleNumbers.length; i++) {
+      shareText += '''
+Vehicle ${i + 1}:
+  Registration: ${vehicleNumbers[i].replaceAll("_", " ")}
+  Driver: ${vehicleDrivers[i]}
+  Starting KM: ${vehicleStartingKm[i]}
+  Ending KM: ${vehicleEndingKm[i]}
+''';
+    }
+
+    shareText += '\nLocations:\n';
+    for (int i = 0; i < tripLocations.length; i++) {
+      shareText += '  ${i + 1}. ${tripLocations[i]}\n';
+    }
+
+    Share.share(shareText);
   }
 
   void _deleteTrip(BuildContext context, Map<String, dynamic> tripData) {

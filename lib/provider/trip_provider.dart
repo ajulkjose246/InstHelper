@@ -124,19 +124,14 @@ class TripProvider extends ChangeNotifier {
 
   Future<void> updateTripData(
       int type, int tripId, Map<String, dynamic> updatedData) async {
-    String sql = '';
+    String tripSql = '';
+    String vehicleSql = '';
+
     switch (type) {
       case 1:
-        sql = '''
-          UPDATE tbl_trips 
-          SET purpose = '${updatedData['purpose']}',
-              starting_date = '${updatedData['starting_date']}',
-              ending_date = '${updatedData['ending_date']}'
-          WHERE id = $tripId
-        ''';
-        break;
+      // ... existing case 1 ...
       case 2:
-        sql = '''
+        tripSql = '''
           UPDATE tbl_trips 
           SET vehicle_id = '${json.encode(updatedData['vehicle_id'])}',
               driver = '${json.encode(updatedData['driver'])}',
@@ -144,38 +139,49 @@ class TripProvider extends ChangeNotifier {
               ending_km = '${json.encode(updatedData['ending_km'])}'
           WHERE id = $tripId
         ''';
-        break;
-      case 3:
-        sql = '''
-          UPDATE tbl_trips 
-          SET route = '${json.encode(updatedData['route'])}'
-          WHERE id = $tripId
+
+        vehicleSql = '''
+          UPDATE tbl_vehicle
+          SET total_km = total_km + (
+            ${updatedData['ending_km'][0]} - ${updatedData['starting_km'][0]}
+          )
+          WHERE `registration_number` = "${updatedData['vehicle_id'][0]}"
         ''';
         break;
+      case 3:
+      // ... existing case 3 ...
       default:
         print('Invalid update type');
         return;
     }
 
-    final body = json.encode({
-      'sql': sql,
-    });
-
     try {
-      final response = await http.put(url, headers: _headers, body: body);
+      // Execute trip update
+      final tripBody = json.encode({'sql': tripSql});
+      final tripResponse =
+          await http.put(url, headers: _headers, body: tripBody);
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        if (responseData['affectedRows'] > 0) {
-          print('Trip updated successfully');
-          await fetchSpecificTrip(tripId);
-        } else {
-          print(
-              'No rows were updated. Trip might not exist or data unchanged.');
+      if (tripResponse.statusCode == 200) {
+        print('Trip updated successfully');
+
+        // Execute vehicle update if applicable
+        if (vehicleSql.isNotEmpty) {
+          final vehicleBody = json.encode({'sql': vehicleSql});
+          final vehicleResponse =
+              await http.put(url, headers: _headers, body: vehicleBody);
+
+          if (vehicleResponse.statusCode == 200) {
+            print('Vehicle total_km updated successfully');
+          } else {
+            print(
+                'Failed to update vehicle total_km. Status code: ${vehicleResponse.statusCode}');
+          }
         }
+
+        await fetchSpecificTrip(tripId);
       } else {
         print(
-            'Failed to update trip data. Status code: ${response.statusCode}');
+            'Failed to update trip data. Status code: ${tripResponse.statusCode}');
       }
     } catch (e) {
       print('Error: $e');

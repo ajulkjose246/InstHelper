@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:AjceTrips/screens/normal/vehicle_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/screens/normal/trip_view.dart';
 
 class ListNormalVehicleWidget extends StatefulWidget {
   const ListNormalVehicleWidget({
@@ -86,6 +89,60 @@ class _ListNormalVehicleWidgetState extends State<ListNormalVehicleWidget> {
           ],
         ),
       ],
+    );
+  }
+
+  void _showTripHistory(BuildContext context, String vehicleId) {
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final vehicleTrips = tripProvider.tripData.where((trip) {
+      List<dynamic> vehicleIds = json.decode(trip['vehicle_id']);
+      return vehicleIds.contains(vehicleId);
+    }).toList();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Vehicle Trip History'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: vehicleTrips.isEmpty
+                ? Center(child: Text('No trips found for this vehicle.'))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: vehicleTrips.length,
+                    itemBuilder: (context, index) {
+                      final trip = vehicleTrips[index];
+                      return ListTile(
+                        title: Text('${trip['purpose']}'),
+                        subtitle: Text('Date: ${trip['starting_date']}'),
+                        trailing: IconButton(
+                          icon: Icon(Icons.arrow_circle_right_outlined),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TripViewScreen(
+                                  tripId: int.parse(trip['id']),
+                                  tripName: trip['purpose'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -179,123 +236,162 @@ class _ListNormalVehicleWidgetState extends State<ListNormalVehicleWidget> {
                     color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          vehicle['registration_number']
-                              .toString()
-                              .toUpperCase()
-                              .replaceAll('_', ' '),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: theme.colorScheme.onSurface),
-                          textScaleFactor: 0.8,
-                        ),
-                        Text(
-                          vehicle['model'],
-                          style: TextStyle(
-                              fontSize: 13, color: theme.colorScheme.onSurface),
-                          textScaleFactor: 0.8,
-                        ),
-                        Expanded(
-                          child: vehicle['vehicle_type_image'].isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: vehicle['vehicle_type_image'],
-                                  fit: BoxFit.contain,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  errorWidget: (context, url, error) {
-                                    print('Error loading image: $error');
-                                    return Center(
-                                      child: Icon(Icons.error,
-                                          color: theme.colorScheme.error),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              vehicle['registration_number']
+                                  .toString()
+                                  .toUpperCase()
+                                  .replaceAll('_', ' '),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: theme.colorScheme.onSurface),
+                              textScaleFactor: 0.8,
+                            ),
+                            Text(
+                              vehicle['model'],
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: theme.colorScheme.onSurface),
+                              textScaleFactor: 0.8,
+                            ),
+                            Expanded(
+                              child: vehicle['vehicle_type_image'].isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl: vehicle['vehicle_type_image'],
+                                      fit: BoxFit.contain,
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) {
+                                        print('Error loading image: $error');
+                                        return Center(
+                                          child: Icon(Icons.error,
+                                              color: theme.colorScheme.error),
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      'assets/img/car.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      backgroundColor:
+                                          theme.colorScheme.surface,
+                                      title: Text('Vehicle Status',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  theme.colorScheme.onSurface)),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          _buildStatusRow(
+                                              'Insurance',
+                                              vehicle['Insurance_Upto'],
+                                              insuranceIcon),
+                                          const SizedBox(height: 12),
+                                          _buildStatusRow(
+                                              'Fitness',
+                                              vehicle['Fitness_Upto'],
+                                              fitnessIcon),
+                                          const SizedBox(height: 12),
+                                          _buildStatusRow(
+                                              'Pollution',
+                                              vehicle['Pollution_Upto'],
+                                              pollutionIcon),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text('Close',
+                                              style: TextStyle(
+                                                  color: theme
+                                                      .colorScheme.primary)),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                        ),
+                                      ],
                                     );
                                   },
-                                )
-                              : Image.asset(
-                                  'assets/img/car.png',
-                                  fit: BoxFit.contain,
-                                ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  backgroundColor: theme.colorScheme.surface,
-                                  title: Text('Vehicle Status',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: theme.colorScheme.onSurface)),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      _buildStatusRow(
-                                          'Insurance',
-                                          vehicle['Insurance_Upto'],
-                                          insuranceIcon),
-                                      const SizedBox(height: 12),
-                                      _buildStatusRow('Fitness',
-                                          vehicle['Fitness_Upto'], fitnessIcon),
-                                      const SizedBox(height: 12),
-                                      _buildStatusRow(
-                                          'Pollution',
-                                          vehicle['Pollution_Upto'],
-                                          pollutionIcon),
-                                    ],
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: Text('Close',
-                                          style: TextStyle(
-                                              color:
-                                                  theme.colorScheme.primary)),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                    ),
-                                  ],
                                 );
                               },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: theme.colorScheme.secondary,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.health_and_safety,
-                                    color: insuranceIcon,
-                                    size: 20,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Icon(
+                                        Icons.health_and_safety,
+                                        color: insuranceIcon,
+                                        size: 20,
+                                      ),
+                                      Icon(
+                                        Icons.construction,
+                                        color: fitnessIcon,
+                                        size: 20,
+                                      ),
+                                      Icon(
+                                        Icons.air,
+                                        color: pollutionIcon,
+                                        size: 20,
+                                      ),
+                                    ],
                                   ),
-                                  Icon(
-                                    Icons.construction,
-                                    color: fitnessIcon,
-                                    size: 20,
-                                  ),
-                                  Icon(
-                                    Icons.air,
-                                    color: pollutionIcon,
-                                    size: 20,
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: Consumer<TripProvider>(
+                          builder: (context, tripProvider, _) {
+                            final hasTrips = tripProvider.tripData.any((trip) {
+                              List<dynamic> vehicleIds =
+                                  json.decode(trip['vehicle_id']);
+                              return vehicleIds
+                                  .contains(vehicle['registration_number']);
+                            });
+
+                            return hasTrips
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.history,
+                                      color: theme.colorScheme.primary,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      _showTripHistory(context,
+                                          vehicle['registration_number']);
+                                    },
+                                  )
+                                : SizedBox
+                                    .shrink(); // Hide the icon if there are no trips
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,16 +6,18 @@ import 'package:AjceTrips/provider/trip_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
+import 'package:AjceTrips/components/trip_update_popup_message.dart'; // Add this import
 
 class TripViewScreen extends StatefulWidget {
   final int tripId;
   final String tripName;
 
   const TripViewScreen({
-    super.key,
+    Key? key,
     required this.tripId,
     required this.tripName,
-  });
+  }) : super(key: key);
 
   @override
   State<TripViewScreen> createState() => _TripViewScreenState();
@@ -25,116 +26,65 @@ class TripViewScreen extends StatefulWidget {
 class _TripViewScreenState extends State<TripViewScreen> {
   String _formatDate(String dateString) {
     DateTime date = DateTime.parse(dateString);
-    return "${date.day.toString().padLeft(2, '0')}-${_getMonthAbbreviation(date.month)}-${date.year}";
+    return DateFormat('dd-MMM-yyyy').format(date);
   }
-
-  String _getMonthAbbreviation(int month) {
-    const monthAbbreviations = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    return monthAbbreviations[month - 1];
-  }
-
-  List data = [];
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => TripProvider(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          title: Text(
-            widget.tripName.replaceAll('_', ' '),
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-        ),
-        body: Consumer<TripProvider>(
-          builder: (context, provider, child) {
-            provider.fetchSpecificTrip(widget.tripId);
-            data = provider.tripSpecificData;
+      child: Consumer<TripProvider>(
+        builder: (context, provider, child) {
+          provider.fetchSpecificTrip(widget.tripId);
+          final data = provider.tripSpecificData;
 
-            if (data.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              List vehicleNumber = json.decode(data[0]['vehicle_id']);
-              List vehicleDrivers = json.decode(data[0]['driver']);
-              List vehicleStartingKm = json.decode(data[0]['starting_km']);
-              List vehicleEndingKm = json.decode(data[0]['ending_km']);
-              List tripLocations = json.decode(data[0]['route']);
+          if (data.isEmpty) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
 
-              return Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          final tripData = data[0];
+          final vehicleNumbers = json.decode(tripData['vehicle_id']);
+          final vehicleDrivers = json.decode(tripData['driver']);
+          final vehicleStartingKm = json.decode(tripData['starting_km']);
+          final vehicleEndingKm = json.decode(tripData['ending_km']);
+          final tripLocations = json.decode(tripData['route']);
+
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              title: Text(
+                widget.tripName.replaceAll('_', ' '),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildInfoCard(context, "Trip Details", [
-                      _buildInfoRow(context, "Purpose", data[0]['purpose']),
-                      _buildInfoRow(context, "Date",
-                          _formatDate(data[0]['starting_date'])),
-                      _buildInfoRow(context, "Return",
-                          _formatDate(data[0]['ending_date'])),
-                    ]),
-                    const SizedBox(height: 10),
-                    _buildInfoCard(
-                        context,
-                        "Vehicle Details",
-                        List.generate(
-                            vehicleNumber.length,
-                            (index) => Column(
-                                  children: [
-                                    _buildInfoRow(
-                                        context,
-                                        "Vehicle ${index + 1}",
-                                        vehicleNumber[index]
-                                            .replaceAll("_", " ")),
-                                    _buildInfoRow(context, "Driver",
-                                        vehicleDrivers[index]),
-                                    _buildInfoRow(context, "Starting KM",
-                                        vehicleStartingKm[index]),
-                                    _buildInfoRow(context, "Ending KM",
-                                        vehicleEndingKm[index]),
-                                    if (index < vehicleNumber.length - 1)
-                                      const Divider(),
-                                  ],
-                                ))),
-                    const SizedBox(height: 10),
-                    _buildInfoCard(
-                        context,
-                        "Location Details",
-                        List.generate(
-                            tripLocations.length,
-                            (index) => _buildInfoRow(
-                                context,
-                                "Location ${index + 1}",
-                                tripLocations[index]))),
+                    _buildTripDetailsCard(tripData),
+                    const SizedBox(height: 16),
+                    _buildVehicleDetailsCard(vehicleNumbers, vehicleDrivers,
+                        vehicleStartingKm, vehicleEndingKm),
+                    const SizedBox(height: 16),
+                    _buildLocationDetailsCard(tripLocations),
                   ],
                 ),
-              );
-            }
-          },
-        ),
-        floatingActionButton: _buildSpeedDial(context, data),
+              ),
+            ),
+            floatingActionButton: _buildSpeedDial(context, tripData),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildInfoCard(
-      BuildContext context, String title, List<Widget> children) {
+  Widget _buildTripDetailsCard(Map<String, dynamic> tripData) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -143,23 +93,159 @@ class _TripViewScreenState extends State<TripViewScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Trip Details",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _showUpdateDialog(context, 1, tripData),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            ...children,
+            _buildInfoRow("Purpose", tripData['purpose']),
+            _buildInfoRow("Start Date", _formatDate(tripData['starting_date'])),
+            _buildInfoRow("End Date", _formatDate(tripData['ending_date'])),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String value) {
+  Widget _buildVehicleDetailsCard(List vehicleNumbers, List vehicleDrivers,
+      List vehicleStartingKm, List vehicleEndingKm) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Vehicle Details",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _showUpdateDialog(context, 2, {
+                    'vehicle_id': vehicleNumbers,
+                    'driver': vehicleDrivers,
+                    'starting_km': vehicleStartingKm,
+                    'ending_km': vehicleEndingKm,
+                  }),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            for (int i = 0; i < vehicleNumbers.length; i++) ...[
+              if (i > 0) const Divider(height: 32),
+              Text(
+                "Vehicle ${i + 1}",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              _buildInfoRow(
+                  "Registration", vehicleNumbers[i].replaceAll("_", " ")),
+              _buildInfoRow("Driver", vehicleDrivers[i]),
+              _buildInfoRow("Starting KM", vehicleStartingKm[i]),
+              _buildInfoRow("Ending KM", vehicleEndingKm[i]),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocationDetailsCard(List tripLocations) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Location Details",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () =>
+                      _showUpdateDialog(context, 3, {'route': tripLocations}),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            for (int i = 0; i < tripLocations.length; i++)
+              _buildInfoRow("Location ${i + 1}", tripLocations[i]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -185,9 +271,9 @@ class _TripViewScreenState extends State<TripViewScreen> {
     );
   }
 
-  Widget _buildSpeedDial(BuildContext context, List data) {
+  Widget _buildSpeedDial(BuildContext context, Map<String, dynamic> tripData) {
     return SpeedDial(
-      icon: Icons.add,
+      icon: Icons.more_vert,
       activeIcon: Icons.close,
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -196,112 +282,96 @@ class _TripViewScreenState extends State<TripViewScreen> {
           child: Icon(LineIcons.share,
               color: Theme.of(context).colorScheme.onPrimary),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          onTap: () => _shareTrip(data),
+          onTap: () => _shareTrip(tripData),
         ),
         SpeedDialChild(
           child: Icon(LineIcons.trash,
               color: Theme.of(context).colorScheme.onPrimary),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          onTap: () => _deleteTrip(context, data),
+          onTap: () => _deleteTrip(context, tripData),
         ),
       ],
     );
   }
 
-  void _shareTrip(List data) {
-    if (data.isNotEmpty) {
-      List vehicleNumber = json.decode(data[0]['vehicle_id']);
-      List vehicleDrivers = json.decode(data[0]['driver']);
-      List starting_km = json.decode(data[0]['starting_km']);
-      List tripLocations = json.decode(data[0]['route']);
-      String startingDate = _formatDate(data[0]['starting_date']);
-      String ending_date = _formatDate(data[0]['ending_date']);
-      String purpose = data[0]['purpose'];
-
-      // Format the details to be shared
-      String shareContent = 'Trip Details\n----------------\n'
-          'Date: $startingDate\n'
-          'Return: $ending_date\n'
-          'Purpose: $purpose\n\n'
-          'Vehicle Details\n----------------\n';
-
-      for (int i = 0; i < vehicleNumber.length; i++) {
-        shareContent +=
-            'Vehicle ${i + 1}: ${vehicleNumber[i].replaceAll("_", " ")}\n'
-            'Driver: ${vehicleDrivers[i]}\n'
-            'Starting KM: ${starting_km[i]}\n\n';
-      }
-
-      shareContent += 'Location Details\n----------------\n';
-      for (int i = 0; i < tripLocations.length; i++) {
-        shareContent += 'Location ${i + 1}: ${tripLocations[i]}\n';
-      }
-
-      Share.share(
-        shareContent,
-        subject: 'Trip Details for ${widget.tripName.replaceAll('_', ' ')}',
-      ).then((result) {
-        if (result.status == ShareResultStatus.success) {
-          Fluttertoast.showToast(
-            msg: "Trip details shared successfully",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
-        } else {
-          Fluttertoast.showToast(
-            msg: "Failed to share trip details",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
-        }
-      });
-    }
+  void _showUpdateDialog(
+      BuildContext context, int type, Map<String, dynamic> tripData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TripUpdateMessage(
+          type: type,
+          tripId: widget.tripId,
+          tripData: tripData,
+        );
+      },
+    );
   }
 
-  void _deleteTrip(BuildContext context, List data) {
-    if (data.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Confirm Delete"),
-            content: const Text("Are you sure you want to delete this trip?"),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text("Delete"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  TripProvider().deleteTrip(data[0]['id']);
-                  Fluttertoast.showToast(
-                    msg: "Trip deleted successfully",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    fontSize: 16.0,
-                  );
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
+  void _shareTrip(Map<String, dynamic> tripData) {
+    final vehicleNumbers = json.decode(tripData['vehicle_id']);
+    final vehicleDrivers = json.decode(tripData['driver']);
+    final vehicleStartingKm = json.decode(tripData['starting_km']);
+    final vehicleEndingKm = json.decode(tripData['ending_km']);
+    final tripLocations = json.decode(tripData['route']);
+
+    String shareText = '''
+Trip Details:
+Name: ${widget.tripName.replaceAll('_', ' ')}
+Purpose: ${tripData['purpose']}
+Start Date: ${_formatDate(tripData['starting_date'])}
+End Date: ${_formatDate(tripData['ending_date'])}
+
+Vehicle Details:
+''';
+
+    for (int i = 0; i < vehicleNumbers.length; i++) {
+      shareText += '''
+Vehicle ${i + 1}:
+  Registration: ${vehicleNumbers[i].replaceAll("_", " ")}
+  Driver: ${vehicleDrivers[i]}
+  Starting KM: ${vehicleStartingKm[i]}
+  Ending KM: ${vehicleEndingKm[i]}
+''';
     }
+
+    shareText += '\nLocations:\n';
+    for (int i = 0; i < tripLocations.length; i++) {
+      shareText += '  ${i + 1}. ${tripLocations[i]}\n';
+    }
+
+    Share.share(shareText);
+  }
+
+  void _deleteTrip(BuildContext context, Map<String, dynamic> tripData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this trip?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text("Delete"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Provider.of<TripProvider>(context, listen: false)
+                    .deleteTrip(tripData['id']);
+                Fluttertoast.showToast(
+                  msg: "Trip deleted successfully",
+                  backgroundColor: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

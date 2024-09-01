@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:AjceTrips/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +13,29 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
+  String? userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserRole();
+  }
+
+  Future<void> _fetchUserRole() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userDoc.exists) {
+        setState(() {
+          userRole = userDoc.data()?['role'] ?? 'Unknown';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Normal profile");
@@ -42,11 +66,20 @@ class ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(height: 10 / textScaleFactor),
                       Text(
                         FirebaseAuth.instance.currentUser?.displayName ??
+                            FirebaseAuth.instance.currentUser?.email ??
                             "User",
                         style: TextStyle(
                           fontSize: 20 / textScaleFactor,
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.inversePrimary,
+                        ),
+                      ),
+                      SizedBox(height: 5 / textScaleFactor),
+                      Text(
+                        "${userRole ?? 'Loading...'}",
+                        style: TextStyle(
+                          fontSize: 14 / textScaleFactor,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ],

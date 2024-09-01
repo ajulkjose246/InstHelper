@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:AjceTrips/screens/admin/vehicle_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/screens/admin/trip_view.dart';
 
 class ListAdminVehicleWidget extends StatefulWidget {
   const ListAdminVehicleWidget({
@@ -85,6 +89,91 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
           ],
         ),
       ],
+    );
+  }
+
+  void _showTripHistory(BuildContext context, String vehicleId) {
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final vehicleTrips = tripProvider.tripData.where((trip) {
+      List<dynamic> vehicleIds = json.decode(trip['vehicle_id']);
+      return vehicleIds.contains(vehicleId);
+    }).toList();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Vehicle Trip History'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: vehicleTrips.isEmpty
+                ? Center(child: Text('No trips found for this vehicle.'))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: vehicleTrips.length,
+                    itemBuilder: (context, index) {
+                      final trip = vehicleTrips[index];
+                      return ListTile(
+                        title: Text('${trip['purpose']}'),
+                        subtitle: Text('Date: ${trip['starting_date']}'),
+                        trailing: IconButton(
+                          icon: Icon(Icons.arrow_circle_right_outlined),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TripViewScreen(
+                                  tripId: int.parse(trip['id']),
+                                  tripName: trip['purpose'],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showTripDetails(BuildContext context, Map<String, dynamic> trip) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Trip Details'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Trip ID: ${trip['id']}'),
+              Text('Start Date: ${trip['starting_date']}'),
+              Text('End Date: ${trip['ending_date']}'),
+              Text('Purpose: ${trip['purpose']}'),
+              Text('Starting KM: ${trip['starting_km']}'),
+              Text('Ending KM: ${trip['ending_km']}'),
+              Text('Driver: ${trip['driver']}'),
+              Text('Route: ${trip['route']}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -307,31 +396,29 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                       Positioned(
                         top: 4,
                         right: 4,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.history,
-                            color: theme.colorScheme.primary,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Vehicle History'),
-                                  content: Text(
-                                      'History for ${vehicle['registration_number']}'),
-                                  actions: [
-                                    TextButton(
-                                      child: Text('Close'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                        child: Consumer<TripProvider>(
+                          builder: (context, tripProvider, _) {
+                            final hasTrips = tripProvider.tripData.any((trip) {
+                              List<dynamic> vehicleIds =
+                                  json.decode(trip['vehicle_id']);
+                              return vehicleIds
+                                  .contains(vehicle['registration_number']);
+                            });
+
+                            return hasTrips
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.history,
+                                      color: theme.colorScheme.primary,
+                                      size: 20,
                                     ),
-                                  ],
-                                );
-                              },
-                            );
+                                    onPressed: () {
+                                      _showTripHistory(context,
+                                          vehicle['registration_number']);
+                                    },
+                                  )
+                                : SizedBox
+                                    .shrink(); // Hide the icon if there are no trips
                           },
                         ),
                       ),

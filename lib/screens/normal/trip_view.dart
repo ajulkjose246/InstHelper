@@ -188,7 +188,7 @@ class _TripViewScreenState extends State<TripViewScreen> {
 
   Widget _buildSpeedDial(BuildContext context, List data) {
     return SpeedDial(
-      icon: Icons.add,
+      icon: Icons.menu,
       activeIcon: Icons.close,
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,

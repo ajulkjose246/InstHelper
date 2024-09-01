@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,6 +13,29 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
+  String? userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserRole();
+  }
+
+  Future<void> _fetchUserRole() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (userDoc.exists) {
+        setState(() {
+          userRole = userDoc.data()?['role'] ?? 'Unknown';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
@@ -34,11 +58,20 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       SizedBox(height: 10 / textScaleFactor),
                       Text(
-                        "Admin",
+                        FirebaseAuth.instance.currentUser?.displayName ??
+                            FirebaseAuth.instance.currentUser?.email ??
+                            "Admin",
                         style: TextStyle(
                           fontSize: 20 / textScaleFactor,
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.inversePrimary,
+                        ),
+                      ),
+                      Text(
+                        "${userRole ?? 'Loading...'}",
+                        style: TextStyle(
+                          fontSize: 14 / textScaleFactor,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ],
