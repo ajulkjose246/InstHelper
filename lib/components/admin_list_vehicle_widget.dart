@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:AjceTrips/screens/admin/vehicle_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ListAdminVehicleWidget extends StatefulWidget {
@@ -178,123 +178,164 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                     color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          vehicle['registration_number']
-                              .toString()
-                              .toUpperCase()
-                              .replaceAll('_', ' '),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: theme.colorScheme.onSurface),
-                          textScaleFactor: 0.8,
-                        ),
-                        Text(
-                          vehicle['model'],
-                          style: TextStyle(
-                              fontSize: 13, color: theme.colorScheme.onSurface),
-                          textScaleFactor: 0.8,
-                        ),
-                        Expanded(
-                          child: vehicle['vehicle_type_image'].isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: vehicle['vehicle_type_image'],
-                                  fit: BoxFit.contain,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  errorWidget: (context, url, error) {
-                                    print('Error loading image: $error');
-                                    return Center(
-                                      child: Icon(Icons.error,
-                                          color: theme.colorScheme.error),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              vehicle['registration_number']
+                                  .toString()
+                                  .toUpperCase()
+                                  .replaceAll('_', ' '),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: theme.colorScheme.onSurface),
+                              textScaleFactor: 0.8,
+                            ),
+                            Text(
+                              vehicle['model'],
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: theme.colorScheme.onSurface),
+                              textScaleFactor: 0.8,
+                            ),
+                            Expanded(
+                              child: vehicle['vehicle_type_image'].isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl: vehicle['vehicle_type_image'],
+                                      fit: BoxFit.contain,
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) {
+                                        print('Error loading image: $error');
+                                        return Center(
+                                          child: Icon(Icons.error,
+                                              color: theme.colorScheme.error),
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      'assets/img/car.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      backgroundColor:
+                                          theme.colorScheme.surface,
+                                      title: Text('Vehicle Status',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  theme.colorScheme.onSurface)),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          _buildStatusRow(
+                                              'Insurance',
+                                              vehicle['Insurance_Upto'],
+                                              insuranceIcon),
+                                          const SizedBox(height: 12),
+                                          _buildStatusRow(
+                                              'Fitness',
+                                              vehicle['Fitness_Upto'],
+                                              fitnessIcon),
+                                          const SizedBox(height: 12),
+                                          _buildStatusRow(
+                                              'Pollution',
+                                              vehicle['Pollution_Upto'],
+                                              pollutionIcon),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text('Close',
+                                              style: TextStyle(
+                                                  color: theme
+                                                      .colorScheme.primary)),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                        ),
+                                      ],
                                     );
                                   },
-                                )
-                              : Image.asset(
-                                  'assets/img/car.png',
-                                  fit: BoxFit.contain,
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Icon(
+                                        Icons.health_and_safety,
+                                        color: insuranceIcon,
+                                        size: 20,
+                                      ),
+                                      Icon(
+                                        Icons.construction,
+                                        color: fitnessIcon,
+                                        size: 20,
+                                      ),
+                                      Icon(
+                                        Icons.air,
+                                        color: pollutionIcon,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                              ),
+                            )
+                          ],
                         ),
-                        GestureDetector(
-                          onTap: () {
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.history,
+                            color: theme.colorScheme.primary,
+                            size: 20,
+                          ),
+                          onPressed: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  backgroundColor: theme.colorScheme.surface,
-                                  title: Text('Vehicle Status',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: theme.colorScheme.onSurface)),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      _buildStatusRow(
-                                          'Insurance',
-                                          vehicle['Insurance_Upto'],
-                                          insuranceIcon),
-                                      const SizedBox(height: 12),
-                                      _buildStatusRow('Fitness',
-                                          vehicle['Fitness_Upto'], fitnessIcon),
-                                      const SizedBox(height: 12),
-                                      _buildStatusRow(
-                                          'Pollution',
-                                          vehicle['Pollution_Upto'],
-                                          pollutionIcon),
-                                    ],
-                                  ),
+                                  title: Text('Vehicle History'),
+                                  content: Text(
+                                      'History for ${vehicle['registration_number']}'),
                                   actions: [
                                     TextButton(
-                                      child: Text('Close',
-                                          style: TextStyle(
-                                              color:
-                                                  theme.colorScheme.primary)),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
+                                      child: Text('Close'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
                                     ),
                                   ],
                                 );
                               },
                             );
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: theme.colorScheme.secondary,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.health_and_safety,
-                                    color: insuranceIcon,
-                                    size: 20,
-                                  ),
-                                  Icon(
-                                    Icons.construction,
-                                    color: fitnessIcon,
-                                    size: 20,
-                                  ),
-                                  Icon(
-                                    Icons.air,
-                                    color: pollutionIcon,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

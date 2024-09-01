@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/trip_provider.dart';
-import 'package:insthelper/screens/driver/trip_view.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/screens/driver/trip_view.dart';
 import 'package:provider/provider.dart';
-import 'package:insthelper/provider/theme_provider.dart';
+import 'package:AjceTrips/provider/theme_provider.dart';
 
 class TripPage extends StatefulWidget {
   const TripPage({super.key});
@@ -61,21 +62,20 @@ class _TripPageState extends State<TripPage> {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          const Spacer(),
-          Center(
+          Expanded(
             child: Container(
-              width: 250,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: TextField(
                 readOnly: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 15),
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search,
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
                 onTap: () {
                   context
@@ -85,46 +85,48 @@ class _TripPageState extends State<TripPage> {
               ),
             ),
           ),
-          const Spacer(),
+          const SizedBox(width: 10),
           GestureDetector(
             onTap: () {
               context.read<HomescreenProvider>().updateMyVariable(newValue: 3);
             },
             child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Image.asset(
-                  'assets/img/demo.jpg',
+                child: Image.network(
+                  FirebaseAuth.instance.currentUser?.photoURL != null
+                      ? FirebaseAuth.instance.currentUser!.photoURL!
+                      : 'assets/img/demo.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
-          const Spacer(),
+          const SizedBox(width: 10),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/driver_alert');
+              Navigator.pushNamed(context, '/alert');
             },
             child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
-              child: const ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                child: Icon(Icons.notifications),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Icon(Icons.notifications,
+                    color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ),
-          const Spacer(),
         ],
       ),
     );

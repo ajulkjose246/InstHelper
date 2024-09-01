@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/admin/vehicle_view.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:intl/intl.dart';
 
 class NotificationService {

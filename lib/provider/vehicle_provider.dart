@@ -1,19 +1,22 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:insthelper/secrets/api_key.dart';
+import 'package:AjceTrips/secrets/api_key.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 class VehicleProvider extends ChangeNotifier {
   final Uri url = Uri.parse(ApiKey().dbApiUrl);
   final Map<String, String> _headers = {'Content-Type': 'application/json'};
   Map<String, dynamic> _vehicles = {};
-  Map<String, dynamic> _specificVehicles = {};
-  Map<String, dynamic> _vehicleModels = {};
-  Map<String, dynamic> _vehicleFuel = {};
-  Map<String, dynamic> _vehicleDrivers = {};
-  Map<String, dynamic> _locations = {};
+  final Map<String, dynamic> _specificVehicles = {};
+  final Map<String, dynamic> _vehicleModels = {};
+  final Map<String, dynamic> _vehicleFuel = {};
+  final Map<String, dynamic> _vehicleDrivers = {};
+  final Map<String, dynamic> _locations = {};
 
   Map<String, dynamic> get vehicles => _vehicles;
   Map<String, dynamic> get specificVehicles => _specificVehicles;
@@ -388,6 +391,79 @@ class VehicleProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  Future<void> addDriver({
+    required String name,
+    required String phoneNumber,
+    required String email,
+    required String licenseNumber,
+    required File licenseImage,
+  }) async {
+    try {
+      // Upload image to Firebase Storage
+      String imageUrl = await _uploadImageToFirebase(licenseImage);
+
+      // Prepare SQL statement to insert driver details
+      String sql = '''
+        INSERT INTO `tbl_drivers` (
+          `name`, 
+          `phone_number`, 
+          `email`, 
+          `license_number`, 
+          `license_image_url`
+        ) VALUES (
+          '$name',
+          '$phoneNumber',
+          '$email',
+          '$licenseNumber',
+          '$imageUrl'
+        )
+      ''';
+
+      // Execute SQL statement
+      final body = json.encode({
+        'sql': sql,
+      });
+
+      final response = await http.put(url, headers: _headers, body: body);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Driver added successfully: $responseData');
+        // Optionally, you can update the local state or fetch updated driver list here
+        await fetchDrivers();
+      } else {
+        print('Failed to add driver. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error adding driver: $e');
+    }
+  }
+
+  Future<String> _uploadImageToFirebase(File imageFile) async {
+    try {
+      // Create a unique filename
+      String fileName = Uuid().v4();
+
+      // Get a reference to the storage service
+      final Reference storageRef = FirebaseStorage.instance.ref();
+
+      // Create a reference to 'driver_licenses/FILENAME.jpg'
+      final Reference imageRef =
+          storageRef.child('Vehicle_Documents/driver_licenses/$fileName.jpg');
+
+      // Upload the file
+      await imageRef.putFile(imageFile);
+
+      // Get the download URL
+      String downloadURL = await imageRef.getDownloadURL();
+
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      rethrow;
     }
   }
 

@@ -3,26 +3,26 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:insthelper/screens/admin/add_driver.dart';
+import 'package:AjceTrips/screens/admin/add_driver.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:insthelper/components/request_permmision.dart';
-import 'package:insthelper/components/theme_mode.dart';
-import 'package:insthelper/firebase_options.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/map_auto_provider.dart';
-import 'package:insthelper/provider/theme_provider.dart';
-import 'package:insthelper/provider/trip_provider.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/authentication/auth_page.dart';
-import 'package:insthelper/screens/authentication/sign_in.dart';
-import 'package:insthelper/screens/authentication/sign_up.dart';
-import 'package:insthelper/screens/admin/container.dart';
-import 'package:insthelper/screens/admin/add_vehicle.dart';
-import 'package:insthelper/screens/admin/alert_list.dart';
-import 'package:insthelper/screens/driver/alert_list.dart';
-import 'package:insthelper/screens/driver/container.dart';
+import 'package:AjceTrips/components/request_permmision.dart';
+import 'package:AjceTrips/components/theme_mode.dart';
+import 'package:AjceTrips/firebase_options.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/map_auto_provider.dart';
+import 'package:AjceTrips/provider/theme_provider.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/authentication/auth_page.dart';
+import 'package:AjceTrips/screens/authentication/sign_in.dart';
+import 'package:AjceTrips/screens/authentication/sign_up.dart';
+import 'package:AjceTrips/screens/admin/container.dart';
+import 'package:AjceTrips/screens/admin/add_vehicle.dart';
+import 'package:AjceTrips/screens/admin/alert_list.dart';
+import 'package:AjceTrips/screens/driver/alert_list.dart';
+import 'package:AjceTrips/screens/driver/container.dart';
 import 'package:provider/provider.dart';
-import 'package:insthelper/notification_service.dart';
+import 'package:AjceTrips/notification_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 // Add this function outside of main()
@@ -72,7 +72,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => MapAuto()),
         // Add more providers as needed
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -87,18 +87,22 @@ class MyApp extends StatelessWidget {
           Provider.of<ThemeProvider>(context).isDarkMode ? darkMode : lightMode,
       debugShowCheckedModeBanner: false,
       routes: ({
-        // Admin
+        // Admin User
         '/admin': (context) => const ContainerScreen(),
-        '/signin': (context) => SignInScreen(),
-        '/signup': (context) => SignUpScreen(),
-        '/auth': (context) => AuthPage(),
-        '/add': (context) => AddVehicleScreen(),
+        '/signin': (context) => const SignInScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/auth': (context) => const AuthPage(),
+        '/add': (context) => const AddVehicleScreen(),
         '/alert': (context) => const AlertList(),
-        '/add_driver': (context) => AddDriver(),
+        '/add_driver': (context) => const AddDriver(),
 
-        //Driver
+        //Driver User
         '/driver': (context) => const DriverContainerScreen(),
         '/driver_alert': (context) => const DriverAlertList(),
+
+        //Normal User
+        '/user': (context) => const DriverContainerScreen(),
+        '/user_alert': (context) => const DriverAlertList(),
       }),
       initialRoute: '/auth',
     );

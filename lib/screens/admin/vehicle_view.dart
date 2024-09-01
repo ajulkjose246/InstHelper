@@ -2,15 +2,52 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:insthelper/components/vehicle_update_popup_message.dart';
+import 'package:AjceTrips/components/vehicle_update_popup_message.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+
+void _showImagePopup(BuildContext context, String label, String imageUrl) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(label),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: InteractiveViewer(
+            minScale: 0.5,
+            maxScale: 4.0,
+            child: Image.network(
+              imageUrl,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Text('Error loading image');
+              },
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
 class VehicleViewScreen extends StatelessWidget {
   final String vehicleRegistrationId;
@@ -181,14 +218,16 @@ class VehicleViewScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${data[0]['rto_name'].toString()}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
+                                    Expanded(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          " ${data[0]['rto_name'].toString()}",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 19 / textScaleFactor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -480,7 +519,6 @@ class VehicleViewScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           width: double.infinity,
-                          height: 240,
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 left: 20, right: 20, bottom: 20, top: 10),
@@ -521,10 +559,10 @@ class VehicleViewScreen extends StatelessWidget {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color:
-                                                theme.scaffoldBackgroundColor,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                          color: theme.scaffoldBackgroundColor,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
                                         child: const Padding(
                                           padding: EdgeInsets.all(10),
                                           child: Icon(
@@ -537,164 +575,32 @@ class VehicleViewScreen extends StatelessWidget {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_month,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Registration Date",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['registration_date']))}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                _buildDateRow(
+                                  context,
+                                  "Registration Date",
+                                  data[0]!['registration_date'],
+                                  textScaleFactor,
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_month,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Insurance Upto",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Insurance_Upto']))}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                _buildDateRow(
+                                  context,
+                                  "Insurance Upto",
+                                  data[0]!['Insurance_Upto'],
+                                  textScaleFactor,
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_month,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Pollution Upto",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Pollution_Upto']))}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                _buildDateRow(
+                                  context,
+                                  "Pollution Upto",
+                                  data[0]!['Pollution_Upto'],
+                                  textScaleFactor,
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_month,
-                                          color: Colors.grey[600],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Text(
-                                            "Fitness Upto",
-                                            style: TextStyle(
-                                              fontSize: 19 / textScaleFactor,
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(data[0]!['Fitness_Upto']))}",
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: 19 / textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                _buildDateRow(
+                                  context,
+                                  "Fitness Upto",
+                                  data[0]!['Fitness_Upto'],
+                                  textScaleFactor,
                                 ),
                               ],
                             ),
@@ -918,27 +824,37 @@ class VehicleViewScreen extends StatelessWidget {
                                               return imageList
                                                   .whereType<String>()
                                                   .map<Widget>((fileName) {
-                                                return Container(
-                                                  width: 300,
-                                                  height: 150,
-                                                  margin:
-                                                      const EdgeInsets.all(10),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color.fromARGB(
-                                                        255, 0, 0, 0),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    _showImagePopup(
+                                                        context,
+                                                        'Vehicle Image',
+                                                        fileName);
+                                                  },
+                                                  child: Container(
+                                                    width: 300,
+                                                    height: 150,
+                                                    margin:
+                                                        const EdgeInsets.all(
                                                             10),
-                                                  ),
-                                                  child: Image.network(
-                                                    fileName,
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      return const Center(
-                                                          child: Text(
-                                                              'Error loading image'));
-                                                    },
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Image.network(
+                                                      fileName,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context,
+                                                          error, stackTrace) {
+                                                        return const Center(
+                                                            child: Text(
+                                                                'Error loading image'));
+                                                      },
+                                                    ),
                                                   ),
                                                 );
                                               }).toList();
@@ -967,7 +883,7 @@ class VehicleViewScreen extends StatelessWidget {
             ),
             floatingActionButton: SpeedDial(
               backgroundColor: theme.colorScheme.inversePrimary,
-              icon: Icons.add,
+              icon: Icons.menu,
               activeIcon: Icons.close,
               foregroundColor: theme.colorScheme.onPrimary,
               overlayColor: theme.scaffoldBackgroundColor,
@@ -1050,5 +966,105 @@ Purpose of Use: ${data[0]!['purpose_of_use']}
                 ),
               ],
             )));
+  }
+
+  Widget _buildDateRow(
+      BuildContext context, String label, String date, double textScaleFactor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.calendar_month,
+              color: Colors.grey[600],
+            ),
+            const SizedBox(width: 10),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 19 / textScaleFactor,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+          ],
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            " ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(date))}",
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 19 / textScaleFactor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            _showImagePopup(context, label,
+                'https://firebasestorage.googleapis.com/v0/b/inst-helper-pro.appspot.com/o/Vehicle_Management%2Ffiles%2FIMG_20240829_105507.jpg?alt=media&token=aa41183c-8315-4b92-86ed-bfbad2007877');
+          },
+          child: const Icon(Icons.visibility),
+        ),
+      ],
+    );
+  }
+
+  void _showImagePopup(BuildContext context, String label, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: EdgeInsets.all(20),
+          child: Container(
+            width: double.maxFinite,
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: InteractiveViewer(
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                          Center(child: Text('Error loading image')),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

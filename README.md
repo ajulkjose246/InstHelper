@@ -1,9 +1,9 @@
-# InstHelper
+# AjceTrips
 
-InstHelper is an advanced Flutter Android app aimed at revolutionizing college campus operations through automation and innovative technology integration. The app empowers users with seamless access to a range of functionalities, including Smart Parking, Smart Inventory, Smart Library, Room Navigation, Guest Room Booking, Stock Information, and College Vehicle Management.
+AjceTrips is an advanced Flutter Android app aimed at revolutionizing college campus operations through automation and innovative technology integration. The app empowers users with seamless access to a range of functionalities, including Smart Parking, Smart Inventory, Smart Library, Room Navigation, Guest Room Booking, Stock Information, and College Vehicle Management.
 
 ## Figma Design
-[Open Figma](https://www.figma.com/design/QRrrTYT1RR9ELqOkvKgHGf/InstHelper?node-id=0-1&t=Gzmo3HMsOK8WGeNi-1)
+[Open Figma](https://www.figma.com/design/QRrrTYT1RR9ELqOkvKgHGf/AjceTrips?node-id=0-1&t=Gzmo3HMsOK8WGeNi-1)
 
 ## Features
 
@@ -38,7 +38,7 @@ InstHelper is an advanced Flutter Android app aimed at revolutionizing college c
 
 ## Admin Web Interface
 
-For administrators, InstHelper offers a robust web interface to monitor and analyze various metrics. Through this dedicated website, administrators can view graphical representations of data, such as parking usage, inventory status, and room bookings, enabling data-driven decision-making and efficient campus management.
+For administrators, AjceTrips offers a robust web interface to monitor and analyze various metrics. Through this dedicated website, administrators can view graphical representations of data, such as parking usage, inventory status, and room bookings, enabling data-driven decision-making and efficient campus management.
 
 ## Installation
 
@@ -46,8 +46,8 @@ To run this project locally, follow these steps:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/ajulkjose246/InstHelper.git
-   cd InstHelper
+   git clone https://github.com/ajulkjose246/AjceTrips.git
+   cd AjceTrips
 2. **Install dependencies**
    ```bash
    flutter pub get

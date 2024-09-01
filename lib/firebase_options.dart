@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,49 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCaxcI2LW45VLUwR_3nwpiYMrGTNY-BqHI',
-    appId: '1:583626070952:web:2472dc5e38a1f2c6d1db9d',
-    messagingSenderId: '583626070952',
-    projectId: 'inst-helper-pro',
-    authDomain: 'inst-helper-pro.firebaseapp.com',
-    storageBucket: 'inst-helper-pro.appspot.com',
-    measurementId: 'G-LG067ZW4QF',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA3tR0IOcQT9qBi4jiKu7LU_H_rAefaUN0',
-    appId: '1:583626070952:android:373bdfc05e8935eed1db9d',
-    messagingSenderId: '583626070952',
-    projectId: 'inst-helper-pro',
-    storageBucket: 'inst-helper-pro.appspot.com',
+    apiKey: 'AIzaSyC6EZiz4QwDo3oFxLF96NqHm9vIBl5BqFc',
+    appId: '1:1016778849636:android:40b7bf2545beb7f2694e71',
+    messagingSenderId: '1016778849636',
+    projectId: 'ajce-trip',
+    storageBucket: 'ajce-trip.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBMv6wSGN72-3l8L_SBdC0DpHlDspi428A',
-    appId: '1:583626070952:ios:cd96457dae71a22bd1db9d',
-    messagingSenderId: '583626070952',
-    projectId: 'inst-helper-pro',
-    storageBucket: 'inst-helper-pro.appspot.com',
-    iosBundleId: 'com.quantumweft.insthelper',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBMv6wSGN72-3l8L_SBdC0DpHlDspi428A',
-    appId: '1:583626070952:ios:cd96457dae71a22bd1db9d',
-    messagingSenderId: '583626070952',
-    projectId: 'inst-helper-pro',
-    storageBucket: 'inst-helper-pro.appspot.com',
-    iosBundleId: 'com.quantumweft.insthelper',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCaxcI2LW45VLUwR_3nwpiYMrGTNY-BqHI',
-    appId: '1:583626070952:web:4c6bbe73c85167b6d1db9d',
-    messagingSenderId: '583626070952',
-    projectId: 'inst-helper-pro',
-    authDomain: 'inst-helper-pro.firebaseapp.com',
-    storageBucket: 'inst-helper-pro.appspot.com',
-    measurementId: 'G-3RXQXTHVJZ',
+    apiKey: 'AIzaSyCdGqmAPuhkN0-lGVhWoP3MIdPNdv3KSso',
+    appId: '1:1016778849636:ios:800b172d5043025a694e71',
+    messagingSenderId: '1016778849636',
+    projectId: 'ajce-trip',
+    storageBucket: 'ajce-trip.appspot.com',
+    iosBundleId: 'ajce.trip',
   );
 }

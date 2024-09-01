@@ -1,8 +1,8 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/screens/authentication/auth_services.dart';
+import 'package:AjceTrips/components/form_input_field.dart';
+import 'package:AjceTrips/screens/authentication/auth_services.dart';
 import 'package:line_icons/line_icons.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -207,7 +207,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       child: IconButton(
                         icon: const Icon(LineIcons.googleLogo),
-                        onPressed: () => AuthService().signInWithGoogle(),
+                        onPressed: () =>
+                            AuthService().signInWithGoogle(context),
                       ),
                     ),
                     Container(

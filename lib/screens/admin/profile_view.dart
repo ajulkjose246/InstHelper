@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:insthelper/provider/theme_provider.dart';
+import 'package:AjceTrips/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,7 +16,6 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
     final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: SafeArea(
@@ -29,12 +28,13 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       CircleAvatar(
+                        backgroundColor: theme.colorScheme.inversePrimary,
                         radius: 50 / textScaleFactor,
-                        backgroundImage: AssetImage('assets/img/demo.jpg'),
+                        backgroundImage: AssetImage('assets/img/user.png'),
                       ),
                       SizedBox(height: 10 / textScaleFactor),
                       Text(
-                        "Ajul K Jose",
+                        "Admin",
                         style: TextStyle(
                           fontSize: 20 / textScaleFactor,
                           fontWeight: FontWeight.bold,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/driver_list_vehicle_widget.dart';
-import 'package:insthelper/components/request_permmision.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:AjceTrips/components/driver_list_vehicle_widget.dart';
+import 'package:AjceTrips/components/request_permmision.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -179,8 +180,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           child: ClipRRect(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
-                            child: Image.asset(
-                              'assets/img/demo.jpg',
+                            child: Image.network(
+                              FirebaseAuth.instance.currentUser?.photoURL !=
+                                      null
+                                  ? FirebaseAuth.instance.currentUser!.photoURL!
+                                  : 'assets/img/demo.jpg',
                               fit: BoxFit.cover,
                             ),
                           ),

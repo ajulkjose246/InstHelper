@@ -6,8 +6,8 @@ import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
+import 'package:AjceTrips/components/form_input_field.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
@@ -46,7 +46,14 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String? vehicleType;
   String? fuelType;
 
-  List<XFile>? uploadedFiles;
+  Map<String, List<XFile>> uploadedFiles = {
+    'image': [],
+    'fitness': [],
+    'pollution': [],
+    'insurance': [],
+    'rc': [],
+  };
+
   List<String> uploadedImageFileUrls = [];
   List<String> uploadedImageFileNames = [];
 
@@ -67,38 +74,35 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     final List<XFile> pickedFiles = await picker.pickMultiImage();
 
     setState(() {
-      if (type == 'image') {
-        uploadedFiles = pickedFiles;
-        for (var img in uploadedFiles!) {
-          uploadedImageFileNames.add(img.name);
-        }
-      } else if (type == 'fitness') {
-        uploadedFiles = pickedFiles;
-        for (var img in uploadedFiles!) {
-          uploadedFitnessFileNames.add(img.name);
-        }
-      } else if (type == 'pollution') {
-        uploadedFiles = pickedFiles;
-        for (var img in uploadedFiles!) {
-          uploadedPollutionFileNames.add(img.name);
-        }
-      } else if (type == 'insurance') {
-        uploadedFiles = pickedFiles;
-        for (var img in uploadedFiles!) {
-          uploadedInsuranceFileNames.add(img.name);
-        }
-      } else if (type == 'rc') {
-        uploadedFiles = pickedFiles;
-        for (var img in uploadedFiles!) {
-          uploadedRcFileNames.add(img.name);
-        }
+      uploadedFiles[type] = pickedFiles;
+      switch (type) {
+        case 'image':
+          uploadedImageFileNames =
+              pickedFiles.map((file) => file.name).toList();
+          break;
+        case 'fitness':
+          uploadedFitnessFileNames =
+              pickedFiles.map((file) => file.name).toList();
+          break;
+        case 'pollution':
+          uploadedPollutionFileNames =
+              pickedFiles.map((file) => file.name).toList();
+          break;
+        case 'insurance':
+          uploadedInsuranceFileNames =
+              pickedFiles.map((file) => file.name).toList();
+          break;
+        case 'rc':
+          uploadedRcFileNames = pickedFiles.map((file) => file.name).toList();
+          break;
       }
     });
   }
 
   Future<void> uploadFiles(String type) async {
-    if (uploadedFiles == null || uploadedFiles!.isEmpty) {
-      print("No files selected");
+    final files = uploadedFiles[type];
+    if (files == null || files.isEmpty) {
+      print("No files selected for $type");
       return;
     }
 
@@ -106,12 +110,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       isLoading = true;
     });
 
-    for (var file in uploadedFiles!) {
+    for (var file in files) {
       final fileName = path.basename(file.path);
       final Reference ref = FirebaseStorage.instance
           .ref()
-          .child('Vehicle_Management')
-          .child('files')
+          .child('Vehicle_Documents')
+          .child(type)
           .child(fileName);
       final File localFile = File(file.path);
 
@@ -120,16 +124,22 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         final fileUrl = await ref.getDownloadURL();
         print("File uploaded: $fileUrl");
 
-        if (type == 'image') {
-          uploadedImageFileUrls.add(fileUrl);
-        } else if (type == 'fitness') {
-          uploadedFitnessFileUrls.add(fileUrl);
-        } else if (type == 'pollution') {
-          uploadedPollutionFileUrls.add(fileUrl);
-        } else if (type == 'insurance') {
-          uploadedInsuranceFileUrls.add(fileUrl);
-        } else if (type == 'rc') {
-          uploadedRcFileUrls.add(fileUrl);
+        switch (type) {
+          case 'image':
+            uploadedImageFileUrls.add(fileUrl);
+            break;
+          case 'fitness':
+            uploadedFitnessFileUrls.add(fileUrl);
+            break;
+          case 'pollution':
+            uploadedPollutionFileUrls.add(fileUrl);
+            break;
+          case 'insurance':
+            uploadedInsuranceFileUrls.add(fileUrl);
+            break;
+          case 'rc':
+            uploadedRcFileUrls.add(fileUrl);
+            break;
         }
       } catch (e) {
         print("Failed to upload file: $e");
@@ -216,8 +226,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       validator: true,
                       icon: Icon(Icons.pin, color: theme.colorScheme.primary),
                       regex: RegExp(
-                          r'^[a-zA-Z]{2}\s\d{1,2}\s[a-zA-Z]{1,2}\s\d{4}$'),
-                      regexlabel: 'KL XX AZ XXXX',
+                          r'^[a-zA-Z]{2}\s\d{1,2}\s([a-zA-Z]{1,2}\s)?\d{4}$'),
+                      regexlabel: 'KL XX AZ XXXX or KL XX XXXX',
                       numberkeyboard: false,
                     ),
                     FormInputField(

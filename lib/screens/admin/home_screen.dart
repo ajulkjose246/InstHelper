@@ -1,9 +1,11 @@
+// ignore_for_file: deprecated_member_use, library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/admin_list_vehicle_widget.dart';
-import 'package:insthelper/components/request_permmision.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/admin/vehicle_view.dart';
+import 'package:AjceTrips/components/admin_list_vehicle_widget.dart';
+import 'package:AjceTrips/components/request_permmision.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/admin/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -143,14 +145,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                           ),
                           child: TextField(
                             readOnly: true,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding:
-                                  EdgeInsets.symmetric(vertical: 15),
+                                  const EdgeInsets.symmetric(vertical: 15),
                               prefixIcon: Icon(Icons.search,
                                   color: theme.colorScheme.onSurface),
                             ),
@@ -174,13 +177,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                           ),
                           child: ClipRRect(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                             child: Image.asset(
-                              'assets/img/demo.jpg',
+                              'assets/img/user.png',
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -196,7 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                           ),
                           child: ClipRRect(
                             borderRadius:

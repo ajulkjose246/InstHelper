@@ -1,4 +1,4 @@
-name: insthelper
+name: AjceTrips
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -59,7 +59,10 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   shared_preferences: ^2.3.2
   cached_network_image: ^3.4.0
-  google_ml_kit: ^0.18.0
+  flutter_launcher_icons: ^0.13.1
+  cloud_firestore: ^5.3.0
+  cloud_functions: ^5.1.0
+  firebase_app_check: ^0.3.0+5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -75,7 +78,7 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/logo/logo.png"
-  adaptive_icon_background: "#FFF" 
+  adaptive_icon_background: "#ffffff" 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

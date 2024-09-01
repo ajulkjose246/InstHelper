@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:insthelper/secrets/api_key.dart';
+import 'package:AjceTrips/secrets/api_key.dart';
 
 class MapAuto with ChangeNotifier {
   List<Map<String, dynamic>> _predictions = [];

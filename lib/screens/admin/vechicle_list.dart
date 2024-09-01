@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/admin_list_vehicle_widget.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:AjceTrips/components/admin_list_vehicle_widget.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
 import 'package:provider/provider.dart';
 
 class VechicleListScreen extends StatefulWidget {
@@ -29,12 +29,13 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: TextField(
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 15),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 15),
                         prefixIcon: Icon(Icons.search,
                             color: theme.colorScheme.onSurface),
                       ),
@@ -58,12 +59,12 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: Image.asset(
-                        'assets/img/demo.jpg',
+                        'assets/img/user.png',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -79,7 +80,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),

@@ -1,4 +1,4 @@
-package com.quantumweft.insthelper
+package ajce.trip
 
 import io.flutter.embedding.android.FlutterActivity
 

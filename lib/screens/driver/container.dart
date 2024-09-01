@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/trip_provider.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/driver/home_screen.dart';
-import 'package:insthelper/screens/driver/profile_view.dart';
-import 'package:insthelper/screens/driver/trip_page.dart';
-import 'package:insthelper/screens/driver/vechicle_list.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/driver/home_screen.dart';
+import 'package:AjceTrips/screens/driver/profile_view.dart';
+import 'package:AjceTrips/screens/driver/trip_page.dart';
+import 'package:AjceTrips/screens/driver/vechicle_list.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -77,6 +77,7 @@ class _DriverContainerScreenState extends State<DriverContainerScreen> {
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: theme.colorScheme.tertiary,
               backgroundColor: theme.colorScheme.primaryContainer,
+              color: Colors.white,
               tabs: [
                 _buildGButton(Icons.home, 'Home', textScaleFactor, theme),
                 _buildGButton(Icons.list_alt_outlined, 'Vehicle List',

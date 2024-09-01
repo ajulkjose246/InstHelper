@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/driver_list_vehicle_widget.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
+import 'package:AjceTrips/components/driver_list_vehicle_widget.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
 import 'package:provider/provider.dart';
 
 class VechicleListScreen extends StatefulWidget {
@@ -62,8 +63,10 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                     ),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      child: Image.asset(
-                        'assets/img/demo.jpg',
+                      child: Image.network(
+                        FirebaseAuth.instance.currentUser?.photoURL != null
+                            ? FirebaseAuth.instance.currentUser!.photoURL!
+                            : 'assets/img/demo.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/provider/trip_provider.dart';
+import 'package:AjceTrips/components/form_input_field.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
 import 'package:intl/intl.dart';
 
 class TripUpdateMessage extends StatefulWidget {

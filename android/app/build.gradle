@@ -27,7 +27,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.quantumweft.insthelper"
+    namespace = "ajce.trip"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.quantumweft.insthelper"
+        applicationId = "ajce.trip"
         // minSdk = flutter.minSdkVersion
         minSdkVersion 23 
         multiDexEnabled true

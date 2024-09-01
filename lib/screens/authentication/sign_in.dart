@@ -1,8 +1,8 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/screens/authentication/auth_services.dart';
+import 'package:AjceTrips/components/form_input_field.dart';
+import 'package:AjceTrips/screens/authentication/auth_services.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,11 +19,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> signInWithEmailAndPassword() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text,
-        password: passwordController.text,
+      await AuthService().signInWithEmailAndPassword(
+        context,
+        usernameController.text,
+        passwordController.text,
       );
-      Navigator.pushNamed(context, '/auth');
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'An error occurred')),
@@ -206,7 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildSocialButton(LineIcons.googleLogo,
-                        () => AuthService().signInWithGoogle()),
+                        () => AuthService().signInWithGoogle(context)),
                     _buildSocialButton(LineIcons.github, () {}),
                     _buildSocialButton(LineIcons.facebook, () {}),
                   ],

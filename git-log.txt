@@ -242,4 +242,4 @@ commit b61b8d316d8721f7dee26e91e80f75890d4fea87
 Author: ajulkjose246 <mail.ajulkjose@gmail.com>
 Date:   Sat Jun 15 15:32:55 2024 +0530
 
-    created insthelper project and documents
+    created AjceTrips project and documents

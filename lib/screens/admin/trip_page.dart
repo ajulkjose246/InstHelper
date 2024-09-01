@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insthelper/components/form_input_field.dart';
-import 'package:insthelper/provider/homescreen_provider.dart';
-import 'package:insthelper/provider/trip_provider.dart';
-import 'package:insthelper/provider/vehicle_provider.dart';
-import 'package:insthelper/screens/admin/trip_view.dart';
+import 'package:AjceTrips/components/form_input_field.dart';
+import 'package:AjceTrips/provider/homescreen_provider.dart';
+import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:AjceTrips/provider/vehicle_provider.dart';
+import 'package:AjceTrips/screens/admin/trip_view.dart';
 import 'package:provider/provider.dart';
-import 'package:insthelper/provider/map_auto_provider.dart';
-import 'package:insthelper/components/location_list_tile.dart';
+import 'package:AjceTrips/provider/map_auto_provider.dart';
+import 'package:AjceTrips/components/location_list_tile.dart';
 
 class TripPage extends StatefulWidget {
   const TripPage({super.key});
@@ -309,7 +309,7 @@ class _TripPageState extends State<TripPage> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20)),
                         child: Image.asset(
-                          'assets/img/demo.jpg',
+                          'assets/img/user.png',
                           fit: BoxFit.cover,
                         ),
                       ),
