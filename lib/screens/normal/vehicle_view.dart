@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
@@ -11,6 +10,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class VehicleViewScreen extends StatelessWidget {
   final String vehicleRegistrationId;
@@ -22,10 +22,10 @@ class VehicleViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Normal vehicle view");
     List data = [];
     final double textScaleFactor = MediaQuery.of(context).textScaleFactor;
     final ThemeData theme = Theme.of(context);
-
     return ChangeNotifierProvider(
         create: (context) => VehicleProvider(),
         child: Scaffold(

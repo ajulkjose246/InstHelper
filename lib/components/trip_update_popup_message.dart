@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:AjceTrips/components/form_input_field.dart';
 import 'package:AjceTrips/provider/trip_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class TripUpdateMessage extends StatefulWidget {
   const TripUpdateMessage({
-    super.key,
+    Key? key,
     required this.type,
-    required this.formattedRegNumber,
-    required this.vehicleData,
-  });
+    required this.tripId,
+    required this.tripData,
+  }) : super(key: key);
 
   final int type;
-  final String formattedRegNumber;
-  final Map<String, dynamic>? vehicleData;
+  final int tripId;
+  final Map<String, dynamic> tripData;
 
   @override
   State<TripUpdateMessage> createState() => _TripUpdateMessageState();
@@ -22,35 +22,46 @@ class TripUpdateMessage extends StatefulWidget {
 class _TripUpdateMessageState extends State<TripUpdateMessage> {
   final _formKey = GlobalKey<FormState>();
 
-  final purposeController = TextEditingController();
-  final startingTimeController = TextEditingController();
-  DateTime? startingDate;
+  late TextEditingController purposeController;
+  late TextEditingController startDateController;
+  late TextEditingController endDateController;
+
+  List<TextEditingController> vehicleControllers = [];
+  List<TextEditingController> driverControllers = [];
+  List<TextEditingController> startKmControllers = [];
+  List<TextEditingController> endKmControllers = [];
+
+  List<TextEditingController> locationControllers = [];
 
   @override
   void initState() {
     super.initState();
-    purposeController.text = widget.vehicleData!['purpose'];
-    startingTimeController.text = widget.vehicleData!['starting_time'];
-    startingDate = DateTime.parse(widget.vehicleData!['starting_date']);
-  }
+    purposeController = TextEditingController(text: widget.tripData['purpose']);
+    startDateController =
+        TextEditingController(text: widget.tripData['starting_date']);
+    endDateController =
+        TextEditingController(text: widget.tripData['ending_date']);
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: startingDate ?? DateTime.now(),
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != startingDate) {
-      setState(() {
-        startingDate = picked;
-      });
+    if (widget.type == 2) {
+      List vehicles = widget.tripData['vehicle_id'];
+      List drivers = widget.tripData['driver'];
+      List startKms = widget.tripData['starting_km'];
+      List endKms = widget.tripData['ending_km'];
+
+      for (int i = 0; i < vehicles.length; i++) {
+        vehicleControllers.add(TextEditingController(text: vehicles[i]));
+        driverControllers.add(TextEditingController(text: drivers[i]));
+        startKmControllers.add(TextEditingController(text: startKms[i]));
+        endKmControllers.add(TextEditingController(text: endKms[i]));
+      }
     }
-  }
 
-  String formatDate(DateTime? date) {
-    if (date == null) return '';
-    return DateFormat('dd-MMM-yyyy').format(date);
+    if (widget.type == 3) {
+      List locations = widget.tripData['route'];
+      for (String location in locations) {
+        locationControllers.add(TextEditingController(text: location));
+      }
+    }
   }
 
   @override
@@ -61,105 +72,245 @@ class _TripUpdateMessageState extends State<TripUpdateMessage> {
       ),
       child: Form(
         key: _formKey,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Update Trip Details",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _getDialogTitle(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              FormInputField(
-                textcontroller: purposeController,
-                label: 'Purpose',
-                validator: true,
-                icon: const Icon(Icons.description),
-                regex: RegExp(r'^.+$'),
-                regexlabel: 'Purpose cannot be empty',
-                numberkeyboard: false,
-              ),
-              const SizedBox(height: 10),
-              FormInputField(
-                textcontroller: startingTimeController,
-                label: 'Starting Time',
-                validator: true,
-                icon: const Icon(Icons.access_time),
-                regex: RegExp(r'^([01]?[0-9]|2[0-3]):[0-5][0-9]$'),
-                regexlabel: 'Enter a valid time (HH:MM)',
-                numberkeyboard: true,
-              ),
-              const SizedBox(height: 10),
-              _buildDateField(context, "Starting Date", startingDate),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  TextButton(
-                    child: const Text('Close'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    child: const Text('Update'),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate() &&
-                          startingDate != null) {
-                        // TripProvider().updateTripData(
-                        //   widget.vehicleData!['id'],
-                        //   purposeController.text,
-                        //   startingTimeController.text,
-                        //   startingDate!.toIso8601String(),
-                        // );
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ],
-              )
-            ],
+                const SizedBox(height: 20),
+                _buildFormFields(),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    TextButton(
+                      child: const Text('Close'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      child: const Text('Update'),
+                      onPressed: () => _updateTrip(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildDateField(BuildContext context, String label, DateTime? date) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: GestureDetector(
-        onTap: () => _selectDate(context),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 1.0),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              const Icon(Icons.calendar_month),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  date != null ? formatDate(date) : label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
+  String _getDialogTitle() {
+    switch (widget.type) {
+      case 1:
+        return "Update Trip Details";
+      case 2:
+        return "Update Vehicle Details";
+      case 3:
+        return "Update Location Details";
+      default:
+        return "Update Trip";
+    }
+  }
+
+  Widget _buildFormFields() {
+    switch (widget.type) {
+      case 1:
+        return Column(
+          children: [
+            TextFormField(
+              controller: purposeController,
+              decoration: InputDecoration(
+                labelText: 'Purpose',
+                icon: const Icon(Icons.description),
               ),
+              validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: startDateController,
+              decoration: InputDecoration(
+                labelText: 'Start Date',
+                icon: const Icon(Icons.calendar_today),
+              ),
+              readOnly: true,
+              onTap: () => _selectDate(context, startDateController),
+              validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: endDateController,
+              decoration: InputDecoration(
+                labelText: 'End Date',
+                icon: const Icon(Icons.calendar_today),
+              ),
+              readOnly: true,
+              onTap: () => _selectDate(context, endDateController),
+              validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
+            ),
+            const SizedBox(height: 10),
+          ],
+        );
+      case 2:
+        return Column(
+          children: [
+            for (int i = 0; i < vehicleControllers.length; i++) ...[
+              Text("Vehicle ${i + 1}",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                controller: vehicleControllers[i],
+                decoration: InputDecoration(
+                  labelText: 'Vehicle',
+                  icon: const Icon(Icons.directions_car),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: driverControllers[i],
+                decoration: InputDecoration(
+                  labelText: 'Driver',
+                  icon: const Icon(Icons.person),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: startKmControllers[i],
+                decoration: InputDecoration(
+                  labelText: 'Starting KM',
+                  icon: const Icon(Icons.speed),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required' : null,
+                keyboardType: TextInputType.number,
+              ),
+              TextFormField(
+                controller: endKmControllers[i],
+                decoration: InputDecoration(
+                  labelText: 'Ending KM',
+                  icon: const Icon(Icons.speed),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required' : null,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
             ],
-          ),
-        ),
-      ),
+          ],
+        );
+      case 3:
+        return Column(
+          children: [
+            for (int i = 0; i < locationControllers.length; i++) ...[
+              TextFormField(
+                controller: locationControllers[i],
+                decoration: InputDecoration(
+                  labelText: 'Location ${i + 1}',
+                  icon: const Icon(Icons.location_on),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required' : null,
+              ),
+              const SizedBox(height: 10),
+            ],
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  locationControllers.add(TextEditingController());
+                });
+              },
+              child: Text("Add Location"),
+            ),
+          ],
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
+    if (picked != null) {
+      setState(() {
+        controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
+
+  void _updateTrip(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> updatedData = {};
+      switch (widget.type) {
+        case 1:
+          updatedData = {
+            'purpose': purposeController.text,
+            'starting_date': startDateController.text,
+            'ending_date': endDateController.text,
+          };
+          break;
+        case 2:
+          updatedData = {
+            'vehicle_id': vehicleControllers.map((c) => c.text).toList(),
+            'driver': driverControllers.map((c) => c.text).toList(),
+            'starting_km': startKmControllers.map((c) => c.text).toList(),
+            'ending_km': endKmControllers.map((c) => c.text).toList(),
+          };
+          break;
+        case 3:
+          updatedData = {
+            'route': locationControllers.map((c) => c.text).toList(),
+          };
+          break;
+      }
+
+      Provider.of<TripProvider>(context, listen: false).updateTripData(
+        widget.type,
+        widget.tripId,
+        updatedData,
+      );
+
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  void dispose() {
+    purposeController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+    for (var controller in vehicleControllers) {
+      controller.dispose();
+    }
+    for (var controller in driverControllers) {
+      controller.dispose();
+    }
+    for (var controller in startKmControllers) {
+      controller.dispose();
+    }
+    for (var controller in endKmControllers) {
+      controller.dispose();
+    }
+    for (var controller in locationControllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

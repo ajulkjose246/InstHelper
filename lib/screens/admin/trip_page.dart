@@ -473,7 +473,7 @@ class _TripPageState extends State<TripPage> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  'Time: ${trip['starting_time']}',
+                                  'Date: ${trip['starting_date']}',
                                   style: theme.textTheme.bodyMedium,
                                 ),
                               ],

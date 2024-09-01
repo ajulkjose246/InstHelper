@@ -50,6 +50,7 @@ class _TripViewScreenState extends State<TripViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Normal trip view");
     return ChangeNotifierProvider(
       create: (context) => TripProvider(),
       child: Scaffold(

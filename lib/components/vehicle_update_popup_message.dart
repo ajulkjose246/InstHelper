@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:AjceTrips/components/form_input_field.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class UpdateMessage extends StatefulWidget {
   const UpdateMessage({
@@ -36,6 +38,13 @@ class _UpdateMessageState extends State<UpdateMessage> {
   DateTime? registrationDate;
   DateTime? pollutionDate;
   DateTime? fitnessDate;
+  Map<String, List<File>> selectedImages = {
+    'registration': [],
+    'insurance': [],
+    'pollution': [],
+    'fitness': [],
+  };
+
   Future<void> _selectDate(BuildContext context, String datetype) async {
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -64,6 +73,18 @@ class _UpdateMessageState extends State<UpdateMessage> {
     if (picked != null && picked != fitnessDate && datetype == 'fitness') {
       setState(() {
         fitnessDate = picked;
+      });
+    }
+  }
+
+  Future<void> _selectImages(String dateType) async {
+    final ImagePicker _picker = ImagePicker();
+    final List<XFile>? images = await _picker.pickMultiImage();
+
+    if (images != null && images.isNotEmpty) {
+      setState(() {
+        selectedImages[dateType] =
+            images.map((xFile) => File(xFile.path)).toList();
       });
     }
   }
@@ -275,25 +296,25 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                 child: SingleChildScrollView(
                                   child: Column(
                                     children: [
-                                      _buildDateField(
+                                      _buildDateFieldWithUpload(
                                         context,
                                         'registration',
                                         'Registration Date',
                                         registrationDate,
                                       ),
-                                      _buildDateField(
+                                      _buildDateFieldWithUpload(
                                         context,
                                         'insurance',
                                         'Insurance Upto',
                                         insuranceExpiryDate,
                                       ),
-                                      _buildDateField(
+                                      _buildDateFieldWithUpload(
                                         context,
                                         'pollution',
                                         'Pollution Upto',
                                         pollutionDate,
                                       ),
-                                      _buildDateField(
+                                      _buildDateFieldWithUpload(
                                         context,
                                         'fitness',
                                         'Fitness Upto',
@@ -360,6 +381,8 @@ class _UpdateMessageState extends State<UpdateMessage> {
                                           fitnessDate
                                               ?.toIso8601String()
                                               .split('T')[0],
+                                          null,
+                                          selectedImages,
                                         );
                                         Navigator.pop(context);
                                       }
@@ -436,6 +459,25 @@ class _UpdateMessageState extends State<UpdateMessage> {
     );
   }
 
+  Widget _buildDateFieldWithUpload(
+    BuildContext context,
+    String dateType,
+    String label,
+    DateTime? date,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDateField(context, dateType, label, date),
+        const SizedBox(height: 10),
+        _buildImageUploadField(dateType),
+        if (selectedImages[dateType]!.isNotEmpty)
+          _buildSelectedImagesPreview(dateType),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Widget _buildDateField(
       BuildContext context, String dateType, String label, DateTime? date) {
     return Padding(
@@ -465,6 +507,77 @@ class _UpdateMessageState extends State<UpdateMessage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildImageUploadField(String dateType) {
+    return GestureDetector(
+      onTap: () => _selectImages(dateType),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 1.0),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            const Icon(Icons.upload_file),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                selectedImages[dateType]!.isNotEmpty
+                    ? '${selectedImages[dateType]!.length} image(s) selected'
+                    : 'Upload Documents',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedImagesPreview(String dateType) {
+    return Container(
+      height: 60,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: selectedImages[dateType]!.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Stack(
+              children: [
+                Image.file(
+                  selectedImages[dateType]![index],
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedImages[dateType]!.removeAt(index);
+                      });
+                    },
+                    child: Container(
+                      color: Colors.red,
+                      child: Icon(Icons.close, size: 15, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

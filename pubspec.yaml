@@ -63,6 +63,7 @@ dependencies:
   cloud_firestore: ^5.3.0
   cloud_functions: ^5.1.0
   firebase_app_check: ^0.3.0+5
+  carousel_slider: ^5.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

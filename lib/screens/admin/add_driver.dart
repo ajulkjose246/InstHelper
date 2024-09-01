@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 class AddDriver extends StatefulWidget {
   const AddDriver({super.key});

@@ -41,7 +41,7 @@ class _DriverContainerScreenState extends State<DriverContainerScreen> {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
     final theme = Theme.of(context);
 
-    print("Admin container");
+    print("Driver container");
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: SafeArea(

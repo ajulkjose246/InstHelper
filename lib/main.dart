@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:AjceTrips/screens/normal/alert_list.dart';
+import 'package:AjceTrips/screens/normal/container.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -101,8 +103,8 @@ class MyApp extends StatelessWidget {
         '/driver_alert': (context) => const DriverAlertList(),
 
         //Normal User
-        '/user': (context) => const DriverContainerScreen(),
-        '/user_alert': (context) => const DriverAlertList(),
+        '/user': (context) => const NormalContainerScreen(),
+        '/user_alert': (context) => const NormalAlertList(),
       }),
       initialRoute: '/auth',
     );

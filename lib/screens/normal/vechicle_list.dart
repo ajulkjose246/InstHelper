@@ -1,6 +1,6 @@
+import 'package:AjceTrips/components/normal_list_vehicle_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:AjceTrips/components/driver_list_vehicle_widget.dart';
 import 'package:AjceTrips/provider/homescreen_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +16,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Normal vehicle list");
     final theme = Theme.of(context);
     return Container(
       color: theme.scaffoldBackgroundColor,
@@ -75,7 +76,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/driver_alert');
+                    Navigator.pushNamed(context, '/user_alert');
                   },
                   child: Container(
                     width: 40,
@@ -94,7 +95,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
               ],
             ),
           ),
-          ListDriverVehicleWidget(isHomePage: false, isSearch: deviceSearch)
+          ListNormalVehicleWidget(isHomePage: false, isSearch: deviceSearch)
         ],
       ),
     );

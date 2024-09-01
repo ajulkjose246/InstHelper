@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -580,6 +581,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   "Registration Date",
                                   data[0]!['registration_date'],
                                   textScaleFactor,
+                                  data[0],
                                 ),
                                 const SizedBox(height: 10),
                                 _buildDateRow(
@@ -587,6 +589,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   "Insurance Upto",
                                   data[0]!['Insurance_Upto'],
                                   textScaleFactor,
+                                  data[0],
                                 ),
                                 const SizedBox(height: 10),
                                 _buildDateRow(
@@ -594,6 +597,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   "Pollution Upto",
                                   data[0]!['Pollution_Upto'],
                                   textScaleFactor,
+                                  data[0],
                                 ),
                                 const SizedBox(height: 10),
                                 _buildDateRow(
@@ -601,6 +605,7 @@ class VehicleViewScreen extends StatelessWidget {
                                   "Fitness Upto",
                                   data[0]!['Fitness_Upto'],
                                   textScaleFactor,
+                                  data[0],
                                 ),
                               ],
                             ),
@@ -968,8 +973,24 @@ Purpose of Use: ${data[0]!['purpose_of_use']}
             )));
   }
 
-  Widget _buildDateRow(
-      BuildContext context, String label, String date, double textScaleFactor) {
+  Widget _buildDateRow(BuildContext context, String label, String date,
+      double textScaleFactor, Map<String, dynamic> data) {
+    String? imageUrl;
+    switch (label) {
+      case "Registration Date":
+        imageUrl = data['uploaded_files'];
+        break;
+      case "Insurance Upto":
+        imageUrl = data['insurance_documents'];
+        break;
+      case "Pollution Upto":
+        imageUrl = data['pollution_documents'];
+        break;
+      case "Fitness Upto":
+        imageUrl = data['fitness_documents'];
+        break;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1004,18 +1025,28 @@ Purpose of Use: ${data[0]!['purpose_of_use']}
             ),
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            _showImagePopup(context, label,
-                'https://firebasestorage.googleapis.com/v0/b/inst-helper-pro.appspot.com/o/Vehicle_Management%2Ffiles%2FIMG_20240829_105507.jpg?alt=media&token=aa41183c-8315-4b92-86ed-bfbad2007877');
-          },
-          child: const Icon(Icons.visibility),
-        ),
+        if (imageUrl != null && imageUrl.isNotEmpty)
+          GestureDetector(
+            onTap: () {
+              _showImagePopup(context, label, imageUrl!);
+            },
+            child: const Icon(Icons.visibility),
+          ),
       ],
     );
   }
 
-  void _showImagePopup(BuildContext context, String label, String imageUrl) {
+  void _showImagePopup(
+      BuildContext context, String label, String imageUrlsJson) {
+    List<String> imageUrls = [];
+    try {
+      imageUrls = List<String>.from(jsonDecode(imageUrlsJson));
+    } catch (e) {
+      print("Error parsing image URLs: $e");
+      // If parsing fails, assume it's a single URL
+      imageUrls = [imageUrlsJson];
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1047,17 +1078,31 @@ Purpose of Use: ${data[0]!['purpose_of_use']}
                   ),
                 ),
                 Expanded(
-                  child: InteractiveViewer(
-                    minScale: 0.5,
-                    maxScale: 4.0,
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) =>
-                          Center(child: Text('Error loading image')),
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: double.infinity,
+                      viewportFraction: 1.0,
+                      enlargeCenterPage: false,
+                      enableInfiniteScroll: false,
                     ),
+                    items: imageUrls.map((url) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return InteractiveViewer(
+                            minScale: 0.5,
+                            maxScale: 4.0,
+                            child: CachedNetworkImage(
+                              imageUrl: url,
+                              fit: BoxFit.contain,
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Center(child: Text('Error loading image')),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
                   ),
                 ),
               ],

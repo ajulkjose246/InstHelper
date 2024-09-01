@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:AjceTrips/secrets/api_key.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
 
 class VehicleProvider extends ChangeNotifier {
   final Uri url = Uri.parse(ApiKey().dbApiUrl);
@@ -183,8 +184,41 @@ class VehicleProvider extends ChangeNotifier {
     String? value3,
     String? value4,
     String? value5,
+    Map<String, List<File>>? selectedImages,
   ]) async {
     List<String> sqlStatements = [];
+    Map<String, List<String>> uploadedFileUrls = {
+      'registration': [],
+      'insurance': [],
+      'pollution': [],
+      'fitness': [],
+    };
+
+    // Upload images to Firebase Storage
+    if (selectedImages != null) {
+      for (var entry in selectedImages.entries) {
+        String dateType = entry.key;
+        List<File> images = entry.value;
+
+        for (var image in images) {
+          String fileName = path.basename(image.path);
+          Reference ref = FirebaseStorage.instance
+              .ref()
+              .child('Vehicle_Documents')
+              .child(vehicleRegistrationNo!)
+              .child(dateType)
+              .child(fileName);
+
+          try {
+            await ref.putFile(image);
+            String fileUrl = await ref.getDownloadURL();
+            uploadedFileUrls[dateType]!.add(fileUrl);
+          } catch (e) {
+            print("Failed to upload file: $e");
+          }
+        }
+      }
+    }
 
     switch (type) {
       case 1:
@@ -202,20 +236,25 @@ class VehicleProvider extends ChangeNotifier {
           sqlStatements.add(
             "UPDATE `tbl_vehicle` SET `registration_date`='$value1' WHERE `registration_number`='$vehicleRegistrationNo'",
           );
+          if (uploadedFileUrls['registration']!.isNotEmpty) {
+            sqlStatements.add(
+              "UPDATE `tbl_vehicle` SET `uploaded_files`='${json.encode(uploadedFileUrls['registration'])}' WHERE `registration_number`='$vehicleRegistrationNo'",
+            );
+          }
         }
         if (value2 != null) {
           sqlStatements.add(
-            "INSERT INTO `tbl_insurance`(`vehicle_id`, `exp_date`) VALUES ('$vehicleRegistrationNo','$value2')",
+            "INSERT INTO `tbl_insurance`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value2','${json.encode(uploadedFileUrls['insurance'])}')",
           );
         }
         if (value3 != null) {
           sqlStatements.add(
-            "INSERT INTO `tbl_pollution`(`vehicle_id`, `exp_date`) VALUES ('$vehicleRegistrationNo','$value3')",
+            "INSERT INTO `tbl_pollution`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value3','${json.encode(uploadedFileUrls['pollution'])}')",
           );
         }
         if (value4 != null) {
           sqlStatements.add(
-            "INSERT INTO `tbl_fitness`(`vehicle_id`, `exp_date`) VALUES ('$vehicleRegistrationNo','$value4')",
+            "INSERT INTO `tbl_fitness`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value4','${json.encode(uploadedFileUrls['fitness'])}')",
           );
         }
         break;

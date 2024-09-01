@@ -1,9 +1,9 @@
+import 'package:AjceTrips/components/normal_list_vehicle_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:AjceTrips/components/driver_list_vehicle_widget.dart';
 import 'package:AjceTrips/components/request_permmision.dart';
 import 'package:AjceTrips/provider/homescreen_provider.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
-import 'package:AjceTrips/screens/driver/vehicle_view.dart';
+import 'package:AjceTrips/screens/normal/vehicle_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -96,7 +96,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     RequestPermmision().requestPermission();
-    print("object");
+    print("Normal Hosme Screen");
     // Get screen size and text scale factor
     final screenSize = MediaQuery.of(context).size;
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
@@ -193,7 +193,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       const SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/driver_alert');
+                          Navigator.pushNamed(context, '/user_alert');
                         },
                         child: Container(
                           width: 40,
@@ -338,7 +338,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     ),
                   ),
                 ),
-                const ListDriverVehicleWidget(
+                const ListNormalVehicleWidget(
                   isHomePage: true,
                   isSearch: '',
                 )
