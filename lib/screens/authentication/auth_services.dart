@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart'; // Add provider import
 import 'package:AjceTrips/provider/vehicle_provider.dart'; // Import VehicleProvider
+import 'package:fluttertoast/fluttertoast.dart'; // Import Fluttertoast
 
 class AuthService {
   signInWithGoogle(BuildContext context) async {
@@ -40,6 +41,12 @@ class AuthService {
         String status = userDoc['status'];
         String role = userDoc['role'];
         if (status != 'active') {
+          // Show inactive user message
+          Fluttertoast.showToast(
+            msg: 'You do not have permission to access the app.',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
           // Sign out the user from Firebase and Google if status is not active
           await FirebaseAuth.instance.signOut();
           await GoogleSignIn().signOut();
@@ -122,6 +129,12 @@ class AuthService {
           String status = userDoc['status'];
           String role = userDoc['role'];
           if (status != 'active') {
+            // Show inactive user message
+            Fluttertoast.showToast(
+              msg: 'You do not have permission to access the app.',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+            );
             // Sign out the user from Firebase if status is not active
             await FirebaseAuth.instance.signOut();
           } else {

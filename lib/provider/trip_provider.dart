@@ -150,16 +150,51 @@ class TripProvider extends ChangeNotifier {
 
     switch (type) {
       case 1:
-      // ... existing case 1 ...
+        List<String> tripUpdates = [];
+        if (updatedData['purpose'] != null) {
+          tripUpdates.add("purpose = '${updatedData['purpose']}'");
+        }
+        if (updatedData['starting_date'] != null) {
+          tripUpdates.add("starting_date = '${updatedData['starting_date']}'");
+        }
+        if (updatedData['ending_date'] != null) {
+          tripUpdates.add("ending_date = '${updatedData['ending_date']}'");
+        }
+
+        if (tripUpdates.isNotEmpty) {
+          tripSql = '''
+            UPDATE tbl_trips 
+            SET ${tripUpdates.join(', ')}
+            WHERE id = $tripId
+          ''';
+        }
+        break;
       case 2:
-        tripSql = '''
-          UPDATE tbl_trips 
-          SET vehicle_id = '${json.encode(updatedData['vehicle_id'])}',
-              driver = '${json.encode(updatedData['driver'])}',
-              starting_km = '${json.encode(updatedData['starting_km'])}',
-              ending_km = '${json.encode(updatedData['ending_km'])}'
-          WHERE id = $tripId
-        ''';
+        List<String> vehicleUpdates = [];
+        if (updatedData['vehicle_id'] != null) {
+          vehicleUpdates
+              .add("vehicle_id = '${json.encode(updatedData['vehicle_id'])}'");
+        }
+        if (updatedData['driver'] != null) {
+          vehicleUpdates
+              .add("driver = '${json.encode(updatedData['driver'])}'");
+        }
+        if (updatedData['starting_km'] != null) {
+          vehicleUpdates.add(
+              "starting_km = '${json.encode(updatedData['starting_km'])}'");
+        }
+        if (updatedData['ending_km'] != null) {
+          vehicleUpdates
+              .add("ending_km = '${json.encode(updatedData['ending_km'])}'");
+        }
+
+        if (vehicleUpdates.isNotEmpty) {
+          tripSql = '''
+            UPDATE tbl_trips 
+            SET ${vehicleUpdates.join(', ')}
+            WHERE id = $tripId
+          ''';
+        }
 
         if (updatedData['ending_km'] != null &&
             updatedData['starting_km'] != null) {
@@ -168,12 +203,19 @@ class TripProvider extends ChangeNotifier {
             SET total_km = total_km + (
               ${updatedData['ending_km'][0]} - ${updatedData['starting_km'][0]}
             )
-            WHERE `registration_number` = "${updatedData['vehicle_id'][0]}"
+            WHERE registration_number = "${updatedData['vehicle_id'][0]}"
           ''';
         }
         break;
       case 3:
-      // ... existing case 3 ...
+        if (updatedData['route'] != null) {
+          tripSql = '''
+            UPDATE tbl_trips 
+            SET route = '${json.encode(updatedData['route'])}'
+            WHERE id = $tripId
+          ''';
+        }
+        break;
       default:
         print('Invalid update type');
         return;
@@ -181,32 +223,36 @@ class TripProvider extends ChangeNotifier {
 
     try {
       // Execute trip update
-      final tripBody = json.encode({'sql': tripSql});
-      final tripResponse =
-          await http.put(url, headers: _headers, body: tripBody);
+      if (tripSql.isNotEmpty) {
+        print('Executing trip SQL: $tripSql'); // Debug print
+        final tripBody = json.encode({'sql': tripSql});
+        final tripResponse =
+            await http.put(url, headers: _headers, body: tripBody);
 
-      if (tripResponse.statusCode == 200) {
-        print('Trip updated successfully');
-
-        // Execute vehicle update if applicable
-        if (vehicleSql.isNotEmpty) {
-          final vehicleBody = json.encode({'sql': vehicleSql});
-          final vehicleResponse =
-              await http.put(url, headers: _headers, body: vehicleBody);
-
-          if (vehicleResponse.statusCode == 200) {
-            print('Vehicle total_km updated successfully');
-          } else {
-            print(
-                'Failed to update vehicle total_km. Status code: ${vehicleResponse.statusCode}');
-          }
+        if (tripResponse.statusCode == 200) {
+          print('Trip updated successfully');
+        } else {
+          print(
+              'Failed to update trip data. Status code: ${tripResponse.statusCode}');
         }
-
-        await fetchSpecificTrip(tripId);
-      } else {
-        print(
-            'Failed to update trip data. Status code: ${tripResponse.statusCode}');
       }
+
+      // Execute vehicle update if applicable
+      if (vehicleSql.isNotEmpty) {
+        print('Executing vehicle SQL: $vehicleSql'); // Debug print
+        final vehicleBody = json.encode({'sql': vehicleSql});
+        final vehicleResponse =
+            await http.put(url, headers: _headers, body: vehicleBody);
+
+        if (vehicleResponse.statusCode == 200) {
+          print('Vehicle total_km updated successfully');
+        } else {
+          print(
+              'Failed to update vehicle total_km. Status code: ${vehicleResponse.statusCode}');
+        }
+      }
+
+      await fetchSpecificTrip(tripId);
     } catch (e) {
       print('Error: $e');
     }

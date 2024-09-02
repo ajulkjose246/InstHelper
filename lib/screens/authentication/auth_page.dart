@@ -8,9 +8,14 @@ import 'package:AjceTrips/provider/vehicle_provider.dart'; // Import the Vehicle
 import 'package:provider/provider.dart'; // Import provider package
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
+  @override
+  _AuthPageState createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
   Future<bool> isDriver(String email, BuildContext context) async {
     final vehicleProvider =
         Provider.of<VehicleProvider>(context, listen: false);

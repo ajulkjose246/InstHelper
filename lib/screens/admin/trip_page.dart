@@ -42,6 +42,7 @@ class _TripPageState extends State<TripPage> {
   List<dynamic> vehicleData = [];
   String? selectedVehicleType;
   String? selectedVehicle;
+  bool isVehicleAndDriverSelected = false;
 
   @override
   void initState() {
@@ -135,14 +136,16 @@ class _TripPageState extends State<TripPage> {
   }
 
   void _addVehicle() {
-    setState(() {
-      vehicles.add({
-        'vehicleTypeController': TextEditingController(),
-        'vehicleNumberController': TextEditingController(),
-        'vehicleCurrentKMController': TextEditingController(),
-        'vehicleDriverController': TextEditingController(),
+    if (!isVehicleAndDriverSelected) {
+      setState(() {
+        vehicles.add({
+          'vehicleTypeController': TextEditingController(),
+          'vehicleNumberController': TextEditingController(),
+          'vehicleCurrentKMController': TextEditingController(),
+          'vehicleDriverController': TextEditingController(),
+        });
       });
-    });
+    }
   }
 
   void _removeVehicle(int index) {
@@ -151,6 +154,14 @@ class _TripPageState extends State<TripPage> {
         vehicles.removeAt(index);
       });
     }
+  }
+
+  void _onVehicleOrDriverSelected() {
+    setState(() {
+      isVehicleAndDriverSelected = vehicles.any((vehicle) =>
+          vehicle['vehicleNumberController'].text.isNotEmpty &&
+          vehicle['vehicleDriverController'].text.isNotEmpty);
+    });
   }
 
   void fetchVehicleDataAndUpdateLabel(String vehicleNumber, int index) {
@@ -812,7 +823,9 @@ class _TripPageState extends State<TripPage> {
                             IconButton(
                               icon:
                                   Icon(Icons.add, color: theme.iconTheme.color),
-                              onPressed: _addVehicle,
+                              onPressed: isVehicleAndDriverSelected
+                                  ? null
+                                  : _addVehicle,
                             ),
                             if (vehicles.length >
                                 1) // Only show remove button if there's more than one vehicle
