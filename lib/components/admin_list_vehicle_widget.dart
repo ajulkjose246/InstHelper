@@ -95,8 +95,9 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
   void _showTripHistory(BuildContext context, String vehicleId) {
     final tripProvider = Provider.of<TripProvider>(context, listen: false);
     final vehicleTrips = tripProvider.tripData.where((trip) {
-      List<dynamic> vehicleIds = json.decode(trip['vehicle_id']);
-      return vehicleIds.contains(vehicleId);
+      List<dynamic>? vehicleIds =
+          trip['vehicle_id'] != null ? json.decode(trip['vehicle_id']) : null;
+      return vehicleIds?.contains(vehicleId) ?? false;
     }).toList();
 
     showDialog(
@@ -293,7 +294,8 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                               textScaleFactor: 0.8,
                             ),
                             Expanded(
-                              child: vehicle['vehicle_type_image'].isNotEmpty
+                              child: vehicle['vehicle_type_image'] != null &&
+                                      vehicle['vehicle_type_image'].isNotEmpty
                                   ? CachedNetworkImage(
                                       imageUrl: vehicle['vehicle_type_image'],
                                       fit: BoxFit.contain,
@@ -399,10 +401,13 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                         child: Consumer<TripProvider>(
                           builder: (context, tripProvider, _) {
                             final hasTrips = tripProvider.tripData.any((trip) {
-                              List<dynamic> vehicleIds =
-                                  json.decode(trip['vehicle_id']);
-                              return vehicleIds
-                                  .contains(vehicle['registration_number']);
+                              List<dynamic>? vehicleIds =
+                                  trip['vehicle_id'] != null
+                                      ? json.decode(trip['vehicle_id'])
+                                      : null;
+                              return vehicleIds?.contains(
+                                      vehicle['registration_number']) ??
+                                  false;
                             });
 
                             return hasTrips

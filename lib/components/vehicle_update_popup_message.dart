@@ -468,8 +468,25 @@ class _UpdateMessageState extends State<UpdateMessage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 8),
         _buildDateField(context, dateType, label, date),
         const SizedBox(height: 10),
+        Text(
+          "Upload $label Document",
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+          ),
+        ),
+        const SizedBox(height: 8),
         _buildImageUploadField(dateType),
         if (selectedImages[dateType]!.isNotEmpty)
           _buildSelectedImagesPreview(dateType),

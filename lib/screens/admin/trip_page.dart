@@ -246,7 +246,9 @@ class _TripPageState extends State<TripPage> {
 
     // Filter tripData based on selectedVehicleType and selectedVehicle
     final filteredTripData = tripData.where((trip) {
-      List<dynamic> vehicleIds = json.decode(trip['vehicle_id']);
+      List<dynamic>? vehicleIds =
+          json.decode(trip['vehicle_id']) as List<dynamic>?;
+      if (vehicleIds == null) return false; // Add null check here
       return vehicleIds.any((vehicleId) {
         var vehicle = vehicleProvider.vehicles[vehicleId.toString()];
         if (vehicle == null) return false;
@@ -371,9 +373,9 @@ class _TripPageState extends State<TripPage> {
                             selectedVehicleType,
                             [
                               null,
-                              ...vehicleProvider.vehicleModels['vehicleTypes']
-                                      ?.map((type) => type['type']) ??
-                                  []
+                              ...?vehicleProvider.vehicleModels['vehicleTypes']
+                                  ?.map((type) => type[
+                                      'type']) // Add null-aware operator here
                             ],
                             (String? newValue) {
                               setState(() {

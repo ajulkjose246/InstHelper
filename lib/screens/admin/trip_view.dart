@@ -45,11 +45,12 @@ class _TripViewScreenState extends State<TripViewScreen> {
           }
 
           final tripData = data[0];
-          final vehicleNumbers = json.decode(tripData['vehicle_id']);
-          final vehicleDrivers = json.decode(tripData['driver']);
-          final vehicleStartingKm = json.decode(tripData['starting_km']);
-          final vehicleEndingKm = json.decode(tripData['ending_km']);
-          final tripLocations = json.decode(tripData['route']);
+          final vehicleNumbers = json.decode(tripData['vehicle_id'] ?? '[]');
+          final vehicleDrivers = json.decode(tripData['driver'] ?? '[]');
+          final vehicleStartingKm =
+              json.decode(tripData['starting_km'] ?? '[]');
+          final vehicleEndingKm = json.decode(tripData['ending_km'] ?? '[]');
+          final tripLocations = json.decode(tripData['route'] ?? '[]');
 
           return Scaffold(
             appBar: AppBar(

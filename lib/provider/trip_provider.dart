@@ -18,7 +18,7 @@ class TripProvider extends ChangeNotifier {
   Future<void> addTrip(
     List<String> numbers,
     List<String> drivers,
-    List<String> totalKm,
+    List<String> currentKM,
     List<String> additionalLocations,
     String tripPurpose,
     DateTime selectedDate,
@@ -27,7 +27,7 @@ class TripProvider extends ChangeNotifier {
     String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(selectedEndDate);
     String sql =
-        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `ending_date`, `starting_date`, `route`, `starting_km`,`ending_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','$formattedEndDate','$formattedDate','${json.encode(additionalLocations)}','${json.encode(totalKm)}','${json.encode(totalKm)}')";
+        "INSERT INTO `tbl_trips`(`vehicle_id`, `driver`, `purpose`, `ending_date`, `starting_date`, `route`, `starting_km`,`ending_km`) VALUES ('${json.encode(numbers)}','${json.encode(drivers)}','$tripPurpose','$formattedEndDate','$formattedDate','${json.encode(additionalLocations)}','${json.encode(currentKM)}','${json.encode(currentKM)}')";
 
     final body = json.encode({
       'sql': sql,
@@ -38,8 +38,29 @@ class TripProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         print('Trip added successfully');
+
+        // Update total_km for each vehicle
+        for (int i = 0; i < numbers.length; i++) {
+          String vehicleSql = '''
+            UPDATE tbl_vehicle
+            SET total_km = total_km + ${currentKM[i]}
+            WHERE registration_number = "${numbers[i]}"
+          ''';
+
+          final vehicleBody = json.encode({'sql': vehicleSql});
+          final vehicleResponse =
+              await http.put(url, headers: _headers, body: vehicleBody);
+
+          if (vehicleResponse.statusCode == 200) {
+            print('Vehicle ${numbers[i]} total_km updated successfully');
+          } else {
+            print(
+                'Failed to update vehicle ${numbers[i]} total_km. Status code: ${vehicleResponse.statusCode}');
+          }
+        }
       } else {
-        print('Failed to update vehicle data. Status code: ${sql}');
+        print(
+            'Failed to update vehicle data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error: $e');
@@ -140,13 +161,16 @@ class TripProvider extends ChangeNotifier {
           WHERE id = $tripId
         ''';
 
-        vehicleSql = '''
-          UPDATE tbl_vehicle
-          SET total_km = total_km + (
-            ${updatedData['ending_km'][0]} - ${updatedData['starting_km'][0]}
-          )
-          WHERE `registration_number` = "${updatedData['vehicle_id'][0]}"
-        ''';
+        if (updatedData['ending_km'] != null &&
+            updatedData['starting_km'] != null) {
+          vehicleSql = '''
+            UPDATE tbl_vehicle
+            SET total_km = total_km + (
+              ${updatedData['ending_km'][0]} - ${updatedData['starting_km'][0]}
+            )
+            WHERE `registration_number` = "${updatedData['vehicle_id'][0]}"
+          ''';
+        }
         break;
       case 3:
       // ... existing case 3 ...
