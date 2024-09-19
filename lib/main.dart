@@ -32,8 +32,8 @@ import 'package:workmanager/workmanager.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    // Your background task logic here
-    await _showNotification();
+    print("Background task started");
+    await NotificationService.checkAndNotify();
     return Future.value(true);
   });
 }
@@ -61,6 +61,23 @@ Future<void> main() async {
 
   // Initialize NotificationService
   await NotificationService.initialize();
+
+  // Initialize Workmanager
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true,
+  );
+
+  // Schedule periodic task
+  await Workmanager().registerPeriodicTask(
+    "1",
+    "checkDocuments",
+    frequency: Duration(hours: 24),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+      requiresBatteryNotLow: true,
+    ),
+  );
 
   // Schedule daily notification
   await NotificationService.scheduleDailyNotification();

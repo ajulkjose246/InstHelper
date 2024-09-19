@@ -15,6 +15,40 @@ class NotificationService {
     await _notifications.initialize(initializationSettings);
   }
 
+  static Future<void> checkAndNotify() async {
+    print("Checking documents and sending notifications");
+    final vehicleProvider = VehicleProvider();
+    await vehicleProvider.fetchAllVehicleData();
+    final vehicles = vehicleProvider.vehicles.values.toList();
+
+    final now = DateTime.now();
+
+    for (var vehicle in vehicles) {
+      final pollutionUpto =
+          DateFormat('yyyy-MM-dd').parse(vehicle['Pollution_Upto']);
+      final fitnessUpto =
+          DateFormat('yyyy-MM-dd').parse(vehicle['Fitness_Upto']);
+      final insuranceUpto =
+          DateFormat('yyyy-MM-dd').parse(vehicle['Insurance_Upto']);
+
+      if (pollutionUpto.isBefore(now) ||
+          fitnessUpto.isBefore(now) ||
+          insuranceUpto.isBefore(now)) {
+        await showNotification(
+          'Expired Document',
+          'Vehicle ${vehicle['registration_number']} has an expired document.',
+        );
+      } else if (pollutionUpto.difference(now).inDays <= 30 ||
+          fitnessUpto.difference(now).inDays <= 30 ||
+          insuranceUpto.difference(now).inDays <= 30) {
+        await showNotification(
+          'Expiring Soon',
+          'Vehicle ${vehicle['registration_number']} has a document expiring soon.',
+        );
+      }
+    }
+  }
+
   static Future<void> scheduleDailyNotification() async {
     var now = tz.TZDateTime.now(tz.local);
     print("Current time: $now");
@@ -56,39 +90,6 @@ class NotificationService {
       print("Notification scheduled successfully");
     } catch (e) {
       print("Error scheduling notification: $e");
-    }
-  }
-
-  static Future<void> checkAndNotify() async {
-    final vehicleProvider = VehicleProvider();
-    await vehicleProvider.fetchAllVehicleData();
-    final vehicles = vehicleProvider.vehicles.values.toList();
-
-    final now = DateTime.now();
-
-    for (var vehicle in vehicles) {
-      final pollutionUpto =
-          DateFormat('yyyy-MM-dd').parse(vehicle['Pollution_Upto']);
-      final fitnessUpto =
-          DateFormat('yyyy-MM-dd').parse(vehicle['Fitness_Upto']);
-      final insuranceUpto =
-          DateFormat('yyyy-MM-dd').parse(vehicle['Insurance_Upto']);
-
-      if (pollutionUpto.isBefore(now) ||
-          fitnessUpto.isBefore(now) ||
-          insuranceUpto.isBefore(now)) {
-        await showNotification(
-          'Expired Document',
-          'Vehicle ${vehicle['registration_number']} has an expired document.',
-        );
-      } else if (pollutionUpto.difference(now).inDays <= 30 ||
-          fitnessUpto.difference(now).inDays <= 30 ||
-          insuranceUpto.difference(now).inDays <= 30) {
-        await showNotification(
-          'Expiring Soon',
-          'Vehicle ${vehicle['registration_number']} has a document expiring soon.',
-        );
-      }
     }
   }
 

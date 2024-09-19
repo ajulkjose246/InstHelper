@@ -190,36 +190,57 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final textScaleFactor = mediaQuery.textScaleFactor;
+
+    // Adjust base font size based on screen width
+    double baseFontSize = screenWidth < 360 ? 16 : 18;
+
+    // Apply text scale factor and limit maximum size
+    double titleFontSize = (baseFontSize / textScaleFactor).clamp(14.0, 22.0);
+    double bodyFontSize =
+        (baseFontSize * 0.9 * textScaleFactor).clamp(12.0, 20.0);
+
+    // Adjust padding based on screen size
+    double horizontalPadding = screenWidth * 0.05;
+    double verticalPadding = screenHeight * 0.02;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Add Vehicle",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: titleFontSize),
         ),
         backgroundColor: theme.colorScheme.primaryContainer,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
+        ),
         child: Form(
           key: _formKey,
           child: (pageNumber == 0)
               ? ListView(
                   children: [
-                    Transform.scale(
-                      scale: 3.0, // Adjust the scale factor as needed
+                    SizedBox(
+                      height: screenHeight * 0.3, // Adjust as needed
                       child: DotLottieLoader.fromAsset(
                         "assets/lottie/add_vehicle.lottie",
                         frameBuilder: (BuildContext ctx, DotLottie? dotlottie) {
                           if (dotlottie != null) {
                             return Lottie.memory(
-                                dotlottie.animations.values.single);
+                                dotlottie.animations.values.single,
+                                fit: BoxFit.contain);
                           } else {
                             return Container();
                           }
                         },
                       ),
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     FormInputField(
                       textcontroller: registrationNumberController,
                       label: "Registration Number",
@@ -229,7 +250,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           r'^[a-zA-Z]{2}\s\d{1,2}\s([a-zA-Z]{1,2}\s)?\d{4}$'),
                       regexlabel: 'KL XX AZ XXXX or KL XX XXXX',
                       numberkeyboard: false,
+                      fontSize: titleFontSize,
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     FormInputField(
                       textcontroller: modelController,
                       label: "Model",
@@ -239,7 +262,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       regex: RegExp(r"^[a-zA-Z0-9]+([\s\-',.][a-zA-Z0-9]+)*$"),
                       regexlabel: 'e.g. Ashok Leyland, Swift Dzire',
                       numberkeyboard: false,
+                      fontSize: titleFontSize,
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Container(
@@ -286,6 +311,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     FormInputField(
                       textcontroller: engineNoController,
                       label: "Engine No",
@@ -297,7 +323,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
                       numberkeyboard: false,
+                      fontSize: titleFontSize,
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     FormInputField(
                       textcontroller: chassisNoController,
                       label: "Chassis No",
@@ -309,7 +337,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       regex: RegExp(r'^[a-zA-Z0-9-]+$'),
                       regexlabel: '',
                       numberkeyboard: false,
+                      fontSize: titleFontSize,
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     FormInputField(
                       textcontroller: currentKMController,
                       label: "Current KM",
@@ -321,7 +351,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       regex: RegExp(r'^\d+(\.\d{1,2})?$'),
                       regexlabel: '',
                       numberkeyboard: true,
+                      fontSize: titleFontSize,
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Container(
@@ -368,10 +400,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: screenHeight * 0.02),
                     Row(
                       children: [
                         Expanded(
@@ -394,11 +423,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     color: theme.colorScheme.primary),
                               ),
                             ),
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: titleFontSize),
                           ),
                         ),
                       ],
                     ),
+                    SizedBox(height: screenHeight * 0.02),
                     Row(
                       children: [
                         const Spacer(),
@@ -416,37 +446,49 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.05,
+                              vertical: screenHeight * 0.015,
+                            ),
                           ),
-                          child: const Row(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 "Next",
-                                style: TextStyle(fontSize: 19),
+                                style: TextStyle(fontSize: titleFontSize),
                               ),
-                              Icon(Icons.arrow_forward),
+                              Icon(Icons.arrow_forward,
+                                  size: titleFontSize * 1.2),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: screenHeight * 0.02),
                   ],
                 )
               : (pageNumber == 1)
                   ? ListView(
                       children: [
-                        DotLottieLoader.fromAsset(
-                          "assets/lottie/add_user.lottie",
-                          frameBuilder:
-                              (BuildContext ctx, DotLottie? dotlottie) {
-                            if (dotlottie != null) {
-                              return Lottie.memory(
-                                  dotlottie.animations.values.single);
-                            } else {
-                              return Container();
-                            }
-                          },
+                        SizedBox(
+                          height: screenHeight * 0.3, // Adjust as needed
+                          child: DotLottieLoader.fromAsset(
+                            "assets/lottie/add_user.lottie",
+                            frameBuilder:
+                                (BuildContext ctx, DotLottie? dotlottie) {
+                              if (dotlottie != null) {
+                                return Lottie.memory(
+                                  dotlottie.animations.values.single,
+                                  fit: BoxFit.contain,
+                                );
+                              } else {
+                                return Container();
+                              }
+                            },
+                          ),
                         ),
+                        SizedBox(height: screenHeight * 0.02),
                         FormInputField(
                           textcontroller: ownershipController,
                           label: "Ownership",
@@ -457,7 +499,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
                           numberkeyboard: false,
+                          fontSize: titleFontSize,
                         ),
+                        SizedBox(height: screenHeight * 0.02),
                         FormInputField(
                           textcontroller: purposeOfUseController,
                           label: "Purpose of Use",
@@ -468,61 +512,78 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                               r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"),
                           regexlabel: '',
                           numberkeyboard: false,
+                          fontSize: titleFontSize,
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: screenHeight * 0.04),
                         Row(
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  pageNumber = 0;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.colorScheme.primary,
-                                foregroundColor: theme.colorScheme.onPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.arrow_back),
-                                  Text(
-                                    "Previous",
-                                    style: TextStyle(fontSize: 19),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    pageNumber = 0;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primary,
+                                  foregroundColor: theme.colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ],
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.015,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.arrow_back, size: titleFontSize),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      "Previous",
+                                      style: TextStyle(fontSize: titleFontSize),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const Spacer(),
-                            ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    pageNumber = 2;
-                                  });
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.colorScheme.primary,
-                                foregroundColor: theme.colorScheme.onPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Text(
-                                    "Next",
-                                    style: TextStyle(fontSize: 19),
+                            SizedBox(width: screenWidth * 0.04),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      pageNumber = 2;
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primary,
+                                  foregroundColor: theme.colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  Icon(Icons.arrow_forward),
-                                ],
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.015,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Next",
+                                      style: TextStyle(fontSize: titleFontSize),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward,
+                                        size: titleFontSize),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
+                        SizedBox(height: screenHeight * 0.02),
                       ],
                     )
                   : isLoading
@@ -546,6 +607,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 },
                               ),
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -577,7 +639,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                                   .split(' ')[0]
                                               : "Registration Date",
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: titleFontSize,
                                             color:
                                                 theme.colorScheme.onBackground,
                                           ),
@@ -588,6 +650,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
                                 Expanded(
@@ -611,11 +674,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             color: theme.colorScheme.primary),
                                       ),
                                     ),
-                                    style: const TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: titleFontSize),
                                   ),
                                 ),
                               ],
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -646,7 +710,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                                   .split(' ')[0]
                                               : "Insurance Upto",
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: titleFontSize,
                                             color:
                                                 theme.colorScheme.onBackground,
                                           ),
@@ -657,9 +721,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
                                 Expanded(
@@ -685,11 +747,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             color: theme.colorScheme.primary),
                                       ),
                                     ),
-                                    style: const TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: titleFontSize),
                                   ),
                                 ),
                               ],
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -720,7 +783,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                                   .split(' ')[0]
                                               : "Pollution Upto",
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: titleFontSize,
                                             color:
                                                 theme.colorScheme.onBackground,
                                           ),
@@ -731,9 +794,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
                                 Expanded(
@@ -759,11 +820,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             color: theme.colorScheme.primary),
                                       ),
                                     ),
-                                    style: const TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: titleFontSize),
                                   ),
                                 ),
                               ],
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: GestureDetector(
@@ -794,7 +856,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                                   .split(' ')[0]
                                               : "Fitness Upto",
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: titleFontSize,
                                             color:
                                                 theme.colorScheme.onBackground,
                                           ),
@@ -805,9 +867,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
                                 Expanded(
@@ -831,12 +891,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                             Icons.file_upload_outlined),
                                       ),
                                     ),
-                                    style: const TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: titleFontSize),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
                                 ElevatedButton(
@@ -852,13 +912,20 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.05,
+                                      vertical: screenHeight * 0.015,
+                                    ),
                                   ),
-                                  child: const Row(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.arrow_back),
+                                      Icon(Icons.arrow_back,
+                                          size: titleFontSize * 1.2),
                                       Text(
                                         "Previous",
-                                        style: TextStyle(fontSize: 19),
+                                        style: TextStyle(
+                                            fontSize: titleFontSize * 0.8),
                                       ),
                                     ],
                                   ),
@@ -948,19 +1015,27 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.05,
+                                      vertical: screenHeight * 0.015,
+                                    ),
                                   ),
-                                  child: const Row(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
                                         "Submit",
-                                        style: TextStyle(fontSize: 19),
+                                        style: TextStyle(
+                                            fontSize: titleFontSize * 0.8),
                                       ),
-                                      Icon(Icons.check),
+                                      Icon(Icons.check,
+                                          size: titleFontSize * 1.2),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
+                            SizedBox(height: screenHeight * 0.02),
                           ],
                         ),
         ),

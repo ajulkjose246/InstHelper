@@ -17,6 +17,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final textScaleFactor = mediaQuery.textScaleFactor;
+
+    // Adjust base font size based on screen width
+    double baseFontSize = screenWidth < 360 ? 16 : 18;
+
+    // Apply text scale factor and limit maximum size
+    double titleFontSize = (baseFontSize / textScaleFactor).clamp(14.0, 22.0);
     return Scaffold(
       backgroundColor: const Color.fromRGBO(236, 240, 245, 1),
       resizeToAvoidBottomInset: true,
@@ -86,6 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           regex: RegExp(''),
                           regexlabel: '',
                           numberkeyboard: false,
+                          fontSize: titleFontSize * 0.8, // Add this line
                         ),
                         const SizedBox(
                           height: 20,
@@ -98,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           regex: RegExp(''),
                           regexlabel: '',
                           numberkeyboard: false,
+                          fontSize: titleFontSize * 0.8, // Add this line
                         ),
                         const SizedBox(
                           height: 20,
@@ -110,6 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           regex: RegExp(''),
                           regexlabel: '',
                           numberkeyboard: false,
+                          fontSize: titleFontSize * 0.8, // Add this line
                         ),
                         const SizedBox(
                           height: 20,

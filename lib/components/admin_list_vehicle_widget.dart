@@ -45,22 +45,44 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
     final formattedDate = _formatDate(date);
     final remainingDays = _getRemainingDays(date);
     final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 4.0,
+      alignment: WrapAlignment.spaceBetween,
       children: [
-        Text(title,
+        // Title
+        Flexible(
+          flex: 1,
+          child: Text(
+            title,
             style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onSurface)),
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurface,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis, // Add ellipsis to avoid overflow
+          ),
+        ),
+        // Date and Status
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(formattedDate,
-                style: TextStyle(
-                    fontSize: 13, color: theme.colorScheme.onSurface)),
+            // Formatted Date
+            Text(
+              formattedDate,
+              style: TextStyle(
+                fontSize: 13,
+                color: theme.colorScheme.onSurface,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 4),
-            Row(
+            Wrap(
+              spacing: 4.0,
               children: [
+                // Status Container
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -71,18 +93,26 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                   child: Text(
                     _getStatus(statusColor),
                     style: TextStyle(
-                        color: statusColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Remaining: $remainingDays days',
-                  style: TextStyle(
+                      color: statusColor,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                // Remaining Days
+                Flexible(
+                  child: Text(
+                    'Remaining: $remainingDays days',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -324,36 +354,45 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                     return AlertDialog(
                                       backgroundColor:
                                           theme.colorScheme.surface,
-                                      title: Text('Vehicle Status',
+                                      title: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          'Vehicle Status',
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color:
-                                                  theme.colorScheme.onSurface)),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          _buildStatusRow(
-                                              'Insurance',
-                                              vehicle['Insurance_Upto'],
-                                              insuranceIcon),
-                                          const SizedBox(height: 12),
-                                          _buildStatusRow(
-                                              'Fitness',
-                                              vehicle['Fitness_Upto'],
-                                              fitnessIcon),
-                                          const SizedBox(height: 12),
-                                          _buildStatusRow(
-                                              'Pollution',
-                                              vehicle['Pollution_Upto'],
-                                              pollutionIcon),
-                                        ],
+                                            fontWeight: FontWeight.bold,
+                                            color: theme.colorScheme.onSurface,
+                                          ),
+                                        ),
+                                      ),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            _buildStatusRow(
+                                                'Insurance',
+                                                vehicle['Insurance_Upto'],
+                                                insuranceIcon),
+                                            const SizedBox(height: 12),
+                                            _buildStatusRow(
+                                                'Fitness',
+                                                vehicle['Fitness_Upto'],
+                                                fitnessIcon),
+                                            const SizedBox(height: 12),
+                                            _buildStatusRow(
+                                                'Pollution',
+                                                vehicle['Pollution_Upto'],
+                                                pollutionIcon),
+                                          ],
+                                        ),
                                       ),
                                       actions: [
                                         TextButton(
-                                          child: Text('Close',
-                                              style: TextStyle(
-                                                  color: theme
-                                                      .colorScheme.primary)),
+                                          child: Text(
+                                            'Close',
+                                            style: TextStyle(
+                                                color:
+                                                    theme.colorScheme.primary),
+                                          ),
                                           onPressed: () =>
                                               Navigator.of(context).pop(),
                                         ),
@@ -372,20 +411,26 @@ class _ListAdminVehicleWidgetState extends State<ListAdminVehicleWidget> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Icon(
-                                        Icons.health_and_safety,
-                                        color: insuranceIcon,
-                                        size: 20,
+                                      Flexible(
+                                        child: Icon(
+                                          Icons.health_and_safety,
+                                          color: insuranceIcon,
+                                          size: 20,
+                                        ),
                                       ),
-                                      Icon(
-                                        Icons.construction,
-                                        color: fitnessIcon,
-                                        size: 20,
+                                      Flexible(
+                                        child: Icon(
+                                          Icons.construction,
+                                          color: fitnessIcon,
+                                          size: 20,
+                                        ),
                                       ),
-                                      Icon(
-                                        Icons.air,
-                                        color: pollutionIcon,
-                                        size: 20,
+                                      Flexible(
+                                        child: Icon(
+                                          Icons.air,
+                                          color: pollutionIcon,
+                                          size: 20,
+                                        ),
                                       ),
                                     ],
                                   ),

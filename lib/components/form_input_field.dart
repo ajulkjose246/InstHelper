@@ -7,6 +7,7 @@ class FormInputField extends StatelessWidget {
   final Icon icon;
   final bool validator;
   final bool numberkeyboard;
+  final double fontSize;
 
   const FormInputField({
     super.key,
@@ -17,6 +18,7 @@ class FormInputField extends StatelessWidget {
     required this.regex,
     required this.regexlabel,
     required this.numberkeyboard,
+    required this.fontSize,
   });
 
   final TextEditingController textcontroller;
@@ -29,8 +31,10 @@ class FormInputField extends StatelessWidget {
         controller: textcontroller,
         keyboardType:
             numberkeyboard ? TextInputType.number : TextInputType.text,
+        style: TextStyle(fontSize: fontSize),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: TextStyle(fontSize: fontSize),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

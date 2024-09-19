@@ -42,7 +42,6 @@ class _ContainerScreenState extends State<ContainerScreen> {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
     final theme = Theme.of(context);
 
-    print("Admin container");
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       body: SafeArea(

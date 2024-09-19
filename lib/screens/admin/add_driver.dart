@@ -24,6 +24,8 @@ class _AddDriverState extends State<AddDriver> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
+      labelStyle: TextStyle(
+          fontSize: MediaQuery.of(context).size.width < 360 ? 14 : 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -92,93 +94,47 @@ class _AddDriverState extends State<AddDriver> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Driver'),
+        title: Text('Add Driver', style: textTheme.titleMedium),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(size.width * 0.04),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: _inputDecoration('Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the driver\'s name';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: _inputDecoration('Phone Number'),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the driver\'s phone number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: _inputDecoration('Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the driver\'s email';
-                    }
-                    // You can add more sophisticated email validation here
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _licenseController,
-                  decoration: _inputDecoration('License Number'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the driver\'s license number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                _buildTextField(_nameController, 'Name'),
+                SizedBox(height: size.height * 0.02),
+                _buildTextField(_phoneController, 'Phone Number',
+                    keyboardType: TextInputType.phone),
+                SizedBox(height: size.height * 0.02),
+                _buildTextField(_emailController, 'Email',
+                    keyboardType: TextInputType.emailAddress),
+                SizedBox(height: size.height * 0.02),
+                _buildTextField(_licenseController, 'License Number'),
+                SizedBox(height: size.height * 0.02),
                 ElevatedButton(
                   onPressed: _pickImage,
-                  child: const Text('Upload License Image'),
+                  child:
+                      Text('Upload License Image', style: textTheme.bodySmall),
                 ),
-                const SizedBox(height: 8),
-                if (_licenseImage != null)
-                  Image.file(
-                    _licenseImage!,
-                    height: 100,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  )
-                else
-                  Container(
-                    height: 100,
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: Text('No image selected'),
-                    ),
-                  ),
-                const SizedBox(height: 24),
+                SizedBox(height: size.height * 0.01),
+                _buildLicenseImagePreview(size),
+                SizedBox(height: size.height * 0.03),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: size.height * 0.015),
                     child: Text(
                       'Submit',
-                      style: TextStyle(fontSize: 18),
+                      style: textTheme.bodyMedium,
                     ),
                   ),
                 ),
@@ -188,6 +144,43 @@ class _AddDriverState extends State<AddDriver> {
         ),
       ),
     );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label,
+      {TextInputType? keyboardType}) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontSize: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      style: TextStyle(fontSize: 14),
+      keyboardType: keyboardType,
+      validator: (value) => value?.isEmpty ?? true
+          ? 'Please enter the ${label.toLowerCase()}'
+          : null,
+    );
+  }
+
+  Widget _buildLicenseImagePreview(Size size) {
+    return _licenseImage != null
+        ? Image.file(
+            _licenseImage!,
+            height: size.height * 0.12,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          )
+        : Container(
+            height: size.height * 0.12,
+            color: Colors.grey[300],
+            child: Center(
+              child: Text('No image selected', style: TextStyle(fontSize: 12)),
+            ),
+          );
   }
 
   @override

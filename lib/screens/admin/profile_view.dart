@@ -14,11 +14,18 @@ class ProfileScreen extends StatefulWidget {
 
 class ProfileScreenState extends State<ProfileScreen> {
   String? userRole;
+  bool _mounted = true;
 
   @override
   void initState() {
     super.initState();
     _fetchUserRole();
+  }
+
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
   }
 
   Future<void> _fetchUserRole() async {
@@ -28,7 +35,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           .collection('users')
           .doc(userId)
           .get();
-      if (userDoc.exists) {
+      if (userDoc.exists && _mounted) {
         setState(() {
           userRole = userDoc.data()?['role'] ?? 'Unknown';
         });

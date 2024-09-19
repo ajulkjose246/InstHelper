@@ -44,6 +44,9 @@ class _TripPageState extends State<TripPage> {
   String? selectedVehicle;
   bool isVehicleAndDriverSelected = false;
 
+  Set<String> selectedVehicleNumbers = {};
+  Set<String> selectedDriverNames = {};
+
   @override
   void initState() {
     super.initState();
@@ -161,6 +164,17 @@ class _TripPageState extends State<TripPage> {
       isVehicleAndDriverSelected = vehicles.any((vehicle) =>
           vehicle['vehicleNumberController'].text.isNotEmpty &&
           vehicle['vehicleDriverController'].text.isNotEmpty);
+      // Update selected vehicles and drivers
+      selectedVehicleNumbers = vehicles
+          .map((vehicle) => vehicle['vehicleNumberController'].text)
+          .where((text) => text.isNotEmpty)
+          .toSet()
+          .cast<String>();
+      selectedDriverNames = vehicles
+          .map((vehicle) => vehicle['vehicleDriverController'].text)
+          .where((text) => text.isNotEmpty)
+          .toSet()
+          .cast<String>();
     });
   }
 
@@ -248,6 +262,43 @@ class _TripPageState extends State<TripPage> {
     );
   }
 
+  void _checkForDuplicateSelections() {
+    Set<String> vehicleNumbers = {};
+    Set<String> driverNames = {};
+
+    for (var vehicle in vehicles) {
+      String vehicleNumber = vehicle['vehicleNumberController'].text;
+      String driverName = vehicle['vehicleDriverController'].text;
+
+      if (vehicleNumbers.contains(vehicleNumber)) {
+        Fluttertoast.showToast(
+          msg: "Duplicate vehicle selected: $vehicleNumber",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      if (driverNames.contains(driverName)) {
+        Fluttertoast.showToast(
+          msg: "Duplicate driver selected: $driverName",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
+      vehicleNumbers.add(vehicleNumber);
+      driverNames.add(driverName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -270,6 +321,16 @@ class _TripPageState extends State<TripPage> {
         return true;
       });
     }).toList();
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final textScaleFactor = mediaQuery.textScaleFactor;
+
+    // Adjust base font size based on screen width
+    double baseFontSize = screenWidth < 360 ? 16 : 18;
+
+    // Apply text scale factor and limit maximum size
+    double titleFontSize = (baseFontSize / textScaleFactor).clamp(14.0, 22.0);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -532,310 +593,390 @@ class _TripPageState extends State<TripPage> {
                           padding: const EdgeInsets.all(15),
                           child: Text(
                             "Trip Vehicles ${index + 1}",
-                            style: theme.textTheme.titleLarge,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontSize: titleFontSize,
+                            ),
                           ),
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Consumer<VehicleProvider>(
-                                  builder: (context, vehicleProvider, child) {
-                                    List<dynamic> vehicleTypesDynamic =
-                                        vehicleProvider.vehicleModels[
-                                                'vehicleTypes'] ??
-                                            [];
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Consumer<VehicleProvider>(
+                                      builder:
+                                          (context, vehicleProvider, child) {
+                                        List<dynamic> vehicleTypesDynamic =
+                                            vehicleProvider.vehicleModels[
+                                                    'vehicleTypes'] ??
+                                                [];
 
-                                    List<Map<String, dynamic>> vehicleTypes =
-                                        vehicleTypesDynamic
-                                            .map((item) =>
-                                                item as Map<String, dynamic>)
+                                        List<Map<String, dynamic>>
+                                            vehicleTypes = vehicleTypesDynamic
+                                                .map((item) => item
+                                                    as Map<String, dynamic>)
+                                                .toList();
+                                        List<String> vehicleList = vehicleTypes
+                                            .map((vehicle) =>
+                                                vehicle['type'].toString())
                                             .toList();
-                                    List<String> vehicleList = vehicleTypes
-                                        .map((vehicle) =>
-                                            vehicle['type'].toString())
-                                        .toList();
 
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0),
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            border: Border.all(
+                                              color: theme.dividerColor,
+                                              width: 1.0,
+                                            ),
+                                          ),
+                                          child: DropdownButton<String>(
+                                            value: vehicle[
+                                                        'vehicleTypeController']
+                                                    .text
+                                                    .isNotEmpty
+                                                ? vehicle[
+                                                        'vehicleTypeController']
+                                                    .text
+                                                : null,
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                vehicle['vehicleTypeController']
+                                                    .text = newValue ?? '';
+                                                vehicle['vehicleNumberController']
+                                                    .text = '';
+                                              });
+                                            },
+                                            onTap: () {},
+                                            items: vehicleList
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    Icon(_getVehicleIcon(value),
+                                                        size: 20,
+                                                        color: theme
+                                                            .iconTheme.color),
+                                                    const SizedBox(width: 10),
+                                                    Text(value),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
+                                            hint: const Text(
+                                                "Select Vehicle Type"),
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            style: theme.textTheme.bodyMedium,
+                                            dropdownColor: theme.cardColor,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Consumer<VehicleProvider>(
+                                      builder:
+                                          (context, vehicleProvider, child) {
+                                        List<String> filteredVehicleList =
+                                            vehicleProvider.vehicles.entries
+                                                .where((entry) =>
+                                                    entry.value[
+                                                        'vehicle_type'] ==
+                                                    vehicle['vehicleTypeController']
+                                                        .text)
+                                                .map((entry) => entry.value[
+                                                        'registration_number']
+                                                    .toString())
+                                                .toList();
+
+                                        // Ensure the selected value is part of the dropdown items
+                                        if (!filteredVehicleList.contains(
+                                            vehicle['vehicleNumberController']
+                                                .text)) {
+                                          vehicle['vehicleNumberController']
+                                              .text = '';
+                                        }
+
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: theme.dividerColor,
+                                                width: 1.0),
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                  _getVehicleIcon(vehicle[
+                                                          'vehicleTypeController']
+                                                      .text),
+                                                  size: 20,
+                                                  color: theme.iconTheme.color),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child:
+                                                    DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    value: vehicle[
+                                                                'vehicleNumberController']
+                                                            .text
+                                                            .isNotEmpty
+                                                        ? vehicle[
+                                                                'vehicleNumberController']
+                                                            .text
+                                                        : null,
+                                                    hint: const Text(
+                                                        'Select Vehicle'),
+                                                    items: filteredVehicleList
+                                                        .map((String value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: Text(
+                                                          value.replaceAll(
+                                                              '_', ' '),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      setState(() {
+                                                        vehicle['vehicleNumberController']
+                                                                .text =
+                                                            newValue ?? '';
+
+                                                        fetchVehicleDataAndUpdateLabel(
+                                                            vehicle['vehicleNumberController']
+                                                                .text!
+                                                                .replaceAll(
+                                                                    " ", "_"),
+                                                            index);
+                                                        _onVehicleOrDriverSelected();
+                                                      });
+                                                    },
+                                                    style: theme
+                                                        .textTheme.bodyMedium,
+                                                    dropdownColor:
+                                                        theme.cardColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Consumer<VehicleProvider>(
+                                      builder:
+                                          (context, vehicleProvider, child) {
+                                        List<dynamic> vehicleDriversDynamic =
+                                            vehicleProvider.vehicleDrivers[
+                                                    'vehicleDrivers'] ??
+                                                [];
+
+                                        List<Map<String, dynamic>>
+                                            vehicleDrivers =
+                                            vehicleDriversDynamic
+                                                .map((item) => item
+                                                    as Map<String, dynamic>)
+                                                .toList();
+                                        List<String> allDrivers = vehicleDrivers
+                                            .map((driver) =>
+                                                driver['name'].toString())
+                                            .toList();
+
+                                        List<String> availableDrivers =
+                                            allDrivers
+                                                .where((name) =>
+                                                    !selectedDriverNames
+                                                        .contains(name))
+                                                .toList();
+
+                                        if (vehicle['vehicleDriverController']
+                                                .text
+                                                .isNotEmpty &&
+                                            !availableDrivers.contains(vehicle[
+                                                    'vehicleDriverController']
+                                                .text)) {
+                                          availableDrivers.add(
+                                              vehicle['vehicleDriverController']
+                                                  .text);
+                                        }
+
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: theme.dividerColor,
+                                                width: 1.0),
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.person,
+                                                  size: 20,
+                                                  color: theme.iconTheme.color),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child:
+                                                    DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    value: vehicle[
+                                                                'vehicleDriverController']
+                                                            .text
+                                                            .isNotEmpty
+                                                        ? vehicle[
+                                                                'vehicleDriverController']
+                                                            .text
+                                                        : null,
+                                                    hint: const Text('Driver'),
+                                                    items: availableDrivers
+                                                        .map((String value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: SizedBox(
+                                                          width: 150,
+                                                          child: Text(
+                                                            value.replaceAll(
+                                                                '_', ' '),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      setState(() {
+                                                        if (vehicle[
+                                                                'vehicleDriverController']
+                                                            .text
+                                                            .isNotEmpty) {
+                                                          selectedDriverNames
+                                                              .remove(vehicle[
+                                                                      'vehicleDriverController']
+                                                                  .text);
+                                                        }
+                                                        vehicle['vehicleDriverController']
+                                                                .text =
+                                                            newValue ?? '';
+                                                        if (newValue != null &&
+                                                            newValue
+                                                                .isNotEmpty) {
+                                                          selectedDriverNames
+                                                              .add(newValue);
+                                                        }
+                                                        _onVehicleOrDriverSelected();
+                                                      });
+                                                    },
+                                                    isExpanded: true,
+                                                    style: theme
+                                                        .textTheme.bodyMedium,
+                                                    dropdownColor:
+                                                        theme.cardColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        color: theme.cardColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10)),
                                         border: Border.all(
                                           color: theme.dividerColor,
                                           width: 1.0,
                                         ),
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: vehicle['vehicleTypeController']
-                                                .text
-                                                .isNotEmpty
-                                            ? vehicle['vehicleTypeController']
-                                                .text
-                                            : null,
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            vehicle['vehicleTypeController']
-                                                .text = newValue ?? '';
-                                            vehicle['vehicleNumberController']
-                                                .text = '';
-                                          });
-                                        },
-                                        onTap: () {},
-                                        items: vehicleList
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Row(
-                                              children: [
-                                                Icon(_getVehicleIcon(value),
-                                                    size: 20,
-                                                    color:
-                                                        theme.iconTheme.color),
-                                                const SizedBox(width: 10),
-                                                Text(value),
-                                              ],
-                                            ),
-                                          );
-                                        }).toList(),
-                                        hint: const Text("Select Vehicle Type"),
-                                        isExpanded: true,
-                                        underline: Container(),
-                                        style: theme.textTheme.bodyMedium,
-                                        dropdownColor: theme.cardColor,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Consumer<VehicleProvider>(
-                                  builder: (context, vehicleProvider, child) {
-                                    List<String> filteredVehicleList =
-                                        vehicleProvider.vehicles.entries
-                                            .where((entry) =>
-                                                entry.value['vehicle_type'] ==
-                                                vehicle['vehicleTypeController']
-                                                    .text)
-                                            .map((entry) => entry
-                                                .value['registration_number']
-                                                .toString())
-                                            .toList();
-
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: theme.dividerColor,
-                                            width: 1.0),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                              _getVehicleIcon(vehicle[
-                                                      'vehicleTypeController']
-                                                  .text),
-                                              size: 20,
-                                              color: theme.iconTheme.color),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                value: vehicle[
-                                                            'vehicleNumberController']
-                                                        .text
-                                                        .isNotEmpty
-                                                    ? vehicle[
-                                                            'vehicleNumberController']
-                                                        .text
-                                                    : null,
-                                                hint: const Text(
-                                                    'Select Vehicle'),
-                                                items: filteredVehicleList
-                                                    .map((String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(
-                                                      value.replaceAll(
-                                                          '_', ' '),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    vehicle['vehicleNumberController']
-                                                        .text = newValue ?? '';
-
-                                                    fetchVehicleDataAndUpdateLabel(
-                                                        vehicle['vehicleNumberController']
-                                                            .text!
-                                                            .replaceAll(
-                                                                " ", "_"),
-                                                        index);
-                                                  });
-                                                },
-                                                style:
-                                                    theme.textTheme.bodyMedium,
-                                                dropdownColor: theme.cardColor,
-                                              ),
-                                            ),
+                                      child: TextFormField(
+                                        controller: vehicle[
+                                            'vehicleCurrentKMController'],
+                                        decoration: InputDecoration(
+                                          hintText: "Current KM",
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: BorderSide.none,
                                           ),
-                                        ],
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 12.0),
+                                        ),
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                          fontSize: titleFontSize * 0.8,
+                                        ),
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.add,
+                                      color: theme.iconTheme.color),
+                                  onPressed: isVehicleAndDriverSelected
+                                      ? null
+                                      : _addVehicle,
+                                ),
+                                if (vehicles.length > 1)
+                                  IconButton(
+                                    icon: Icon(Icons.remove,
+                                        color: theme.iconTheme.color),
+                                    onPressed: () => _removeVehicle(index),
+                                  ),
+                              ],
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Consumer<VehicleProvider>(
-                                  builder: (context, vehicleProvider, child) {
-                                    List<dynamic> vehicleDriversDynamic =
-                                        vehicleProvider.vehicleDrivers[
-                                                'vehicleDrivers'] ??
-                                            [];
-
-                                    List<Map<String, dynamic>> vehicleDrivers =
-                                        vehicleDriversDynamic
-                                            .map((item) =>
-                                                item as Map<String, dynamic>)
-                                            .toList();
-                                    List<String> vehicleList = vehicleDrivers
-                                        .map((vehicle) =>
-                                            vehicle['name'].toString())
-                                        .toList();
-
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: theme.dividerColor,
-                                            width: 1.0),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.person,
-                                              size: 20,
-                                              color: theme.iconTheme.color),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                value: vehicle[
-                                                            'vehicleDriverController']
-                                                        .text
-                                                        .isNotEmpty
-                                                    ? vehicle[
-                                                            'vehicleDriverController']
-                                                        .text
-                                                    : null,
-                                                hint: const Text('Driver'),
-                                                items: vehicleList
-                                                    .map((String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: SizedBox(
-                                                      width:
-                                                          150, // Adjust this value as needed
-                                                      child: Text(
-                                                        value.replaceAll(
-                                                            '_', ' '),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    vehicle['vehicleDriverController']
-                                                        .text = newValue ?? '';
-                                                  });
-                                                },
-                                                isExpanded: true,
-                                                style:
-                                                    theme.textTheme.bodyMedium,
-                                                dropdownColor: theme.cardColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: theme.cardColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    border: Border.all(
-                                      color: theme.dividerColor,
-                                      width: 1.0,
-                                    ),
-                                  ),
-                                  child: TextFormField(
-                                    controller:
-                                        vehicle['vehicleCurrentKMController'],
-                                    decoration: InputDecoration(
-                                      hintText: "Current KM",
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 12.0),
-                                    ),
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              icon:
-                                  Icon(Icons.add, color: theme.iconTheme.color),
-                              onPressed: isVehicleAndDriverSelected
-                                  ? null
-                                  : _addVehicle,
-                            ),
-                            if (vehicles.length >
-                                1) // Only show remove button if there's more than one vehicle
-                              IconButton(
-                                icon: Icon(Icons.remove,
-                                    color: theme.iconTheme.color),
-                                onPressed: () => _removeVehicle(index),
-                              ),
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -1027,6 +1168,7 @@ class _TripPageState extends State<TripPage> {
                         regex: RegExp("source"),
                         regexlabel: "",
                         numberkeyboard: false,
+                        fontSize: titleFontSize * 0.8, // Add this line
                       ),
                       const SizedBox(width: 10),
                       Row(
@@ -1141,6 +1283,9 @@ class _TripPageState extends State<TripPage> {
                   onPressed: () {
                     bool isValid = true; // Flag to track if the form is valid
 
+                    // Check for duplicate vehicle and driver selections
+                    _checkForDuplicateSelections();
+
                     // Check if all vehicle fields are filled
                     for (var vehicle in vehicles) {
                       if (vehicle['vehicleNumberController'].text.isEmpty ||
@@ -1223,8 +1368,6 @@ class _TripPageState extends State<TripPage> {
                           textColor: Colors.white,
                           fontSize: 16.0);
                     }
-
-                    // Check if time is selected
 
                     // If all fields are valid, proceed with submitting the form
                     if (isValid) {

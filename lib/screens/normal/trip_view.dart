@@ -199,12 +199,6 @@ class _TripViewScreenState extends State<TripViewScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           onTap: () => _shareTrip(data),
         ),
-        SpeedDialChild(
-          child: Icon(LineIcons.trash,
-              color: Theme.of(context).colorScheme.onPrimary),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          onTap: () => _deleteTrip(context, data),
-        ),
       ],
     );
   }
@@ -264,45 +258,6 @@ class _TripViewScreenState extends State<TripViewScreen> {
           );
         }
       });
-    }
-  }
-
-  void _deleteTrip(BuildContext context, List data) {
-    if (data.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Confirm Delete"),
-            content: const Text("Are you sure you want to delete this trip?"),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text("Delete"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  TripProvider().deleteTrip(data[0]['id']);
-                  Fluttertoast.showToast(
-                    msg: "Trip deleted successfully",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    fontSize: 16.0,
-                  );
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
     }
   }
 }

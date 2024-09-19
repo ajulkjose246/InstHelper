@@ -178,13 +178,14 @@ class VehicleProvider extends ChangeNotifier {
 
   Future<void> updateVehicleData(
     int type,
-    String? vehicleRegistrationNo, [
+    String vehicleRegistrationNo, [
     String? value1,
     String? value2,
     String? value3,
     String? value4,
     String? value5,
     Map<String, List<File>>? selectedImages,
+    List<File>? newGalleryImages,
   ]) async {
     List<String> sqlStatements = [];
     Map<String, List<String>> uploadedFileUrls = {
@@ -192,6 +193,7 @@ class VehicleProvider extends ChangeNotifier {
       'insurance': [],
       'pollution': [],
       'fitness': [],
+      'gallery': [],
     };
 
     // Upload images to Firebase Storage
@@ -205,7 +207,7 @@ class VehicleProvider extends ChangeNotifier {
           Reference ref = FirebaseStorage.instance
               .ref()
               .child('Vehicle_Documents')
-              .child(vehicleRegistrationNo!)
+              .child(vehicleRegistrationNo)
               .child(dateType)
               .child(fileName);
 
@@ -216,6 +218,27 @@ class VehicleProvider extends ChangeNotifier {
           } catch (e) {
             print("Failed to upload file: $e");
           }
+        }
+      }
+    }
+
+    // Upload new gallery images
+    if (newGalleryImages != null && newGalleryImages.isNotEmpty) {
+      for (var image in newGalleryImages) {
+        String fileName = path.basename(image.path);
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('Vehicle_Documents')
+            .child(vehicleRegistrationNo)
+            .child('gallery')
+            .child(fileName);
+
+        try {
+          await ref.putFile(image);
+          String fileUrl = await ref.getDownloadURL();
+          uploadedFileUrls['gallery']!.add(fileUrl);
+        } catch (e) {
+          print("Failed to upload gallery image: $e");
         }
       }
     }
@@ -237,24 +260,28 @@ class VehicleProvider extends ChangeNotifier {
             "UPDATE `tbl_vehicle` SET `registration_date`='$value1' WHERE `registration_number`='$vehicleRegistrationNo'",
           );
           if (uploadedFileUrls['registration']!.isNotEmpty) {
+            String jsonUrls = json.encode(uploadedFileUrls['registration']);
             sqlStatements.add(
-              "UPDATE `tbl_vehicle` SET `uploaded_files`='${json.encode(uploadedFileUrls['registration'])}' WHERE `registration_number`='$vehicleRegistrationNo'",
+              "UPDATE `tbl_vehicle` SET `uploaded_files`='$jsonUrls' WHERE `registration_number`='$vehicleRegistrationNo'",
             );
           }
         }
         if (value2 != null) {
+          String jsonUrls = json.encode(uploadedFileUrls['insurance']);
           sqlStatements.add(
-            "INSERT INTO `tbl_insurance`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value2','${json.encode(uploadedFileUrls['insurance'])}')",
+            "INSERT INTO `tbl_insurance`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value2','$jsonUrls') ON DUPLICATE KEY UPDATE `exp_date`='$value2', `documents`='$jsonUrls'",
           );
         }
         if (value3 != null) {
+          String jsonUrls = json.encode(uploadedFileUrls['pollution']);
           sqlStatements.add(
-            "INSERT INTO `tbl_pollution`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value3','${json.encode(uploadedFileUrls['pollution'])}')",
+            "INSERT INTO `tbl_pollution`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value3','$jsonUrls') ON DUPLICATE KEY UPDATE `exp_date`='$value3', `documents`='$jsonUrls'",
           );
         }
         if (value4 != null) {
+          String jsonUrls = json.encode(uploadedFileUrls['fitness']);
           sqlStatements.add(
-            "INSERT INTO `tbl_fitness`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value4','${json.encode(uploadedFileUrls['fitness'])}')",
+            "INSERT INTO `tbl_fitness`(`vehicle_id`, `exp_date`, `documents`) VALUES ('$vehicleRegistrationNo','$value4','$jsonUrls') ON DUPLICATE KEY UPDATE `exp_date`='$value4', `documents`='$jsonUrls'",
           );
         }
         break;
@@ -263,11 +290,17 @@ class VehicleProvider extends ChangeNotifier {
           "UPDATE `tbl_vehicle` SET `purpose_of_use`='$value1' WHERE `registration_number` ='$vehicleRegistrationNo'",
         );
         break;
-      default:
-        print('Invalid type: $type');
-        return;
+      case 5:
+        if (uploadedFileUrls['gallery']!.isNotEmpty) {
+          String jsonUrls = json.encode(uploadedFileUrls['gallery']);
+          sqlStatements.add(
+            "UPDATE `tbl_vehicle_gallery` SET `image` = '$jsonUrls' WHERE `vehicle_id` = '$vehicleRegistrationNo'",
+          );
+        }
+        break;
     }
 
+    // Execute SQL statements
     for (String sql in sqlStatements) {
       print(sql);
 
@@ -280,15 +313,7 @@ class VehicleProvider extends ChangeNotifier {
 
         if (response.statusCode == 200) {
           final responseData = json.decode(response.body);
-          if (responseData is Map<String, dynamic> &&
-              responseData.containsKey('error')) {
-            print('Error: ${responseData['error']}');
-          } else if (responseData is Map<String, dynamic>) {
-            print('Message: ${responseData['message']}');
-            fetchAllVehicleData();
-          } else {
-            print('Unexpected data format: $responseData');
-          }
+          print(responseData);
         } else {
           print(
               'Failed to update vehicle data. Status code: ${response.statusCode}');
@@ -298,7 +323,8 @@ class VehicleProvider extends ChangeNotifier {
       }
     }
 
-    fetchVehicleData(vehicleRegistrationNo!);
+    // Fetch updated vehicle data
+    await fetchVehicleData(vehicleRegistrationNo);
   }
 
   Future<void> fetchModels() async {
