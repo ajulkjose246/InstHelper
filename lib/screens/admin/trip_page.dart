@@ -161,10 +161,11 @@ class _TripPageState extends State<TripPage> {
 
   void _onVehicleOrDriverSelected() {
     setState(() {
-      isVehicleAndDriverSelected = vehicles.any((vehicle) =>
+      isVehicleAndDriverSelected = vehicles.every((vehicle) =>
           vehicle['vehicleNumberController'].text.isNotEmpty &&
-          vehicle['vehicleDriverController'].text.isNotEmpty);
-      // Update selected vehicles and drivers
+          vehicle['vehicleDriverController'].text.isNotEmpty &&
+          vehicle['vehicleCurrentKMController'].text.isNotEmpty);
+
       selectedVehicleNumbers = vehicles
           .map((vehicle) => vehicle['vehicleNumberController'].text)
           .where((text) => text.isNotEmpty)

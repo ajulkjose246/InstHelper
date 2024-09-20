@@ -17,16 +17,35 @@ class _DriverAlertListState extends State<DriverAlertList> {
 
   @override
   Widget build(BuildContext context) {
-    print("Admin alert list");
+    print("Driver alert list");
     final vehicleProvider = Provider.of<VehicleProvider>(context);
 
     if (vehicleProvider.vehicles.isEmpty) {
       vehicleProvider.fetchAllVehicleData();
     }
 
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final textScaleFactor = mediaQuery.textScaleFactor;
+
+    // Adjust base font size based on screen width
+    double baseFontSize = screenWidth < 360 ? 14 : 16;
+
+    // Apply text scale factor and limit maximum size more strictly
+    double titleFontSize =
+        (baseFontSize * 1.2 / textScaleFactor).clamp(14.0, 20.0);
+    double bodyFontSize = (baseFontSize / textScaleFactor).clamp(12.0, 16.0);
+    double smallFontSize =
+        (baseFontSize * 0.8 / textScaleFactor).clamp(10.0, 14.0);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Alerts", style: TextStyle(color: Colors.white)),
+        title: Text("Alerts",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: titleFontSize,
+            )),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: Container(
@@ -34,25 +53,24 @@ class _DriverAlertListState extends State<DriverAlertList> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Filter buttons
-                  _buildFilterButton(1, "Fitness"),
-                  const SizedBox(width: 10),
-                  _buildFilterButton(2, "Insurance"),
-                  const SizedBox(width: 10),
-                  _buildFilterButton(3, "Pollution"),
+                  _buildFilterButton(1, "Fitness", smallFontSize),
+                  SizedBox(width: screenWidth * 0.02),
+                  _buildFilterButton(2, "Insurance", smallFontSize),
+                  SizedBox(width: screenWidth * 0.02),
+                  _buildFilterButton(3, "Pollution", smallFontSize),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Center(
                 child: Container(
                   width: double.infinity,
-                  height: 50,
+                  height: screenHeight * 0.06,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
@@ -60,9 +78,11 @@ class _DriverAlertListState extends State<DriverAlertList> {
                   child: TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.015),
                       prefixIcon: Icon(Icons.search,
-                          color: Theme.of(context).colorScheme.onSurface),
+                          color: Theme.of(context).colorScheme.onSurface,
+                          size: bodyFontSize),
                     ),
                     onChanged: (val) {
                       setState(() {
@@ -75,7 +95,7 @@ class _DriverAlertListState extends State<DriverAlertList> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Consumer<VehicleProvider>(
                   builder: (context, vehicleProvider, child) {
                     List filteredItems =
@@ -100,10 +120,11 @@ class _DriverAlertListState extends State<DriverAlertList> {
                           },
                           child: Card(
                             elevation: 2,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 4),
+                            margin: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.01,
+                                horizontal: screenWidth * 0.01),
                             child: Padding(
-                              padding: const EdgeInsets.all(16),
+                              padding: EdgeInsets.all(screenWidth * 0.03),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -116,24 +137,25 @@ class _DriverAlertListState extends State<DriverAlertList> {
                                             .toString()
                                             .toUpperCase()
                                             .replaceAll('_', ' '),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 18),
+                                            fontSize: bodyFontSize),
                                       ),
                                       Icon(Icons.arrow_forward_ios,
-                                          size: 18,
+                                          size: bodyFontSize,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primary),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: screenHeight * 0.005),
                                   Text(
                                     vehicle['model'],
                                     style: TextStyle(
-                                        fontSize: 14, color: Colors.grey[600]),
+                                        fontSize: smallFontSize,
+                                        color: Colors.grey[600]),
                                   ),
-                                  const SizedBox(height: 12),
+                                  SizedBox(height: screenHeight * 0.01),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -146,6 +168,7 @@ class _DriverAlertListState extends State<DriverAlertList> {
                                                 : "Pollution",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
+                                            fontSize: smallFontSize,
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primary),
@@ -161,17 +184,19 @@ class _DriverAlertListState extends State<DriverAlertList> {
                                                     vehicle['Pollution_Upto']),
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
+                                            fontSize: smallFontSize,
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .error),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: screenHeight * 0.005),
                                   Text(
                                     "Expires in ${_getDaysUntilExpiry(vehicle)} days",
                                     style: TextStyle(
-                                        fontSize: 12, color: Colors.grey[600]),
+                                        fontSize: smallFontSize * 0.9,
+                                        color: Colors.grey[600]),
                                   ),
                                 ],
                               ),
@@ -190,7 +215,7 @@ class _DriverAlertListState extends State<DriverAlertList> {
     );
   }
 
-  Widget _buildFilterButton(int value, String label) {
+  Widget _buildFilterButton(int value, String label, double fontSize) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -198,8 +223,8 @@ class _DriverAlertListState extends State<DriverAlertList> {
         });
       },
       child: Container(
-        width: 100,
-        height: 50,
+        width: MediaQuery.of(context).size.width * 0.29,
+        height: MediaQuery.of(context).size.height * 0.05,
         decoration: BoxDecoration(
           color: filterValue != value
               ? Theme.of(context).colorScheme.surface
@@ -211,9 +236,8 @@ class _DriverAlertListState extends State<DriverAlertList> {
             label,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: filterValue != value
-                  ? Theme.of(context).colorScheme.inversePrimary
-                  : Theme.of(context).colorScheme.inversePrimary,
+              fontSize: fontSize * 1.2, // Reduced font size by 20%
+              color: Theme.of(context).colorScheme.inversePrimary,
             ),
           ),
         ),

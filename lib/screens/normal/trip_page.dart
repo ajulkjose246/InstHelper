@@ -42,7 +42,7 @@ class _TripPageState extends State<TripPage> {
               const Padding(
                 padding: EdgeInsets.all(10),
                 child: Text(
-                  "My Trip List",
+                  "Trip List",
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
                 ),
               ),
@@ -220,17 +220,6 @@ class _TripPageState extends State<TripPage> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.tertiary,
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3), // Shadow position
-                    ),
-                  ],
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
@@ -259,7 +248,7 @@ class _TripPageState extends State<TripPage> {
                         'Total Vehicles: ${json.decode(trip['vehicle_id'] ?? '[]').length}',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -267,7 +256,7 @@ class _TripPageState extends State<TripPage> {
                         'Start Date: ${_formatDate(trip['starting_date'])}',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -275,7 +264,7 @@ class _TripPageState extends State<TripPage> {
                         'Return Date: ${_formatDate(trip['ending_date'])}',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
                     ],

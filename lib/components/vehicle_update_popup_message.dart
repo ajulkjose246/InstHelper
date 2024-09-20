@@ -4,8 +4,6 @@ import 'package:AjceTrips/provider/vehicle_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
 class UpdateMessage extends StatefulWidget {
