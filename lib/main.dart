@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:AjceTrips/screens/authentication/AuthWrapper.dart';
 import 'package:AjceTrips/screens/normal/alert_list.dart';
 import 'package:AjceTrips/screens/normal/container.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -110,6 +111,9 @@ class MyApp extends StatelessWidget {
       theme:
           Provider.of<ThemeProvider>(context).isDarkMode ? darkMode : lightMode,
       debugShowCheckedModeBanner: false,
+      home: AuthWrapper(
+        child: const AuthPage(),
+      ),
       routes: ({
         // Admin User
         '/admin': (context) => const ContainerScreen(),
@@ -128,7 +132,7 @@ class MyApp extends StatelessWidget {
         '/user': (context) => const NormalContainerScreen(),
         '/user_alert': (context) => const NormalAlertList(),
       }),
-      initialRoute: '/auth',
+      // Remove the initialRoute property
     );
   }
 }

@@ -46,27 +46,21 @@ class _ListNormalVehicleWidgetState extends State<ListNormalVehicleWidget> {
     final remainingDays = _getRemainingDays(date);
     final theme = Theme.of(context);
 
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 4.0,
-      alignment: WrapAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Title
-        Flexible(
-          flex: 1,
-          child: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: theme.colorScheme.onSurface,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis, // Add ellipsis to avoid overflow
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: theme.colorScheme.onSurface,
           ),
         ),
+        SizedBox(height: 4),
         // Date and Status
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Formatted Date
             Text(
@@ -75,48 +69,34 @@ class _ListNormalVehicleWidgetState extends State<ListNormalVehicleWidget> {
                 fontSize: 13,
                 color: theme.colorScheme.onSurface,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 4.0,
-              children: [
-                // Status Container
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    _getStatus(statusColor),
-                    style: TextStyle(
-                      color: statusColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+            // Status Container
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                _getStatus(statusColor),
+                style: TextStyle(
+                  color: statusColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
-                // Remaining Days
-                Flexible(
-                  child: Text(
-                    'Remaining: $remainingDays days',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
+        ),
+        SizedBox(height: 4),
+        // Remaining Days
+        Text(
+          'Remaining: $remainingDays days',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
       ],
     );
