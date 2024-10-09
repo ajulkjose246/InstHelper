@@ -66,7 +66,7 @@ Future<void> main() async {
   // Initialize Workmanager
   await Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true,
+    isInDebugMode: false,
   );
 
   // Schedule periodic task

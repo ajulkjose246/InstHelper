@@ -65,6 +65,7 @@ dependencies:
   firebase_app_check: ^0.3.0+5
   carousel_slider: ^5.0.0
   local_auth: ^2.3.0
+  google_mlkit_text_recognition: ^0.13.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -97,7 +98,7 @@ flutter:
   assets:
     - assets/img/
     - assets/lottie/
-    # - images/a_dot_ham.jpeg
+    - assets/logo/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
