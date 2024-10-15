@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 // Add these imports
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -103,6 +106,118 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> checkForUpdates() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+
+      final versionsRef = FirebaseFirestore.instance.collection('Versions');
+      final QuerySnapshot versionsSnapshot = await versionsRef.get();
+
+      String latestVersion = '0.0.0';
+      String downloadUrl = '';
+
+      for (var doc in versionsSnapshot.docs) {
+        String version = doc.id;
+        if (compareVersions(version, latestVersion) > 0) {
+          latestVersion = version;
+          downloadUrl = doc.get('url') as String;
+        }
+      }
+
+      if (compareVersions(latestVersion, currentVersion) > 0) {
+        showUpdateDialog(latestVersion, downloadUrl);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('You are using the latest version.')),
+        );
+      }
+    } catch (e) {
+      print('Error checking for updates: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to check for updates.')),
+      );
+    }
+  }
+
+  int compareVersions(String v1, String v2) {
+    var v1Parts = v1.split('.').map(int.parse).toList();
+    var v2Parts = v2.split('.').map(int.parse).toList();
+
+    for (int i = 0; i < 3; i++) {
+      if (v1Parts[i] > v2Parts[i]) return 1;
+      if (v1Parts[i] < v2Parts[i]) return -1;
+    }
+    return 0;
+  }
+
+  void showUpdateDialog(String latestVersion, String downloadUrl) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Available'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('A new version ($latestVersion) of the app is available.'),
+              SizedBox(height: 10),
+              Text('Update URL:'),
+              Text(downloadUrl, style: TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Copy URL'),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: downloadUrl));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('URL copied to clipboard')),
+                );
+              },
+            ),
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Update'),
+              onPressed: () async {
+                try {
+                  String cleanUrl =
+                      downloadUrl.trim().replaceAll(RegExp(r'^"|"$'), '');
+                  final url = Uri.parse(cleanUrl);
+                  if (await canLaunchUrl(url)) {
+                    bool launched = await launchUrl(url,
+                        mode: LaunchMode.externalApplication);
+                    if (!launched) {
+                      throw 'Could not launch $url';
+                    }
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                } catch (e) {
+                  print('Error launching URL: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            'Failed to open update link. URL copied to clipboard instead.')),
+                  );
+                  Clipboard.setData(ClipboardData(text: downloadUrl));
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
@@ -193,6 +308,32 @@ class ProfileScreenState extends State<ProfileScreen> {
                         activeColor: theme.colorScheme.primary,
                         value: isSystemAuthEnabled,
                         onChanged: _toggleSystemAuth,
+                      )
+                    ],
+                  ),
+                ),
+                // Updated container for the Check Updates button
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: EdgeInsets.all(15 / textScaleFactor),
+                  padding: EdgeInsets.all(10 / textScaleFactor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Check for Updates",
+                        style: TextStyle(
+                          fontSize: 16 / textScaleFactor,
+                          color: theme.colorScheme.inversePrimary,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.system_update,
+                            color: theme.colorScheme.primary),
+                        onPressed: checkForUpdates,
                       )
                     ],
                   ),

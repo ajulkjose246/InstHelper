@@ -19,7 +19,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
     print("Normal vehicle list");
     final theme = Theme.of(context);
     return Container(
-      color: theme.scaffoldBackgroundColor,
+      color: theme.colorScheme.background,
       child: ListView(
         children: [
           Padding(

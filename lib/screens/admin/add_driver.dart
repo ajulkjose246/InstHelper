@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:AjceTrips/provider/vehicle_provider.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class AddDriver extends StatefulWidget {
   const AddDriver({super.key});
@@ -21,7 +20,6 @@ class _AddDriverState extends State<AddDriver> {
   final _emailController = TextEditingController();
   final _licenseController = TextEditingController();
   File? _licenseImage;
-  final TextRecognizer _textRecognizer = TextRecognizer();
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
@@ -44,35 +42,7 @@ class _AddDriverState extends State<AddDriver> {
       setState(() {
         _licenseImage = File(image.path);
       });
-
-      // Perform text recognition on the selected image
-      await _recognizeText(_licenseImage!);
     }
-  }
-
-  Future<void> _recognizeText(File image) async {
-    final InputImage inputImage = InputImage.fromFile(image);
-    final RecognizedText recognizedText =
-        await _textRecognizer.processImage(inputImage);
-
-    String name = '';
-    String licenseNumber = '';
-
-    // Extract name and license number from the recognized text
-    for (TextBlock block in recognizedText.blocks) {
-      for (TextLine line in block.lines) {
-        if (line.text.contains('Name')) {
-          name = line.text.split(':').last.trim();
-        } else if (line.text.contains('No.:')) {
-          licenseNumber = line.text.split('No.:').last.trim().split(' ').first;
-        }
-      }
-    }
-
-    setState(() {
-      _nameController.text = name;
-      _licenseController.text = licenseNumber;
-    });
   }
 
   Future<void> _submitForm() async {
@@ -84,6 +54,15 @@ class _AddDriverState extends State<AddDriver> {
         return;
       }
 
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+
       try {
         // Add driver to the database
         await Provider.of<VehicleProvider>(context, listen: false).addDriver(
@@ -93,6 +72,9 @@ class _AddDriverState extends State<AddDriver> {
           licenseNumber: _licenseController.text,
           licenseImage: _licenseImage!,
         );
+
+        // Hide loading indicator
+        Navigator.of(context).pop();
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Driver added successfully')),
@@ -107,6 +89,9 @@ class _AddDriverState extends State<AddDriver> {
           _licenseImage = null;
         });
       } catch (e) {
+        // Hide loading indicator
+        Navigator.of(context).pop();
+
         print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error adding driver: $e')),
@@ -219,7 +204,6 @@ class _AddDriverState extends State<AddDriver> {
     _phoneController.dispose();
     _emailController.dispose();
     _licenseController.dispose();
-    _textRecognizer.close();
     super.dispose();
   }
 }

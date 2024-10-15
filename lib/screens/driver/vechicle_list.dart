@@ -18,7 +18,7 @@ class _VechicleListScreenState extends State<VechicleListScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      color: theme.scaffoldBackgroundColor,
+      color: theme.colorScheme.background,
       child: ListView(
         children: [
           Padding(

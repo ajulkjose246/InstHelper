@@ -334,7 +334,7 @@ class _TripPageState extends State<TripPage> {
     double titleFontSize = (baseFontSize / textScaleFactor).clamp(14.0, 22.0);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: theme.colorScheme.background,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
