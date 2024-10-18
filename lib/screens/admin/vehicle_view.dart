@@ -161,201 +161,537 @@ class VehicleViewScreen extends StatelessWidget {
                 }
                 data = provider.specificVehicles[vehicleRegistrationNo];
                 return Container(
-                    color: theme.scaffoldBackgroundColor,
+                    color: theme.colorScheme.background,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          const SizedBox(height: 20),
-                          _buildCard(
-                            context,
-                            "Owner Details",
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildInfoRow(
-                                  icon: Icons.person,
-                                  label: "Owner Name",
-                                  value: data[0]['ownership'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.apartment,
-                                  label: "Registered RTO",
-                                  value: data[0]['rto_name'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                              ],
-                            ),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          _buildCard(
-                            context,
-                            "Vehicle Details",
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildInfoRow(
-                                  icon: Icons.commute,
-                                  label: "Vehicle Type",
-                                  value:
-                                      data[0]!['vehicle_type'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.emoji_transportation,
-                                  label: "Model",
-                                  value: data[0]!['model'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.local_gas_station_outlined,
-                                  label: "Fuel Type",
-                                  value: data[0]!['fuel_type'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.build_outlined,
-                                  label: "Engine No",
-                                  value: data[0]!['engine_no'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.construction_outlined,
-                                  label: "Chassis No",
-                                  value: data[0]!['chassis_no'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                              ],
-                            ),
-                          ),
-                          _buildCard(
-                            context,
-                            "Important Dates",
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildDateRow(
-                                  context,
-                                  "Registration Date",
-                                  data[0]!['registration_date'],
-                                  textScaleFactor,
-                                  data[0],
-                                ),
-                                const SizedBox(height: 10),
-                                _buildDateRow(
-                                  context,
-                                  "Insurance Upto",
-                                  data[0]!['Insurance_Upto'],
-                                  textScaleFactor,
-                                  data[0],
-                                ),
-                                const SizedBox(height: 10),
-                                _buildDateRow(
-                                  context,
-                                  "Pollution Upto",
-                                  data[0]!['Pollution_Upto'],
-                                  textScaleFactor,
-                                  data[0],
-                                ),
-                                const SizedBox(height: 10),
-                                _buildDateRow(
-                                  context,
-                                  "Fitness Upto",
-                                  data[0]!['Fitness_Upto'],
-                                  textScaleFactor,
-                                  data[0],
-                                ),
-                              ],
-                            ),
-                          ),
-                          _buildCard(
-                            context,
-                            "Other Info",
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildInfoRow(
-                                  icon: Icons.pin,
-                                  label: "Registration No",
-                                  value: data[0]!['registration_number']
-                                      .toString()
-                                      .replaceAll('_', ' '),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                                const SizedBox(height: 10),
-                                _buildInfoRow(
-                                  icon: Icons.notes_rounded,
-                                  label: "Purpose of Use",
-                                  value:
-                                      data[0]!['purpose_of_use'].toString(),
-                                  textScaleFactor: textScaleFactor,
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (data[0]!['image'] != null)
-                            _buildCard(
-                              context,
-                              "Gallery",
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: (() {
-                                    try {
-                                      // Parse the JSON string
-                                      List<dynamic> imageList =
-                                          jsonDecode(data[0]!['image']);
-                                      // Ensure all items are strings
-                                      return imageList
-                                          .whereType<String>()
-                                          .map<Widget>((fileName) {
-                                        return GestureDetector(
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.cardColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Owner Details",
+                                            style: TextStyle(
+                                              fontSize: 20 / textScaleFactor,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .inversePrimary,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        GestureDetector(
                                           onTap: () {
-                                            _showImagePopup(
-                                                context,
-                                                'Vehicle Image',
-                                                fileName);
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return UpdateMessage(
+                                                  type: 1,
+                                                  formattedRegNumber: data[0][
+                                                          'registration_number']
+                                                      .toString(),
+                                                  vehicleData: data[0],
+                                                );
+                                              },
+                                            );
                                           },
                                           child: Container(
-                                            width: 300,
-                                            height: 150,
-                                            margin: const EdgeInsets.all(10),
                                             decoration: BoxDecoration(
-                                              color: const Color.fromARGB(
-                                                  255, 0, 0, 0),
+                                              color:
+                                                  theme.scaffoldBackgroundColor,
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(20),
                                             ),
-                                            child: Image.network(
-                                              fileName,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return const Center(
-                                                    child: Text(
-                                                        'Error loading image'));
-                                              },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 18,
+                                              ),
                                             ),
                                           ),
-                                        );
-                                      }).toList();
-                                    } catch (e) {
-                                      // Handle JSON parsing errors or invalid data
-                                      return [
-                                        Container(
-                                            child: const Center(
-                                                child: Text('Invalid data')))
-                                      ];
-                                    }
-                                  })(),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 15),
+                                    _buildInfoRow(
+                                      icon: Icons.person,
+                                      label: "Owner Name",
+                                      value: data[0]['ownership'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.apartment,
+                                      label: "Registered RTO",
+                                      value: data[0]['rto_name'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.cardColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 10, bottom: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Vehicle Details",
+                                            style: TextStyle(
+                                              fontSize: 22 / textScaleFactor,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .inversePrimary,
+                                            ),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return UpdateMessage(
+                                                    type: 2,
+                                                    formattedRegNumber: data[
+                                                                0]![
+                                                            'registration_number']
+                                                        .toString(),
+                                                    vehicleData: data[0],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: theme
+                                                      .scaffoldBackgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(10),
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.commute,
+                                      label: "Vehicle Type",
+                                      value:
+                                          data[0]!['vehicle_type'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.emoji_transportation,
+                                      label: "Model",
+                                      value: data[0]!['model'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.local_gas_station_outlined,
+                                      label: "Fuel Type",
+                                      value: data[0]!['fuel_type'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.build_outlined,
+                                      label: "Engine No",
+                                      value: data[0]!['engine_no'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.construction_outlined,
+                                      label: "Chassis No",
+                                      value: data[0]!['chassis_no'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.cardColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 20, top: 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Important Dates",
+                                            style: TextStyle(
+                                              fontSize: 22 / textScaleFactor,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .inversePrimary,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return UpdateMessage(
+                                                  type: 3,
+                                                  formattedRegNumber: data[0]![
+                                                          'registration_number']
+                                                      .toString(),
+                                                  vehicleData: data[0],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  theme.scaffoldBackgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 20,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildDateRow(
+                                      context,
+                                      "Registration Date",
+                                      data[0]!['registration_date'],
+                                      textScaleFactor,
+                                      data[0],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildDateRow(
+                                      context,
+                                      "Insurance Upto",
+                                      data[0]!['Insurance_Upto'],
+                                      textScaleFactor,
+                                      data[0],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildDateRow(
+                                      context,
+                                      "Pollution Upto",
+                                      data[0]!['Pollution_Upto'],
+                                      textScaleFactor,
+                                      data[0],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildDateRow(
+                                      context,
+                                      "Fitness Upto",
+                                      data[0]!['Fitness_Upto'],
+                                      textScaleFactor,
+                                      data[0],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.cardColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              width: double.infinity,
+                              height: 245,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 10, right: 20, left: 20, bottom: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            "Other Info",
+                                            style: TextStyle(
+                                              fontSize: 22 / textScaleFactor,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .inversePrimary,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return UpdateMessage(
+                                                  type: 4,
+                                                  formattedRegNumber: data[0]![
+                                                          'registration_number']
+                                                      .toString(),
+                                                  vehicleData: data[0],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: theme
+                                                    .scaffoldBackgroundColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 20,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.pin,
+                                      label: "Registration No",
+                                      value: data[0]!['registration_number']
+                                          .toString()
+                                          .replaceAll('_', ' '),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    _buildInfoRow(
+                                      icon: Icons.notes_rounded,
+                                      label: "Purpose of Use",
+                                      value:
+                                          data[0]!['purpose_of_use'].toString(),
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          data[0]!['image'] != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: theme.cardColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    width: double.infinity,
+                                    height: 280,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10,
+                                          left: 20,
+                                          right: 20,
+                                          bottom: 20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  "Gallery",
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        22 / textScaleFactor,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .inversePrimary,
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return UpdateMessage(
+                                                        type: 5,
+                                                        formattedRegNumber: data[
+                                                                    0]![
+                                                                'registration_number']
+                                                            .toString(),
+                                                        vehicleData: data[0],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: theme
+                                                          .scaffoldBackgroundColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: const Padding(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: (() {
+                                                try {
+                                                  // Parse the JSON string
+                                                  List<dynamic> imageList =
+                                                      jsonDecode(
+                                                          data[0]!['image']);
+                                                  // Ensure all items are strings
+                                                  return imageList
+                                                      .whereType<String>()
+                                                      .map<Widget>((fileName) {
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        _showImagePopup(
+                                                            context,
+                                                            'Vehicle Image',
+                                                            fileName);
+                                                      },
+                                                      child: Container(
+                                                        width: 300,
+                                                        height: 150,
+                                                        margin: const EdgeInsets
+                                                            .all(10),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: const Color
+                                                              .fromARGB(
+                                                              255, 0, 0, 0),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Image.network(
+                                                          fileName,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder:
+                                                              (context, error,
+                                                                  stackTrace) {
+                                                            return const Center(
+                                                                child: Text(
+                                                                    'Error loading image'));
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList();
+                                                } catch (e) {
+                                                  // Handle JSON parsing errors or invalid data
+                                                  return [
+                                                    Container(
+                                                        child: const Center(
+                                                            child: Text(
+                                                                'Invalid data')))
+                                                  ];
+                                                }
+                                              })(),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ));
@@ -620,68 +956,6 @@ Purpose of Use: ${data[0]!['purpose_of_use']}
           ),
         );
       },
-    );
-  }
-
-  Widget _buildCard(BuildContext context, String title, Widget content) {
-    final theme = Theme.of(context);
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 22 / textScaleFactor,
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.inversePrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Add edit functionality here
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: theme.scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Icon(Icons.edit, size: 18),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              content,
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

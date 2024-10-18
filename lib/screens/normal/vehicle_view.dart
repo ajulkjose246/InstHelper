@@ -159,7 +159,7 @@ class VehicleViewScreen extends StatelessWidget {
                 }
                 data = provider.specificVehicles[vehicleRegistrationNo];
                 return Container(
-                    color: theme.scaffoldBackgroundColor,
+                    color: theme.colorScheme.background,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
